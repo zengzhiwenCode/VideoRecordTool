@@ -98,7 +98,15 @@ BOOL CvrmfcDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-	jlib::init_logger("vrmfc");
+
+	// init logger
+	{
+		auto path = get_exe_path_a() + "/log";
+		CreateDirectoryA(path.c_str(), nullptr);
+		path += "/vrmfc";
+		jlib::init_logger(path);
+	}
+	
 
 	m_bkbrush.CreateSolidBrush(RGB(0, 0, 0));
 
