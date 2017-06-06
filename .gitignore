@@ -6,7 +6,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-vrmfc.log_*
+[vrmfc].log*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
