@@ -31,6 +31,9 @@ protected:
 	cv::VideoCapture capture_ = {};
 	CBrush m_bkbrush = {};
 	std::shared_ptr<CAlarmTextDlg> tip = {};
+	std::string com_data_ = {};
+	int brightness_level_ = 2;
+	int temperature_ = 0;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
@@ -46,4 +49,6 @@ public:
 	void adjust_player_size(int w, int h);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnDestroy();
+	void handle_com();
+	void process_com(const std::string& cmd);
 };

@@ -106,9 +106,8 @@ BOOL CvrmfcDlg::OnInitDialog()
 		path += "/vrmfc";
 		jlib::init_logger(path);
 	}
-	
 
-	m_bkbrush.CreateSolidBrush(RGB(0, 0, 0));
+	
 
 	// init rc
 	{
@@ -132,6 +131,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 
 	// init tip
 	{
+		m_bkbrush.CreateSolidBrush(RGB(0, 0, 0));
 		CRect rc;
 		GetWindowRect(rc);
 		rc.left = rc.right - 255;
@@ -159,6 +159,8 @@ BOOL CvrmfcDlg::OnInitDialog()
 		if (g_serial.isOpen()) {
 			g_serial.close();
 		}
+
+		com_data_.clear();
 
 		if (cfg->get_baudrate() == 0) {
 			cfg->set_baudrate(9600);
@@ -296,6 +298,7 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 
 	case timer_id::updatetip:
 	{
+		handle_com();
 		CString txt;
 		txt.Format(L"%s ÁÁ¶È%d UÅÌ%s²åÈë", now_to_wstring().c_str(), 2, L"Î´");
 		tip->SetText(txt);
@@ -353,4 +356,68 @@ void CvrmfcDlg::OnDestroy()
 	CDialogEx::OnDestroy();
 
 	serial_send("off");
+}
+
+void CvrmfcDlg::handle_com()
+{
+	if (!g_serial.isOpen()) {
+		return;
+	}
+
+	com_data_ += g_serial.read(1024);
+	const auto npos = std::string::npos;
+	const auto prefix = "printf(\"";
+	const auto postfix = "\r\n\")";
+	auto pos1 = com_data_.find(prefix);
+	auto pos2 = com_data_.find(postfix);
+	while (pos1 != npos && pos2 != npos && pos1 < pos2) {
+		auto data = com_data_.substr(pos1, pos2 - pos1);
+		com_data_ = com_data_.substr(pos2 + sizeof(postfix) - 1);
+		pos1 = com_data_.find(prefix);
+		pos2 = com_data_.find(postfix);
+
+		process_com(data);
+	}
+}
+
+void CvrmfcDlg::process_com(const std::string & data)
+{
+	// process data
+#define com_if(var) if (data == (var)) 
+#define com_elif(var) else com_if((var))
+
+	com_if ("off") {
+		ExitWindowsEx(EWX_POWEROFF, EWX_FORCEIFHUNG);
+		PostMessage(WM_CLOSE);
+		return;
+	} com_elif ("sr0") {
+		// todo
+	} com_elif("rec") {
+		// todo
+	}
+
+	// bright
+	if (std::string::npos != data.find("lt")) {
+		for (int i = 0; i < 6; i++) {
+			com_if("lt" + std::to_string(i)) {
+				brightness_level_ = i;
+				return;
+			}
+		}
+	}
+
+	// temperature
+	if (std::string::npos != data.find("tem")) {
+		std::stringstream ss;
+		for (int i = 0; i < 99; i++) {
+			ss.clear(); ss.str("");
+			ss << "tem" << std::setw(2) << std::setfill('0') << i;
+			com_if(ss.str()) {
+				temperature_ = i;
+				return;
+			}
+		}
+	}
+
+
 }
