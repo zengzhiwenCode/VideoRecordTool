@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="windows">
+      <UniqueIdentifier>{452b29e5-ada1-4110-bacb-045543059cbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tools">
+      <UniqueIdentifier>{ee906011-89cb-4fd3-8d21-e0ba05c29bc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="jsoncpp">
+      <UniqueIdentifier>{d7902277-4434-404c-942a-c98c96126b72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="directshow">
+      <UniqueIdentifier>{2e2338e2-f171-4fb9-8a49-5acb59e21456}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cv">
+      <UniqueIdentifier>{0f3b7499-d878-4ab0-90a1-7e995e235c90}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="duilib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>tools</Filter>
+    </ClInclude>
+    <ClInclude Include="jsoncpp\json.h">
+      <Filter>jsoncpp</Filter>
+    </ClInclude>
+    <ClInclude Include="capture.h">
+      <Filter>directshow</Filter>
+    </ClInclude>
+    <ClInclude Include="crossbar.h">
+      <Filter>directshow</Filter>
+    </ClInclude>
+    <ClInclude Include="DShowPlayer.h">
+      <Filter>directshow</Filter>
+    </ClInclude>
+    <ClInclude Include="SampleCGB.h">
+      <Filter>directshow</Filter>
+    </ClInclude>
+    <ClInclude Include="video.h">
+      <Filter>directshow</Filter>
+    </ClInclude>
+    <ClInclude Include="status.h">
+      <Filter>directshow</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwnd.h">
+      <Filter>windows</Filter>
+    </ClInclude>
+    <ClInclude Include="mat2gdi.h">
+      <Filter>cv</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoRecordTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="jsoncpp\json_reader.cpp">
+      <Filter>jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="jsoncpp\json_value.cpp">
+      <Filter>jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="jsoncpp\json_writer.cpp">
+      <Filter>jsoncpp</Filter>
+    </ClCompile>
+    <ClCompile Include="capture.cpp">
+      <Filter>directshow</Filter>
+    </ClCompile>
+    <ClCompile Include="crossbar.cpp">
+      <Filter>directshow</Filter>
+    </ClCompile>
+    <ClCompile Include="DShowPlayer.cpp">
+      <Filter>directshow</Filter>
+    </ClCompile>
+    <ClCompile Include="SampleCGB.cpp">
+      <Filter>directshow</Filter>
+    </ClCompile>
+    <ClCompile Include="video.cpp">
+      <Filter>directshow</Filter>
+    </ClCompile>
+    <ClCompile Include="status.cpp">
+      <Filter>directshow</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwnd.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
+    <ClCompile Include="mat2gdi.cpp">
+      <Filter>cv</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
