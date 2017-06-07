@@ -18,7 +18,7 @@ CAlarmTextDlg::CAlarmTextDlg(CWnd* pParent /*=nullptr*/)
 	, m_text(_T(""))
 	, m_font()
 	, m_bDrawText(TRUE)
-	, m_clr(RGB(255, 88, 88))
+	, m_clr(RGB(255, 255, 255))
 	, m_bAlreadyAddBlank(FALSE)
 {
 
@@ -114,16 +114,14 @@ void CAlarmTextDlg::OnPaint()
 	ScreenToClient(rc);
 
 	if (!m_bDrawText) {
-		return;
+		//return;
 	}
 
 	CFont *pOldFont = dc.SelectObject(&m_font);
 	dc.SetTextColor(m_clr);
 	dc.SetBkMode(TRANSPARENT);
-	//dc.TextOutW(0, 0, m_text);
-	dc.FloodFill(rc.left, rc.top, RGB(0, 0, 0));
 	CBrush brush;
-	brush.CreateStockObject(BLACK_BRUSH);
+	brush.CreateSolidBrush(RGB(237, 125, 49));
 	dc.FillRect(rc, &brush);
 	dc.DrawText(m_text, rc, DT_CENTER);
 	CSize sz = dc.GetTextExtent(m_text);

@@ -192,6 +192,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlarmTextDlg.h" />
+    <ClInclude Include="BottomToolDlg.h" />
+    <ClInclude Include="Btn.h" />
+    <ClInclude Include="BtnST.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="jsoncpp\json.h" />
     <ClInclude Include="mat2gdi.h" />
@@ -203,6 +206,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlarmTextDlg.cpp" />
+    <ClCompile Include="BottomToolDlg.cpp" />
+    <ClCompile Include="Btn.cpp" />
+    <ClCompile Include="BtnST.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="jsoncpp\json_reader.cpp" />
     <ClCompile Include="jsoncpp\json_value.cpp" />
@@ -224,6 +230,7 @@
     <None Include="res\vrmfc.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\bitmap1.bmp" />
     <Image Include="res\vrmfc.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

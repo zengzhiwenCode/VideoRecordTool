@@ -22,6 +22,9 @@ private:
 	std::string _port = {};
 	int _baudrate = 9600;
 
+	// language 
+	std::string _lang = {};
+
 public:
 	
 #define declare_getter(type, val) type get##val() const { return val; }
@@ -42,6 +45,6 @@ public:
 	declare_gs_int(_video_h);
 	declare_gs_string(_port);
 	declare_gs_int(_baudrate);
-
+	declare_gs_string(_lang);
 };
 

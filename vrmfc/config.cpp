@@ -16,6 +16,7 @@ auto secSerial = "serial";
 	auto keyPort = "port";
 	auto keyBaudrate = "baudrate";
 
+auto keyLang = "language";
 }
 
 config::config()
@@ -44,6 +45,11 @@ bool config::load()
 		_port = value[secSerial][keyPort].asString();
 		_baudrate = value[secSerial][keyBaudrate].asInt();
 
+		_lang = value[keyLang].asString();
+		if (_lang != "en") {
+			_lang = "zh_CN";
+		}
+
 		return true;
 	}
 
@@ -65,6 +71,8 @@ bool config::save()
 	value[secSerial][keyPort] = _port;
 	value[secSerial][keyBaudrate] = _baudrate;
 
+	value[keyLang] = _lang;
+
 	Json::StyledStreamWriter writer;
 	writer.write(out, value);
 
@@ -83,4 +91,7 @@ void config::init()
 	// serial
 	_port = "COM1";
 	_baudrate = 9600;
+
+	// language
+	_lang = "zh_CN";
 }

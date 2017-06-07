@@ -49,7 +49,7 @@ public:
 	inline void Show()
 	{
 		ShowWindow(SW_SHOW);
-		GetParent()->UpdateWindow();
+		//GetParent()->UpdateWindow();
 	}
 
 	inline void Hide()
@@ -62,7 +62,7 @@ public:
 	{
 		if (color != m_clr) {
 			m_clr = color;
-			GetParent()->UpdateWindow();
+			//GetParent()->UpdateWindow();
 		}
 	}
 

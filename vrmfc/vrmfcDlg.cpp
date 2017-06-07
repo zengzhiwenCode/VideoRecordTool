@@ -14,6 +14,7 @@
 
 #include "mat2gdi.h"
 #include "serial/serial.h"
+#include "BottomToolDlg.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "serial/lib/Debug/serial.lib")
@@ -82,6 +83,7 @@ BEGIN_MESSAGE_MAP(CvrmfcDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
 	ON_WM_DESTROY()
 	ON_MESSAGE(WM_DEVICECHANGE, &CvrmfcDlg::OnDeviceChange)
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -145,28 +147,51 @@ BOOL CvrmfcDlg::OnInitDialog()
 		SetWindowPos(&wndTopMost, x, y, cx, cy, SWP_SHOWWINDOW);
 #endif	
 	}
+	
+	auto cfg = config::get_instance();
 
 	// init tip
 	{
 		m_bkbrush.CreateSolidBrush(RGB(0, 0, 0));
 		CRect rc;
 		GetWindowRect(rc);
-		rc.left = rc.right - 255;
+		if (cfg->get_lang() == "en") {
+			rc.left = rc.right - 325;
+		} else {
+			rc.left = rc.right - 255;
+		}
 		rc.bottom = rc.top + 22;
 
-		tip = std::make_shared<CAlarmTextDlg>(this);
-		tip->Create(IDD_DIALOG_ALARM_TEXT);
+		tip_ = std::make_shared<CAlarmTextDlg>(this);
+		tip_->Create(IDD_DIALOG_ALARM_TEXT);
 		//ScreenToClient(rc);
-		tip->SetWindowPos(&wndTopMost, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+		tip_->SetWindowPos(&wndTopMost, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
 		CString txt;
 		usb_storage_plugin_ = !list_removable_drives().empty();
-		txt.Format(L"%s 亮度%d U盘%s插入", now_to_wstring().c_str(), brightness_level_, usb_storage_plugin_ ? L"已" : L"未");
-		tip->SetText(txt);
-		tip->Show();
+		txt.Format(L"%s %s%d %s", 
+				   now_to_wstring().c_str(), 
+				   tr(IDS_STRING_BRIGHTNESS), 
+				   brightness_level_, 
+				   usb_storage_plugin_ ? tr(IDS_STRING_U_IN) : tr(IDS_STRING_U_OUT));
+		tip_->SetText(txt);
+		tip_->Show();
 	}
 
-	auto cfg = config::get_instance();
+	// init bottom tool
+	{
+		CRect rc;
+		GetWindowRect(rc);
+		rc.top = rc.bottom - 85;
+		rc.bottom -= 5;
+		rc.left += 25;
+		rc.right -= 25;
 
+		bottom_tool_ = std::make_shared<CBottomToolDlg>(this);
+		bottom_tool_->Create(IDD_DIALOG_BOTTOM_TOOL, this);
+		bottom_tool_->MoveWindow(rc);
+		bottom_tool_->ShowWindow(SW_HIDE);
+	}
+	
 	// init serial
 	{
 		auto ports = serial::list_ports();
@@ -187,7 +212,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		}
 
 		g_serial.setBaudrate(cfg->get_baudrate());
-		g_serial.setTimeout(serial::Timeout::max(), 250, 0, 250, 0);
+		g_serial.setTimeout(serial::Timeout::max(), 1, 0, 1, 0);
 
 		std::string port = cfg->get_port();
 		auto iter = ports.begin();
@@ -319,11 +344,16 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 
 	case timer_id::updatetip:
 	{
+		//range_log rl("timer_id::updatetip");
 		handle_com();
 		CString txt;
-		txt.Format(L"%s 亮度%d U盘%s插入", now_to_wstring().c_str(), brightness_level_, usb_storage_plugin_ ? L"已" : L"未");
-		tip->SetText(txt);
-		tip->Invalidate();
+		txt.Format(L"%s %s%d %s",
+				   now_to_wstring().c_str(),
+				   tr(IDS_STRING_BRIGHTNESS),
+				   brightness_level_,
+				   usb_storage_plugin_ ? tr(IDS_STRING_U_IN) : tr(IDS_STRING_U_OUT));
+		tip_->SetText(txt);
+		tip_->Invalidate();
 	}
 		break;
 
@@ -381,6 +411,7 @@ void CvrmfcDlg::OnDestroy()
 
 void CvrmfcDlg::handle_com()
 {
+	//AUTO_LOG_FUNCTION;
 	if (!g_serial.isOpen()) {
 		return;
 	}
@@ -407,6 +438,7 @@ void CvrmfcDlg::handle_com()
 
 void CvrmfcDlg::process_com(const std::string & data)
 {
+	//AUTO_LOG_FUNCTION;
 	// process data
 #define com_if(var) if (data == (var)) 
 #define com_elif(var) else com_if((var))
@@ -450,4 +482,18 @@ afx_msg LRESULT CvrmfcDlg::OnDeviceChange(WPARAM wParam, LPARAM lParam)
 {
 	usb_storage_plugin_ = !list_removable_drives().empty();
 	return LRESULT();
+}
+
+
+void CvrmfcDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	if (bottom_show_) {
+		bottom_tool_->ShowWindow(SW_HIDE);
+	} else {
+		bottom_tool_->ShowWindow(SW_SHOW);
+	}
+
+	bottom_show_ = !bottom_show_;
+
+	CDialogEx::OnLButtonDown(nFlags, point);
 }

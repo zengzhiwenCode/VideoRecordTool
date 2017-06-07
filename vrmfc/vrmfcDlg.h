@@ -7,6 +7,7 @@
 #include "AlarmTextDlg.h"
 
 class PkMatToGDI;
+class CBottomToolDlg;
 
 // CvrmfcDlg dialog
 class CvrmfcDlg : public CDialogEx
@@ -30,7 +31,9 @@ protected:
 	std::shared_ptr<PkMatToGDI> drawer_ = {};
 	cv::VideoCapture capture_ = {};
 	CBrush m_bkbrush = {};
-	std::shared_ptr<CAlarmTextDlg> tip = {};
+	std::shared_ptr<CAlarmTextDlg> tip_ = {};
+	std::shared_ptr<CBottomToolDlg> bottom_tool_ = {};
+	bool bottom_show_ = false;
 	std::string com_data_ = {};
 	int brightness_level_ = 2;
 	int temperature_ = 0;
@@ -54,4 +57,6 @@ public:
 	void process_com(const std::string& cmd);
 protected:
 	afx_msg LRESULT OnDeviceChange(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };

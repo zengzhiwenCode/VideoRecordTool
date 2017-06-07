@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "vrmfc.h"
 #include "vrmfcDlg.h"
+#include "config.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,6 +40,8 @@ CvrmfcApp theApp;
 
 BOOL CvrmfcApp::InitInstance()
 {
+	
+
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles.  Otherwise, any window creation will fail.
@@ -69,6 +72,15 @@ BOOL CvrmfcApp::InitInstance()
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+
+	auto cfg = config::get_instance();
+
+	if (cfg->get_lang() == "en") {
+		SetThreadLocale(MAKELCID(MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), SORT_DEFAULT));
+		SetThreadUILanguage(MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
+	} else {
+		SetThreadLocale(MAKELCID(MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED), SORT_DEFAULT));
+	}
 
 	CvrmfcDlg dlg;
 	m_pMainWnd = &dlg;
