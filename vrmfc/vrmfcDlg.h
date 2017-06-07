@@ -34,6 +34,7 @@ protected:
 	std::string com_data_ = {};
 	int brightness_level_ = 2;
 	int temperature_ = 0;
+	bool usb_storage_plugin_ = false;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
@@ -51,4 +52,6 @@ public:
 	afx_msg void OnDestroy();
 	void handle_com();
 	void process_com(const std::string& cmd);
+protected:
+	afx_msg LRESULT OnDeviceChange(WPARAM wParam, LPARAM lParam);
 };

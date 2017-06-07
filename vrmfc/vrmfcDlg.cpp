@@ -7,6 +7,10 @@
 #include "vrmfcDlg.h"
 #include "afxdialogex.h"
 #include "config.h"
+#include <TlHelp32.h>
+#include <Dbt.h>
+
+#pragma comment(lib,"shlwapi.lib")
 
 #include "mat2gdi.h"
 #include "serial/serial.h"
@@ -29,7 +33,7 @@ serial::Serial g_serial;
 void serial_send(const std::string& msg)
 {
 	if (g_serial.isOpen()) {
-		g_serial.write("printf(\"" + msg + "\r\n\"");
+		g_serial.write("printf(\"" + msg + "\r\n\")");
 	}
 }
 
@@ -37,6 +41,18 @@ enum timer_id {
 	preview = 1,
 	updatetip,
 };
+
+std::vector<char> list_removable_drives() {
+	std::vector<char> v;
+	for (char i = 'A'; i <= 'Z'; i++) {
+		char x[3] = { i, ':' };
+		UINT Type = GetDriveTypeA(x);
+		if (Type == DRIVE_REMOVABLE) {
+			v.push_back(i);
+		}
+	}
+	return v;
+}
 
 }
 
@@ -65,6 +81,7 @@ BEGIN_MESSAGE_MAP(CvrmfcDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_WM_CTLCOLOR()
 	ON_WM_DESTROY()
+	ON_MESSAGE(WM_DEVICECHANGE, &CvrmfcDlg::OnDeviceChange)
 END_MESSAGE_MAP()
 
 
@@ -141,7 +158,10 @@ BOOL CvrmfcDlg::OnInitDialog()
 		tip->Create(IDD_DIALOG_ALARM_TEXT);
 		//ScreenToClient(rc);
 		tip->SetWindowPos(&wndTopMost, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
-		tip->SetText(L"2017-6-5 23:10:47 ÁÁ¶È2 UÅÌÎ´²åÈë");
+		CString txt;
+		usb_storage_plugin_ = !list_removable_drives().empty();
+		txt.Format(L"%s ÁÁ¶È%d UÅÌ%s²åÈë", now_to_wstring().c_str(), brightness_level_, usb_storage_plugin_ ? L"ÒÑ" : L"Î´");
+		tip->SetText(txt);
 		tip->Show();
 	}
 
@@ -167,6 +187,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		}
 
 		g_serial.setBaudrate(cfg->get_baudrate());
+		g_serial.setTimeout(serial::Timeout::max(), 250, 0, 250, 0);
 
 		std::string port = cfg->get_port();
 		auto iter = ports.begin();
@@ -300,7 +321,7 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		handle_com();
 		CString txt;
-		txt.Format(L"%s ÁÁ¶È%d UÅÌ%s²åÈë", now_to_wstring().c_str(), 2, L"Î´");
+		txt.Format(L"%s ÁÁ¶È%d UÅÌ%s²åÈë", now_to_wstring().c_str(), brightness_level_, usb_storage_plugin_ ? L"ÒÑ" : L"Î´");
 		tip->SetText(txt);
 		tip->Invalidate();
 	}
@@ -364,19 +385,23 @@ void CvrmfcDlg::handle_com()
 		return;
 	}
 
-	com_data_ += g_serial.read(1024);
-	const auto npos = std::string::npos;
-	const auto prefix = "printf(\"";
-	const auto postfix = "\r\n\")";
-	auto pos1 = com_data_.find(prefix);
-	auto pos2 = com_data_.find(postfix);
-	while (pos1 != npos && pos2 != npos && pos1 < pos2) {
-		auto data = com_data_.substr(pos1, pos2 - pos1);
-		com_data_ = com_data_.substr(pos2 + sizeof(postfix) - 1);
-		pos1 = com_data_.find(prefix);
-		pos2 = com_data_.find(postfix);
+	com_data_ = g_serial.read(1024);
+	if (!com_data_.empty()) {
+		const auto npos = std::string::npos;
+		const auto prefix = "printf(\""; const size_t szpre = 8;
+		const auto postfix = "\r\n\")"; const size_t szpost = 4;
+		auto pos1 = com_data_.find(prefix);
+		auto pos2 = com_data_.find(postfix);
+		while (pos1 != npos && pos2 != npos && pos1 < pos2 && pos1 + szpre < pos2) {
+			auto data = com_data_.substr(pos1 + szpre, pos2 - pos1 - szpre);
+			com_data_ = com_data_.substr(pos2 + szpost);
+			pos1 = com_data_.find(prefix);
+			pos2 = com_data_.find(postfix);
 
-		process_com(data);
+			process_com(data);
+		}
+
+		com_data_.clear();
 	}
 }
 
@@ -418,6 +443,11 @@ void CvrmfcDlg::process_com(const std::string & data)
 			}
 		}
 	}
+}
 
 
+afx_msg LRESULT CvrmfcDlg::OnDeviceChange(WPARAM wParam, LPARAM lParam)
+{
+	usb_storage_plugin_ = !list_removable_drives().empty();
+	return LRESULT();
 }
