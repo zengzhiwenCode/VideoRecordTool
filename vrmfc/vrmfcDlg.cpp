@@ -16,6 +16,7 @@
 #include "serial/serial.h"
 #include "AlarmTextDlg.h"
 #include "DuiBottomTool.h"
+#include "DuiConfirmExitDlg.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "serial/lib/Debug/serial.lib")
@@ -497,8 +498,12 @@ void CvrmfcDlg::process_com(const std::string & data)
 void CvrmfcDlg::exit_windows()
 {
 	AUTO_LOG_FUNCTION;
-	//ExitWindowsEx(EWX_POWEROFF, EWX_FORCEIFHUNG);
-	//PostMessage(WM_CLOSE);
+	CConfirmExitDlg dlg(L"confirm_exit.xml");
+	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	dlg.ShowModal();
+	if (dlg.confirmed_) {
+		PostMessage(WM_CLOSE);
+	}
 }
 
 void CvrmfcDlg::record()

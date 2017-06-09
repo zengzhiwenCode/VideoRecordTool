@@ -63,6 +63,9 @@
     <ClInclude Include="vrmfcDlg.h">
       <Filter>ui</Filter>
     </ClInclude>
+    <ClInclude Include="DuiConfirmExitDlg.h">
+      <Filter>ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vrmfc.cpp">
@@ -93,6 +96,9 @@
       <Filter>ui</Filter>
     </ClCompile>
     <ClCompile Include="DuiBottomTool.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiConfirmExitDlg.cpp">
       <Filter>ui</Filter>
     </ClCompile>
   </ItemGroup>

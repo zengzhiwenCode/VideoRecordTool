@@ -6,8 +6,13 @@ using DuiLib::CDuiString;
 using DuiLib::CControlUI;
 using DuiLib::TNotifyUI;
 using DuiLib::CPaintManagerUI;
-
-
+using DuiLib::DUI_MSGMAP;
+using DuiLib::DUI_MSGMAP_ENTRY;
+using DuiLib::DUI_PMSG;
+using DuiLib::DuiSig_end;
+using DuiLib::DuiSig_vn;
+using DuiLib::CHorizontalLayoutUI;
+using DuiLib::CButtonUI;
 
 #ifdef _DEBUG
 #   pragma comment(lib, "../Debug/DuiLib_Debug.lib")

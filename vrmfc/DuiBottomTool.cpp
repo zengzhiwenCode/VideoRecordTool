@@ -2,8 +2,7 @@
 #include "DuiBottomTool.h"
 #include "vrmfcDlg.h"
 
-using DuiLib::CHorizontalLayoutUI;
-using DuiLib::CButtonUI;
+
 
 DUI_BEGIN_MESSAGE_MAP(CDuiBottomTool, CNotifyPump)
 DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
