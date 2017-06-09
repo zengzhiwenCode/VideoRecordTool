@@ -4,10 +4,10 @@
 
 #pragma once
 #include "afxwin.h"
-#include "AlarmTextDlg.h"
 
+class CAlarmTextDlg;
 class PkMatToGDI;
-class CBottomToolDlg;
+class CDuiBottomTool;
 
 // CvrmfcDlg dialog
 class CvrmfcDlg : public CDialogEx
@@ -28,35 +28,35 @@ public:
 // Implementation
 protected:
 	HICON m_hIcon;
+	CStatic m_player;
 	std::shared_ptr<PkMatToGDI> drawer_ = {};
 	cv::VideoCapture capture_ = {};
 	CBrush m_bkbrush = {};
 	std::shared_ptr<CAlarmTextDlg> tip_ = {};
-	std::shared_ptr<CBottomToolDlg> bottom_tool_ = {};
+	std::shared_ptr<CDuiBottomTool> dui_bt_ = {};
 	bool bottom_show_ = false;
 	std::string com_data_ = {};
 	int brightness_level_ = 2;
 	int temperature_ = 0;
 	bool usb_storage_plugin_ = false;
 
+	void adjust_player_size(int w, int h);
+	void handle_com();
+	void process_com(const std::string& cmd);
+
+
 	// Generated message map functions
+public:
+	DECLARE_MESSAGE_MAP()
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
-	DECLARE_MESSAGE_MAP()
-public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
-	CStatic m_player;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	void adjust_player_size(int w, int h);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnDestroy();
-	void handle_com();
-	void process_com(const std::string& cmd);
-protected:
 	afx_msg LRESULT OnDeviceChange(WPARAM wParam, LPARAM lParam);
-public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };

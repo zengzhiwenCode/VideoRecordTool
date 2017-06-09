@@ -22,15 +22,15 @@
     <Filter Include="cv">
       <UniqueIdentifier>{0838b2eb-d22c-49dc-8bb5-1f3991320289}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{98f2d0e6-b412-4b27-a4c2-d4568b1ef71e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vrmfc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vrmfcDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
@@ -52,23 +52,20 @@
       <Filter>cv</Filter>
     </ClInclude>
     <ClInclude Include="AlarmTextDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>ui</Filter>
     </ClInclude>
-    <ClInclude Include="BottomToolDlg.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="duilib.h">
+      <Filter>ui</Filter>
     </ClInclude>
-    <ClInclude Include="BtnST.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="DuiBottomTool.h">
+      <Filter>ui</Filter>
     </ClInclude>
-    <ClInclude Include="Btn.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="vrmfcDlg.h">
+      <Filter>ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vrmfc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vrmfcDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
@@ -90,16 +87,13 @@
       <Filter>cv</Filter>
     </ClCompile>
     <ClCompile Include="AlarmTextDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>ui</Filter>
     </ClCompile>
-    <ClCompile Include="BottomToolDlg.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="vrmfcDlg.cpp">
+      <Filter>ui</Filter>
     </ClCompile>
-    <ClCompile Include="BtnST.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Btn.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DuiBottomTool.cpp">
+      <Filter>ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

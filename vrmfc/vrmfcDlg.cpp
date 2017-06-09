@@ -14,7 +14,8 @@
 
 #include "mat2gdi.h"
 #include "serial/serial.h"
-#include "BottomToolDlg.h"
+#include "AlarmTextDlg.h"
+#include "DuiBottomTool.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "serial/lib/Debug/serial.lib")
@@ -186,10 +187,12 @@ BOOL CvrmfcDlg::OnInitDialog()
 		rc.left += 25;
 		rc.right -= 25;
 
-		bottom_tool_ = std::make_shared<CBottomToolDlg>(this);
-		bottom_tool_->Create(IDD_DIALOG_BOTTOM_TOOL, this);
-		bottom_tool_->MoveWindow(rc);
-		bottom_tool_->ShowWindow(SW_HIDE);
+		CPaintManagerUI::SetInstance(AfxGetInstanceHandle());                    // 指定duilib的实例
+		CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + L"\\skin");    // 指定duilib资源的路径，这里指定为和exe同目录
+		dui_bt_ = std::make_shared<CDuiBottomTool>(L"bottomtool.xml");
+		dui_bt_->Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+		::MoveWindow(dui_bt_->GetHWND(), rc.left, rc.top, rc.Width(), rc.Height(), 0);
+		dui_bt_->ShowWindow(false, false);
 	}
 	
 	// init serial
@@ -312,23 +315,17 @@ HCURSOR CvrmfcDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-
-
 void CvrmfcDlg::OnBnClickedOk()
 {
 	//CDialogEx::OnOK();
 }
-
 
 void CvrmfcDlg::OnBnClickedCancel()
 {
 #ifdef _DEBUG
 	CDialogEx::OnCancel();
 #endif // !_DEBUG
-
-	
 }
-
 
 void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 {
@@ -388,7 +385,6 @@ void CvrmfcDlg::adjust_player_size(int w, int h)
 	m_player.MoveWindow(rcplayer);
 }
 
-
 HBRUSH CvrmfcDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	//HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
@@ -400,7 +396,6 @@ HBRUSH CvrmfcDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	return m_bkbrush;
 }
-
 
 void CvrmfcDlg::OnDestroy()
 {
@@ -477,20 +472,20 @@ void CvrmfcDlg::process_com(const std::string & data)
 	}
 }
 
-
 afx_msg LRESULT CvrmfcDlg::OnDeviceChange(WPARAM wParam, LPARAM lParam)
 {
 	usb_storage_plugin_ = !list_removable_drives().empty();
 	return LRESULT();
 }
 
-
 void CvrmfcDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	if (bottom_show_) {
-		bottom_tool_->ShowWindow(SW_HIDE);
+		//bottom_tool_->ShowWindow(SW_HIDE);
+		dui_bt_->ShowWindow(false, false);
 	} else {
-		bottom_tool_->ShowWindow(SW_SHOW);
+		//bottom_tool_->ShowWindow(SW_SHOW);
+		dui_bt_->ShowWindow(true, true);
 	}
 
 	bottom_show_ = !bottom_show_;
