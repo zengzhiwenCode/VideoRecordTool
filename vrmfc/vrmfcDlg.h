@@ -44,6 +44,16 @@ protected:
 	void handle_com();
 	void process_com(const std::string& cmd);
 
+	// Public interface
+public:
+	void exit_windows();
+	void record();
+	void capture();
+	void file_manager();
+	void settings();
+	void system_info();
+	void adjust_brightness();
+
 
 	// Generated message map functions
 public:

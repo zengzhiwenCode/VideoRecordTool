@@ -404,6 +404,27 @@ void CvrmfcDlg::OnDestroy()
 	serial_send("off");
 }
 
+afx_msg LRESULT CvrmfcDlg::OnDeviceChange(WPARAM wParam, LPARAM lParam)
+{
+	usb_storage_plugin_ = !list_removable_drives().empty();
+	return LRESULT();
+}
+
+void CvrmfcDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	if (bottom_show_) {
+		//bottom_tool_->ShowWindow(SW_HIDE);
+		dui_bt_->ShowWindow(false, false);
+	} else {
+		//bottom_tool_->ShowWindow(SW_SHOW);
+		dui_bt_->ShowWindow(true, true);
+	}
+
+	bottom_show_ = !bottom_show_;
+
+	CDialogEx::OnLButtonDown(nFlags, point);
+}
+
 void CvrmfcDlg::handle_com()
 {
 	//AUTO_LOG_FUNCTION;
@@ -439,13 +460,14 @@ void CvrmfcDlg::process_com(const std::string & data)
 #define com_elif(var) else com_if((var))
 
 	com_if ("off") {
-		ExitWindowsEx(EWX_POWEROFF, EWX_FORCEIFHUNG);
-		PostMessage(WM_CLOSE);
+		exit_windows();
 		return;
 	} com_elif ("sr0") {
-		// todo
+		capture();
+		return;
 	} com_elif("rec") {
-		// todo
+		record();
+		return;
 	}
 
 	// bright
@@ -472,23 +494,43 @@ void CvrmfcDlg::process_com(const std::string & data)
 	}
 }
 
-afx_msg LRESULT CvrmfcDlg::OnDeviceChange(WPARAM wParam, LPARAM lParam)
+void CvrmfcDlg::exit_windows()
 {
-	usb_storage_plugin_ = !list_removable_drives().empty();
-	return LRESULT();
+	AUTO_LOG_FUNCTION;
+	//ExitWindowsEx(EWX_POWEROFF, EWX_FORCEIFHUNG);
+	//PostMessage(WM_CLOSE);
 }
 
-void CvrmfcDlg::OnLButtonDown(UINT nFlags, CPoint point)
+void CvrmfcDlg::record()
 {
-	if (bottom_show_) {
-		//bottom_tool_->ShowWindow(SW_HIDE);
-		dui_bt_->ShowWindow(false, false);
-	} else {
-		//bottom_tool_->ShowWindow(SW_SHOW);
-		dui_bt_->ShowWindow(true, true);
-	}
-
-	bottom_show_ = !bottom_show_;
-
-	CDialogEx::OnLButtonDown(nFlags, point);
+	AUTO_LOG_FUNCTION;
 }
+
+void CvrmfcDlg::capture()
+{
+	AUTO_LOG_FUNCTION;
+
+}
+
+void CvrmfcDlg::file_manager()
+{
+	AUTO_LOG_FUNCTION;
+
+}
+
+void CvrmfcDlg::settings()
+{
+	AUTO_LOG_FUNCTION;
+}
+
+void CvrmfcDlg::system_info()
+{
+	AUTO_LOG_FUNCTION;
+
+}
+
+void CvrmfcDlg::adjust_brightness()
+{
+	AUTO_LOG_FUNCTION;
+}
+

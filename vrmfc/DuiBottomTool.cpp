@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DuiBottomTool.h"
+#include "vrmfcDlg.h"
 
 using DuiLib::CHorizontalLayoutUI;
 using DuiLib::CButtonUI;
@@ -49,5 +50,25 @@ LRESULT CDuiBottomTool::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void CDuiBottomTool::OnClick(TNotifyUI & msg)
 {
+	std::string name = utf8::w2a(msg.pSender->GetName().GetData()); range_log rl("CDuiBottomTool::OnClick " + name);
+	auto dlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(dlg); 
+	if (!dlg) { JLOG_CRTC("cannot find main dlg!"); return; }
+
+	if (name == "exit") {
+		dlg->exit_windows();
+	} else if (name == "rec") {
+		dlg->record();
+	} else if (name == "cap") {
+		dlg->capture();
+	} else if (name == "file") {
+		dlg->file_manager();
+	} else if (name == "set") {
+		dlg->settings();
+	} else if (name == "system") {
+		dlg->system_info();
+	} else if (name == "bright") {
+		dlg->adjust_brightness();
+	}
+
 	__super::OnClick(msg);
 }
