@@ -36,6 +36,7 @@ void CConfirmExitDlg::OnClick(TNotifyUI & msg)
 
 	if (name == "ok") {
 		confirmed_ = true;
+#ifndef _DEBUG
 		LUID luid;
 		TOKEN_PRIVILEGES privs;
 		HANDLE token;
@@ -59,6 +60,7 @@ void CConfirmExitDlg::OnClick(TNotifyUI & msg)
 			txt.Format(L"ExitWindowsEx Error%d", GetLastError());
 			MessageBox(m_hWnd, txt, nullptr, 0);
 		}
+#endif
 		PostMessage(WM_CLOSE);
 	} else if (name == "cancel") {
 		PostMessage(WM_CLOSE);
