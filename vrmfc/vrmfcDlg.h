@@ -31,9 +31,9 @@ protected:
 	CStatic m_player;
 	std::shared_ptr<PkMatToGDI> drawer_ = {};
 	cv::VideoCapture capture_ = {};
-	double fps_ = 0.0;
 	CBrush m_bkbrush = {};
 	std::shared_ptr<CAlarmTextDlg> tip_ = {};
+	std::shared_ptr<CAlarmTextDlg> rec_tip_ = {};
 	std::shared_ptr<CDuiBottomTool> dui_bt_ = {};
 	bool bottom_show_ = false;
 	std::string com_data_ = {};
@@ -41,10 +41,23 @@ protected:
 	int temperature_ = 0;
 	bool usb_storage_plugin_ = false;
 
+	struct _fps {
+		std::chrono::steady_clock::time_point begin = {};
+		long long frames = 0;
+		std::string prev_fps = {};
+
+		int get();
+		std::string get_string();
+	} fps_ = {};
+
 	struct _record {
 		bool recording = false;
 		std::string file = {};
 		std::shared_ptr<cv::VideoWriter> writer = {};
+		std::chrono::steady_clock::time_point begin = {};
+		std::string prev_time_str = {};
+		
+		std::string get_time();
 	} record_ = {};
 
 	void adjust_player_size(int w, int h);

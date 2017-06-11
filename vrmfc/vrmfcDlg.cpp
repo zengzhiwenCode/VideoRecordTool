@@ -121,6 +121,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+	m_bkbrush.CreateSolidBrush(RGB(0, 0, 0));
 
 	// init logger
 	{
@@ -129,8 +130,6 @@ BOOL CvrmfcDlg::OnInitDialog()
 		path += "/vrmfc";
 		jlib::init_logger(path);
 	}
-
-	
 
 	// init rc
 	{
@@ -156,7 +155,6 @@ BOOL CvrmfcDlg::OnInitDialog()
 
 	// init tip
 	{
-		m_bkbrush.CreateSolidBrush(RGB(0, 0, 0));
 		CRect rc;
 		GetWindowRect(rc);
 		if (cfg->get_lang() == "en") {
@@ -179,6 +177,21 @@ BOOL CvrmfcDlg::OnInitDialog()
 				   usb_storage_plugin_ ? tr(IDS_STRING_U_IN) : tr(IDS_STRING_U_OUT));
 		tip_->SetText(txt);
 		tip_->Show();
+	}
+
+	// init second tip
+	{
+		CRect rc;
+		GetWindowRect(rc);
+		rc.left = rc.right - 150;
+		rc.top += 25;
+		rc.bottom = rc.top + 22;
+
+		rec_tip_ = std::make_shared<CAlarmTextDlg>(this);
+		rec_tip_->Create(IDD_DIALOG_ALARM_TEXT);
+		rec_tip_->SetWindowPos(&wndTopMost, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+		rec_tip_->SetText(L"0fps");
+		rec_tip_->Show();
 	}
 
 	// init bottom tool
@@ -281,7 +294,10 @@ BOOL CvrmfcDlg::OnInitDialog()
 			//auto mode = capture_.get(CAP_PROP_MODE);
 
 			adjust_player_size(cfg->get_video_w(), cfg->get_video_h());
-			drawer_ = std::make_shared<PkMatToGDI>(m_player.GetSafeHwnd(), false);			
+			drawer_ = std::make_shared<PkMatToGDI>(m_player.GetSafeHwnd(), false);		
+
+			fps_.begin = std::chrono::steady_clock::now();
+			fps_.frames = 0;
 		}
 	}
 
@@ -353,8 +369,14 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 		Mat frame;
 		if (capture_.isOpened() && capture_.read(frame) && !frame.empty()) {
 			drawer_->DrawImg(frame);
+
 			if (record_.recording && record_.writer && record_.writer->isOpened()) {
 				record_.writer->write(frame);
+				rec_tip_->SetText(utf8::a2w(fps_.get_string() + " " + record_.get_time()).c_str());
+				rec_tip_->Invalidate();
+			} else {
+				rec_tip_->SetText(utf8::a2w(fps_.get_string()).c_str());
+				rec_tip_->Invalidate();
 			}
 		}
 	}
@@ -533,9 +555,11 @@ void CvrmfcDlg::do_record()
 	record_.writer = std::make_shared<cv::VideoWriter>();
 	record_.recording = record_.writer->open(record_.file,
 											 fourcc /*ex*/ /*CV_FOURCC('P', 'I', 'M', '1')*/, // pim1 for avi
-											 /*fps_*/ 20,
+											 /*fps_*/ fps_.get(),
 											 cv::Size(width, height),
 											 true);
+	
+	record_.begin = std::chrono::steady_clock::now();
 }
 
 void CvrmfcDlg::do_stop_record()
@@ -544,6 +568,9 @@ void CvrmfcDlg::do_stop_record()
 	record_.recording = false;
 	record_.writer.reset();
 	record_.file.clear();
+	//rec_tip_->Hide();
+	fps_.frames = 0;
+	fps_.begin = std::chrono::steady_clock::now();
 }
 
 void CvrmfcDlg::do_capture()
@@ -605,3 +632,62 @@ void CvrmfcDlg::do_adjust_brightness()
 	AUTO_LOG_FUNCTION;
 }
 
+std::string CvrmfcDlg::_record::get_time()
+{
+	
+	auto now = std::chrono::steady_clock::now();
+	auto diff = now - begin;
+
+	auto sec = std::chrono::duration_cast<std::chrono::seconds>(diff).count() % 60;
+	if (sec < 1) {
+		return prev_time_str;
+	}
+
+	auto day = std::chrono::duration_cast<std::chrono::hours>(diff).count() / 24;
+	auto hour = std::chrono::duration_cast<std::chrono::hours>(diff).count() % 24;
+	auto min = std::chrono::duration_cast<std::chrono::minutes>(diff).count() % 60;
+	
+	std::stringstream ss;
+	ss << std::setw(2) << std::setfill('0');
+
+	if (day > 0) {
+		ss << day << ":";
+	}
+
+	if (hour > 0) {
+		ss << hour << ":";
+	}
+
+	ss << min << ":" << sec;
+
+	prev_time_str = ss.str();
+	return prev_time_str;;
+}
+
+int CvrmfcDlg::_fps::get()
+{
+	auto now = std::chrono::steady_clock::now();
+	auto diff = now - begin;
+
+	auto total_sec = std::chrono::duration_cast<std::chrono::seconds>(diff).count();
+	if (total_sec > 0) {
+		return static_cast<int>(frames / total_sec);
+	}
+
+	return 0;
+}
+
+std::string CvrmfcDlg::_fps::get_string()
+{
+	frames++;
+	auto now = std::chrono::steady_clock::now();
+	auto diff = now - begin;
+
+	auto total_sec = std::chrono::duration_cast<std::chrono::seconds>(diff).count();
+	if (total_sec > 0) {
+		auto fps = frames / total_sec;
+		prev_fps = std::to_string(fps) + "fps ";
+	} 
+
+	return prev_fps;
+}
