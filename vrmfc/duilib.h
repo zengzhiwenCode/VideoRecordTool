@@ -13,6 +13,7 @@ using DuiLib::DuiSig_end;
 using DuiLib::DuiSig_vn;
 using DuiLib::CHorizontalLayoutUI;
 using DuiLib::CButtonUI;
+using DuiLib::CTabLayoutUI;
 
 #ifdef _DEBUG
 #   pragma comment(lib, "../Debug/DuiLib_Debug.lib")
@@ -20,6 +21,7 @@ using DuiLib::CButtonUI;
 #   pragma comment(lib, "../Release/DuiLib_Release.lib")
 #endif
 
+namespace DuiLib {
 
 // 以XML生成界面的窗口基类
 class CXMLWnd : public WindowImplBase
@@ -63,7 +65,8 @@ public:
 		return TRUE;
 	}
 
-	HWND Detach() { HWND hWnd = m_hWnd; m_hWnd = nullptr; return hWnd;
+	HWND Detach() {
+		HWND hWnd = m_hWnd; m_hWnd = nullptr; return hWnd;
 	}
 
 	HWND GetHWND() { return m_hWnd; }
@@ -71,3 +74,7 @@ public:
 protected:
 	HWND m_hWnd;
 };
+
+}
+
+using DuiLib::CXMLWnd;

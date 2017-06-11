@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="975,80" mininfo="975,80" maxinfo="975,80" caption="0,0,0,1" sizebox="0,0,0,0">
+    <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
+	<Font shared="true" id="1" name="幼圆" size="30" />
+	<HorizontalLayout bkcolor="FFD77E44#" bordersize="1" bordercolor="#FF707070"> <!--整个窗口-->
+        <VerticalLayout width="80" />
+        <VerticalLayout>
+            <HorizontalLayout height="15" />
+            <HorizontalLayout name="container" >
+                <VerticalLayout width="50" />
+                <Button name="exit" text="关机" font="0" bkcolor="FF3275EE#" borderround="15,15" /><VerticalLayout width="50" />
+                <Button name="rec" text="录像" font="0" bkcolor="FF3275EE#" borderround="15,15" /><VerticalLayout width="50" />
+                <Button name="cap" text="拍照" font="0" bkcolor="FF3275EE#" borderround="15,15" /><VerticalLayout width="50" />
+                <Button name="file" text="文件" font="0" bkcolor="FF3275EE#" borderround="15,15" /><VerticalLayout width="50" />
+                <Button name="set" text="设置" font="0" bkcolor="FF3275EE#" borderround="15,15" /><VerticalLayout width="50" />
+                <Button name="system" text="系统" font="0" bkcolor="FF3275EE#" borderround="15,15" /><VerticalLayout width="50" />
+                <Button name="bright" text="亮度" font="0" bkcolor="FF3275EE#" borderround="15,15" /><VerticalLayout width="50" />
+            </HorizontalLayout>
+            <HorizontalLayout height="15" />
+        </VerticalLayout>
+        <VerticalLayout width="80" />
+	</HorizontalLayout>
+</Window>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

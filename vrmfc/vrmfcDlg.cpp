@@ -17,6 +17,7 @@
 #include "AlarmTextDlg.h"
 #include "DuiBottomTool.h"
 #include "DuiConfirmExitDlg.h"
+#include "DuiSettingsDlg.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "serial/lib/Debug/serial.lib")
@@ -263,6 +264,21 @@ BOOL CvrmfcDlg::OnInitDialog()
 				capture_.set(CAP_PROP_FRAME_HEIGHT, cfg->get_video_h());
 			}
 
+			//Mat frame;
+			//capture_.read(frame);
+			//capture_.set(CAP_PROP_FOURCC, CV_FOURCC('M', 'P', 'E', 'G'));
+			//auto f = capture_.get(CAP_PROP_FORMAT);
+			//int ex = static_cast<int>(capture_.get(CV_CAP_PROP_FOURCC));     // Get Codec Type- Int form
+
+			//																   // Transform from int to char via Bitwise operators
+			//char EXT[] = { (char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0 };
+
+			//
+			//
+			//capture_.set(CAP_PROP_MODE, CAP_MODE_BGR);
+			//capture_.set(CAP_PROP_MODE, CAP_MODE_YUYV);
+			//auto mode = capture_.get(CAP_PROP_MODE);
+
 			adjust_player_size(cfg->get_video_w(), cfg->get_video_h());
 			drawer_ = std::make_shared<PkMatToGDI>(m_player.GetSafeHwnd(), false);			
 		}
@@ -498,7 +514,7 @@ void CvrmfcDlg::process_com(const std::string & data)
 void CvrmfcDlg::exit_windows()
 {
 	AUTO_LOG_FUNCTION;
-	CConfirmExitDlg dlg(L"confirm_exit.xml");
+	CDuiConfirmExitDlg dlg(L"confirm_exit.xml");
 	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 	dlg.ShowModal();
 	if (dlg.confirmed_) {
@@ -526,6 +542,9 @@ void CvrmfcDlg::file_manager()
 void CvrmfcDlg::settings()
 {
 	AUTO_LOG_FUNCTION;
+	CDuiSettingsDlg dlg(L"settings.xml");
+	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	dlg.ShowModal();
 }
 
 void CvrmfcDlg::system_info()

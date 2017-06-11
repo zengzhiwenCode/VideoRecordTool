@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="870,600" mininfo="870,600" maxinfo="870,600" caption="0,0,0,-1" sizebox="0,0,0,0">
+	<Include source="scrollbar.xml" />
+	<VerticalLayout bkcolor="FFFFFFB0#" bordersize="1" bordercolor="#FFAAAAAA"> <!--整个窗口-->
+		<!-- 标题栏区域 -->
+		<HorizontalLayout name="caption" height="32" bkcolor="#FFAA00AA" bkcolor2="#FFAA00AA">
+			<!-- 标题 -->
+			<VerticalLayout>
+				<Label text="player(播放器)" float="true" pos="5,0,500,32" width="500" height="32" padding="2,2,2,2" textcolor="#FF000000"  />
+			</VerticalLayout>
+			<!-- 最小化与关闭按钮 -->
+			<VerticalLayout width="56"> <!-- 右边3个控件的宽度 -->
+				<Button name="minbtn" tooltip="最小化" float="true" pos="0,5,25,24" width="23" normalimage="file='SysBtn\MinNormal.bmp'" hotimage="file='SysBtn\MinFocus.bmp'" focusedimage="file='SysBtn\MinNormal.bmp'" pushedimage="file='SysBtn\MinFocus.bmp' "/>
+                <Button name="closebtn" tooltip="关闭"   float="true" pos="26,5,50,24" width="28" normalimage=" file='SysBtn\CloseNormal.bmp' " hotimage=" file='SysBtn\CloseFocus.bmp'" focusedimage="file='SysBtn\CloseNormal.bmp'" pushedimage=" file='SysBtn\CloseFocus.bmp' "/>
+			</VerticalLayout>	
+		</HorizontalLayout>
+		
+		<!-- 客户区 -->
+		<HorizontalLayout name="client">
+			<!-- 占位 -->
+			<VerticalLayout name="placeholder" width="1" />
+			
+			<VerticalLayout name="realpanel">
+				
+				<HorizontalLayout name="top_bar" height="70" bkcolor="#FFAAAAAA" valign="bottom">
+                    <VerticalLayout>
+                        <!-- 16个歌星按钮 -->
+                        <HorizontalLayout name="singers_btn" height="70" bkcolor="#FFAAAAAA" valign="bottom">                       
+                        </HorizontalLayout>
+                    </VerticalLayout>
+                
+					<VerticalLayout width="95" height="56" bkcolor="#FFAAAAAA" valign="bottom">
+                        <!-- 我的成绩表 我的阅读历史 我的录音历史 -->
+                        <HorizontalLayout >
+                            <Button name="report_score" enabled="true" tooltip="我的成绩表" float="true" pos="5,20,0,0" width="26" height="35" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="file=&apos;New\s.png&apos;" hotimage="file=&apos;New\s.png&apos;" pushedimage="file=&apos;New\s.png&apos;" />
+                            <Button name="report_listen" enabled="true" tooltip="我的阅读历史" float="true" pos="35,20,0,0" width="26" height="35" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="file=&apos;New\l.png&apos;" hotimage="file=&apos;New\l.png&apos;" pushedimage="file=&apos;New\l.png&apos;" />
+                            <Button name="report_record" enabled="true" tooltip="我的录音历史" float="true" pos="65,20,0,0" width="26" height="35" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="file=&apos;New\r.png&apos;" hotimage="file=&apos;New\r.png&apos;" pushedimage="file=&apos;New\r.png&apos;" />
+                            
+                        </HorizontalLayout>
+                    </VerticalLayout>
+				</HorizontalLayout>
+				
+				<!-- 歌星的所有歌曲图片展示 -->
+				<HorizontalLayout name="pics" > 
+					<VerticalLayout name="gap" width="20" />
+					<VerticalLayout name="pic_container" vscrollbar="true"/>
+				</HorizontalLayout>
+			</VerticalLayout>
+		</HorizontalLayout>
+	</VerticalLayout>
+</Window>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

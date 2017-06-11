@@ -1,38 +1,38 @@
 #include "stdafx.h"
 #include "DuiConfirmExitDlg.h"
 
-DUI_BEGIN_MESSAGE_MAP(CConfirmExitDlg, CNotifyPump)
+DUI_BEGIN_MESSAGE_MAP(CDuiConfirmExitDlg, CNotifyPump)
 DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
 DUI_END_MESSAGE_MAP()
 
-CConfirmExitDlg::CConfirmExitDlg(const wchar_t * xmlpath)
+CDuiConfirmExitDlg::CDuiConfirmExitDlg(const wchar_t * xmlpath)
 	: CXMLWnd(xmlpath)
 {
 }
 
-CConfirmExitDlg::~CConfirmExitDlg()
+CDuiConfirmExitDlg::~CDuiConfirmExitDlg()
 {
 }
 
 
-void CConfirmExitDlg::InitWindow()
+void CDuiConfirmExitDlg::InitWindow()
 {
 	CenterWindow();
 }
 
-void CConfirmExitDlg::Notify(DuiLib::TNotifyUI & msg)
+void CDuiConfirmExitDlg::Notify(DuiLib::TNotifyUI & msg)
 {
 	__super::Notify(msg);
 }
 
-LRESULT CConfirmExitDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CDuiConfirmExitDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	return __super::HandleMessage(uMsg, wParam, lParam);
 }
 
-void CConfirmExitDlg::OnClick(TNotifyUI & msg)
+void CDuiConfirmExitDlg::OnClick(TNotifyUI & msg)
 {
-	std::string name = utf8::w2a(msg.pSender->GetName().GetData()); range_log rl("CConfirmExitDlg::OnClick " + name);
+	std::string name = utf8::w2a(msg.pSender->GetName().GetData()); range_log rl("CDuiConfirmExitDlg::OnClick " + name);
 
 	if (name == "ok") {
 		confirmed_ = true;

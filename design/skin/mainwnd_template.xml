@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="cx,cy" mininfo="cx,cy" maxinfo="cx,cy" caption="0,0,0,-1" sizebox="0,0,0,0">
+	<VerticalLayout bkcolor="FF707070#" bordersize="1" bordercolor="#FF707070"> <!--整个窗口-->
+        <WndMediaDisplay name="wndMedia" visible="true" bkcolor="#FFABCDDC"/>
+	</VerticalLayout>
+</Window>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
