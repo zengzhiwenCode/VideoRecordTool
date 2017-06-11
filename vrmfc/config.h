@@ -17,6 +17,7 @@ private:
 	// video
 	int _video_w = 0;
 	int _video_h = 0;
+	std::string _root = {};
 
 	// serial
 	std::string _port = {};
@@ -43,6 +44,7 @@ public:
 	declare_gs_int(_aidx);
 	declare_gs_int(_video_w);
 	declare_gs_int(_video_h);
+	declare_gs_string(_root);
 	declare_gs_string(_port);
 	declare_gs_int(_baudrate);
 	declare_gs_string(_lang);

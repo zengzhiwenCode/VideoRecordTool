@@ -55,19 +55,19 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 	if (!dlg) { JLOG_CRTC("cannot find main dlg!"); return; }
 
 	if (name == "exit") {
-		dlg->exit_windows();
+		dlg->do_exit_windows();
 	} else if (name == "rec") {
-		dlg->record();
+		dlg->do_record();
 	} else if (name == "cap") {
-		dlg->capture();
+		dlg->do_capture();
 	} else if (name == "file") {
-		dlg->file_manager();
+		dlg->do_file_manager();
 	} else if (name == "set") {
-		dlg->settings();
+		dlg->do_settings();
 	} else if (name == "system") {
-		dlg->system_info();
+		dlg->do_system_info();
 	} else if (name == "bright") {
-		dlg->adjust_brightness();
+		dlg->do_adjust_brightness();
 	}
 
 	__super::OnClick(msg);

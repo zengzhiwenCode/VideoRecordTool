@@ -477,13 +477,13 @@ void CvrmfcDlg::process_com(const std::string & data)
 #define com_elif(var) else com_if((var))
 
 	com_if ("off") {
-		exit_windows();
+		do_exit_windows();
 		return;
 	} com_elif ("sr0") {
-		capture();
+		do_capture();
 		return;
 	} com_elif("rec") {
-		record();
+		do_record();
 		return;
 	}
 
@@ -511,7 +511,7 @@ void CvrmfcDlg::process_com(const std::string & data)
 	}
 }
 
-void CvrmfcDlg::exit_windows()
+void CvrmfcDlg::do_exit_windows()
 {
 	AUTO_LOG_FUNCTION;
 	CDuiConfirmExitDlg dlg(L"confirm_exit.xml");
@@ -522,24 +522,31 @@ void CvrmfcDlg::exit_windows()
 	}
 }
 
-void CvrmfcDlg::record()
+void CvrmfcDlg::do_record()
 {
 	AUTO_LOG_FUNCTION;
+	JLOG_INFO("recording_={}", recording_);
+	if (recording_) { return; }
+
+	auto s = now_to_string();
+	std::replace(s.begin(), s.end(), ' ', '_');
+	std::replace(s.begin(), s.end(), ':', '-');
+	auto vfile = get_exe_path_a() + "\\" + s + ".mp4";
 }
 
-void CvrmfcDlg::capture()
+void CvrmfcDlg::do_capture()
 {
 	AUTO_LOG_FUNCTION;
 
 }
 
-void CvrmfcDlg::file_manager()
+void CvrmfcDlg::do_file_manager()
 {
 	AUTO_LOG_FUNCTION;
 
 }
 
-void CvrmfcDlg::settings()
+void CvrmfcDlg::do_settings()
 {
 	AUTO_LOG_FUNCTION;
 	CDuiSettingsDlg dlg(L"settings.xml");
@@ -547,13 +554,13 @@ void CvrmfcDlg::settings()
 	dlg.ShowModal();
 }
 
-void CvrmfcDlg::system_info()
+void CvrmfcDlg::do_system_info()
 {
 	AUTO_LOG_FUNCTION;
 
 }
 
-void CvrmfcDlg::adjust_brightness()
+void CvrmfcDlg::do_adjust_brightness()
 {
 	AUTO_LOG_FUNCTION;
 }

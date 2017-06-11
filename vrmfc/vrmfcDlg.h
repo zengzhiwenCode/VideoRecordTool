@@ -39,6 +39,8 @@ protected:
 	int brightness_level_ = 2;
 	int temperature_ = 0;
 	bool usb_storage_plugin_ = false;
+	bool recording_ = false;
+
 
 	void adjust_player_size(int w, int h);
 	void handle_com();
@@ -46,13 +48,13 @@ protected:
 
 	// Public interface
 public:
-	void exit_windows();
-	void record();
-	void capture();
-	void file_manager();
-	void settings();
-	void system_info();
-	void adjust_brightness();
+	void do_exit_windows();
+	void do_record();
+	void do_capture();
+	void do_file_manager();
+	void do_settings();
+	void do_system_info();
+	void do_adjust_brightness();
 
 
 	// Generated message map functions

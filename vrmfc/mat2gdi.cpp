@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "mat2gdi.h"
 
+namespace detail {
 class clientdc {
 private:
 	HWND hwnd_ = nullptr;
@@ -19,6 +20,7 @@ public:
 		return hdc_;
 	}
 };
+}
 
 PkMatToGDI::PkMatToGDI(HWND ctrl, bool autofit)
 {
@@ -48,7 +50,7 @@ bool PkMatToGDI::DrawImg(const cv::Mat & img)
 	*/
 	//CClientDC hDC(m_WinCtrl);
 	//HDC hDC = ::GetDC(m_WinCtrl);
-	clientdc hDC(m_WinCtrl);
+	detail::clientdc hDC(m_WinCtrl);
 	int bpp = 8 * img.elemSize();
 	assert((bpp == 8 || bpp == 24 || bpp == 32));
 
@@ -101,8 +103,6 @@ bool PkMatToGDI::DrawImg(const cv::Mat & img)
 	} else {
 		tempimg = img;
 	}
-
-
 
 	BITMAPINFO* bmi;
 	BITMAPINFOHEADER* bmih;
@@ -164,7 +164,7 @@ bool PkMatToGDI::DrawImg(const cv::Mat & img)
 
 void PkMatToGDI::BackgroundClear()
 {
-	clientdc hDC(m_WinCtrl);
+	detail::clientdc hDC(m_WinCtrl);
 	//the rectangle is outlined by using the current pen and filled by using the current brush
 	::Rectangle(hDC, m_ctrlRectWin.left, m_ctrlRectWin.top, m_ctrlRectWin.right, m_ctrlRectWin.bottom);
 }

@@ -14,6 +14,7 @@ using DuiLib::DuiSig_vn;
 using DuiLib::CHorizontalLayoutUI;
 using DuiLib::CButtonUI;
 using DuiLib::CTabLayoutUI;
+using DuiLib::COptionUI;
 
 #ifdef _DEBUG
 #   pragma comment(lib, "../Debug/DuiLib_Debug.lib")

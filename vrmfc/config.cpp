@@ -2,6 +2,7 @@
 #include "config.h"
 #include <fstream>
 #include "jsoncpp/json.h"
+#include <filesystem>
 
 namespace {
 
@@ -11,6 +12,7 @@ auto keyAid = "aid";
 auto secVideo = "video";
 	auto keyWidth = "width";
 	auto keyHeight = "height";
+	auto keyRoot = "root";
 
 auto secSerial = "serial";
 	auto keyPort = "port";
@@ -41,6 +43,7 @@ bool config::load()
 
 		_video_w = value[secVideo][keyWidth].asInt();
 		_video_h = value[secVideo][keyHeight].asInt();
+		_root = value[secVideo][keyRoot].asString();
 
 		_port = value[secSerial][keyPort].asString();
 		_baudrate = value[secSerial][keyBaudrate].asInt();
@@ -67,6 +70,7 @@ bool config::save()
 
 	value[secVideo][keyWidth] = _video_w;
 	value[secVideo][keyHeight] = _video_h;
+	value[secVideo][keyRoot] = _root;
 
 	value[secSerial][keyPort] = _port;
 	value[secSerial][keyBaudrate] = _baudrate;
@@ -87,6 +91,8 @@ void config::init()
 	// video
 	_video_w = 640;
 	_video_h = 480;
+	_root = get_exe_path_a() + "\\root";
+	CreateDirectoryA(_root.c_str(), nullptr);
 
 	// serial
 	_port = "COM1";
