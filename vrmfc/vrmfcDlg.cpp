@@ -18,6 +18,7 @@
 #include "DuiBottomTool.h"
 #include "DuiConfirmExitDlg.h"
 #include "DuiSettingsDlg.h"
+#include "DuiPreviewCaptureDlg.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "serial/lib/Debug/serial.lib")
@@ -548,7 +549,29 @@ void CvrmfcDlg::do_capture()
 	cv::Mat img;
 	if (capture_.isOpened() && capture_.read(img)) {
 		cv::imwrite(cfile, img);
+		/*cv::namedWindow("capture", cv::WindowFlags::WINDOW_FULLSCREEN);
+		cv::imshow("capture", img);
 
+		auto begin = std::chrono::steady_clock::now();
+		MSG msg;
+		while (GetMessage(&msg, nullptr, 0, 0)) {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+			auto now = std::chrono::steady_clock::now();
+			auto diff = std::chrono::duration_cast<std::chrono::seconds>(now - begin);
+			if (diff.count() >= 1) {
+				break;
+			}
+		}
+
+		cv::destroyWindow("capture");*/
+
+		if (CDuiPreviewCaptureDlg::make_xml(img.cols, img.rows)) {
+			CDuiPreviewCaptureDlg dlg(L"capture.xml");
+			dlg.img_ = cfile;
+			dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+			dlg.ShowModal();
+		}
 	}
 }
 

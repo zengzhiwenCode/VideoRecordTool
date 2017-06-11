@@ -197,6 +197,7 @@
     <ClInclude Include="DuiBottomTool.h" />
     <ClInclude Include="DuiConfirmExitDlg.h" />
     <ClInclude Include="duilib.h" />
+    <ClInclude Include="DuiPreviewCaptureDlg.h" />
     <ClInclude Include="DuiSettingsDlg.h" />
     <ClInclude Include="jsoncpp\json.h" />
     <ClInclude Include="mat2gdi.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="config.cpp" />
     <ClCompile Include="DuiBottomTool.cpp" />
     <ClCompile Include="DuiConfirmExitDlg.cpp" />
+    <ClCompile Include="DuiPreviewCaptureDlg.cpp" />
     <ClCompile Include="DuiSettingsDlg.cpp" />
     <ClCompile Include="jsoncpp\json_reader.cpp" />
     <ClCompile Include="jsoncpp\json_value.cpp" />

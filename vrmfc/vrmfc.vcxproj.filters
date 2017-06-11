@@ -69,6 +69,9 @@
     <ClInclude Include="DuiSettingsDlg.h">
       <Filter>ui</Filter>
     </ClInclude>
+    <ClInclude Include="DuiPreviewCaptureDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vrmfc.cpp">
@@ -105,6 +108,9 @@
       <Filter>ui</Filter>
     </ClCompile>
     <ClCompile Include="DuiSettingsDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiPreviewCaptureDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
