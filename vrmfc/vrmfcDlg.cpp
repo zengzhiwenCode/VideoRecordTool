@@ -353,6 +353,9 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 		Mat frame;
 		if (capture_.isOpened() && capture_.read(frame) && !frame.empty()) {
 			drawer_->DrawImg(frame);
+			if (record_.recording && record_.writer && record_.writer->isOpened()) {
+				record_.writer->write(frame);
+			}
 		}
 	}
 		break;
@@ -405,13 +408,6 @@ void CvrmfcDlg::adjust_player_size(int w, int h)
 
 HBRUSH CvrmfcDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-	//HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
-
-	// TODO:  Change any attributes of the DC here
-
-	// TODO:  Return a different brush if the default is not desired
-	//return hbr;
-
 	return m_bkbrush;
 }
 
@@ -431,10 +427,8 @@ afx_msg LRESULT CvrmfcDlg::OnDeviceChange(WPARAM wParam, LPARAM lParam)
 void CvrmfcDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	if (bottom_show_) {
-		//bottom_tool_->ShowWindow(SW_HIDE);
 		dui_bt_->ShowWindow(false, false);
 	} else {
-		//bottom_tool_->ShowWindow(SW_SHOW);
 		dui_bt_->ShowWindow(true, true);
 	}
 
@@ -445,7 +439,6 @@ void CvrmfcDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CvrmfcDlg::handle_com()
 {
-	//AUTO_LOG_FUNCTION;
 	if (!g_serial.isOpen()) {
 		return;
 	}
@@ -528,17 +521,29 @@ void CvrmfcDlg::do_record()
 	AUTO_LOG_FUNCTION;
 	JLOG_INFO("recording_={}", record_.recording);
 	if (record_.recording) { return; }
-
-	auto s = now_to_string();
-	std::replace(s.begin(), s.end(), ' ', '_');
-	std::replace(s.begin(), s.end(), ':', '-');
-	auto vfile = config::get_instance()->get_root() + "\\" + VR_VIDEO_FOLDER + "\\" + s + VR_VIDEO_EXT;
+	if (!capture_.isOpened()) { return; }
+	record_.file = config::get_instance()->create_new_video_path();
+	auto width = static_cast<int>(capture_.get(CAP_PROP_FRAME_WIDTH));
+	auto height = static_cast<int>(capture_.get(CAP_PROP_FRAME_HEIGHT));
+	int ex = static_cast<int>(capture_.get(CV_CAP_PROP_FOURCC));
+	//char ext[] = { (char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0 };
+	//auto fourcc = CV_FOURCC(ext[0], ext[1], ext[2], ext[3]);
+	// auto fourcc = CV_FOURCC('P', 'I', 'M', '1');
+	auto fourcc = CV_FOURCC('M', 'J', 'P', 'G');
+	record_.writer = std::make_shared<cv::VideoWriter>();
+	record_.recording = record_.writer->open(record_.file,
+											 fourcc /*ex*/ /*CV_FOURCC('P', 'I', 'M', '1')*/, // pim1 for avi
+											 /*fps_*/ 20,
+											 cv::Size(width, height),
+											 true);
 }
 
 void CvrmfcDlg::do_stop_record()
 {
 	if (!record_.recording)return;
 	record_.recording = false;
+	record_.writer.reset();
+	record_.file.clear();
 }
 
 void CvrmfcDlg::do_capture()

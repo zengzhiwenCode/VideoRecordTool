@@ -31,6 +31,7 @@ protected:
 	CStatic m_player;
 	std::shared_ptr<PkMatToGDI> drawer_ = {};
 	cv::VideoCapture capture_ = {};
+	double fps_ = 0.0;
 	CBrush m_bkbrush = {};
 	std::shared_ptr<CAlarmTextDlg> tip_ = {};
 	std::shared_ptr<CDuiBottomTool> dui_bt_ = {};
@@ -42,8 +43,8 @@ protected:
 
 	struct _record {
 		bool recording = false;
-		std::string cur_recording_file = {};
-		cv::VideoWriter writer = {};
+		std::string file = {};
+		std::shared_ptr<cv::VideoWriter> writer = {};
 	} record_ = {};
 
 	void adjust_player_size(int w, int h);
