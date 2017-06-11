@@ -44,6 +44,9 @@ bool config::load()
 		_video_w = value[secVideo][keyWidth].asInt();
 		_video_h = value[secVideo][keyHeight].asInt();
 		_root = value[secVideo][keyRoot].asString();
+		if (_root.empty() || !std::tr2::sys::is_directory(_root) || !std::tr2::sys::exists(_root)) {
+			init_root();
+		}
 
 		_port = value[secSerial][keyPort].asString();
 		_baudrate = value[secSerial][keyBaudrate].asInt();
@@ -91,8 +94,7 @@ void config::init()
 	// video
 	_video_w = 640;
 	_video_h = 480;
-	_root = get_exe_path_a() + "\\root";
-	CreateDirectoryA(_root.c_str(), nullptr);
+	init_root();
 
 	// serial
 	_port = "COM1";
@@ -100,4 +102,44 @@ void config::init()
 
 	// language
 	_lang = "zh_CN";
+}
+
+void config::init_root()
+{
+	_root = get_exe_path_a() + "\\" + VR_ROOT_FOLDER;
+	CreateDirectoryA(_root.c_str(), nullptr);
+	auto vpath = _root + "\\" + VR_VIDEO_FOLDER;
+	CreateDirectoryA(vpath.c_str(), nullptr);
+	auto cpath = _root + "\\" + VR_CAPTURE_FOLDER;
+	CreateDirectoryA(cpath.c_str(), nullptr);
+}
+
+std::string config::get_video_path() const
+{
+	auto p = _root + "\\" + VR_VIDEO_FOLDER;
+	CreateDirectoryA(p.c_str(), nullptr);
+	return p;
+}
+
+std::string config::get_capture_path() const
+{
+	auto p = _root + "\\" + VR_CAPTURE_FOLDER;
+	CreateDirectoryA(p.c_str(), nullptr);
+	return p;
+}
+
+std::string config::create_new_video_path() const
+{
+	auto s = now_to_string(true);
+	std::replace(s.begin(), s.end(), ' ', '_');
+	std::replace(s.begin(), s.end(), ':', '-');
+	return get_video_path() + "\\" + s + VR_VIDEO_EXT;
+}
+
+std::string config::create_new_capture_path() const
+{
+	auto s = now_to_string(true);
+	std::replace(s.begin(), s.end(), ' ', '_');
+	std::replace(s.begin(), s.end(), ':', '-');
+	return get_capture_path() + "\\" + s + VR_CAPTRUE_EXT;
 }

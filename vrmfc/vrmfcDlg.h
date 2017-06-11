@@ -39,17 +39,23 @@ protected:
 	int brightness_level_ = 2;
 	int temperature_ = 0;
 	bool usb_storage_plugin_ = false;
-	bool recording_ = false;
 
+	struct _record {
+		bool recording = false;
+		std::string cur_recording_file = {};
+		cv::VideoWriter writer = {};
+	} record_ = {};
 
 	void adjust_player_size(int w, int h);
 	void handle_com();
 	void process_com(const std::string& cmd);
 
+
 	// Public interface
 public:
 	void do_exit_windows();
 	void do_record();
+	void do_stop_record();
 	void do_capture();
 	void do_file_manager();
 	void do_settings();

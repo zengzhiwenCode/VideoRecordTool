@@ -1,5 +1,11 @@
 #pragma once
 
+#define VR_ROOT_FOLDER		"root"
+#define VR_VIDEO_FOLDER		"video" 
+#define VR_VIDEO_EXT		".avi"
+#define VR_CAPTURE_FOLDER	"capture"
+#define VR_CAPTRUE_EXT		".bmp"
+
 class config : public dp::singleton<config>
 {
 protected:
@@ -7,6 +13,7 @@ protected:
 	bool load();
 	bool save();
 	void init();
+	void init_root();
 
 private:
 	std::string cfg_file_ = {};
@@ -27,7 +34,12 @@ private:
 	std::string _lang = {};
 
 public:
+	std::string get_video_path() const;
+	std::string get_capture_path() const;
+	std::string create_new_video_path() const;
+	std::string create_new_capture_path() const;
 	
+
 #define declare_getter(type, val) type get##val() const { return val; }
 #define declare_getter_int(val) declare_getter(int, val)
 
@@ -48,5 +60,8 @@ public:
 	declare_gs_string(_port);
 	declare_gs_int(_baudrate);
 	declare_gs_string(_lang);
+
+
+	
 };
 

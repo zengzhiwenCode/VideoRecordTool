@@ -525,19 +525,31 @@ void CvrmfcDlg::do_exit_windows()
 void CvrmfcDlg::do_record()
 {
 	AUTO_LOG_FUNCTION;
-	JLOG_INFO("recording_={}", recording_);
-	if (recording_) { return; }
+	JLOG_INFO("recording_={}", record_.recording);
+	if (record_.recording) { return; }
 
 	auto s = now_to_string();
 	std::replace(s.begin(), s.end(), ' ', '_');
 	std::replace(s.begin(), s.end(), ':', '-');
-	auto vfile = get_exe_path_a() + "\\" + s + ".mp4";
+	auto vfile = config::get_instance()->get_root() + "\\" + VR_VIDEO_FOLDER + "\\" + s + VR_VIDEO_EXT;
+}
+
+void CvrmfcDlg::do_stop_record()
+{
+	if (!record_.recording)return;
+	record_.recording = false;
 }
 
 void CvrmfcDlg::do_capture()
 {
 	AUTO_LOG_FUNCTION;
+	do_stop_record();
+	auto cfile = config::get_instance()->create_new_capture_path();
+	cv::Mat img;
+	if (capture_.isOpened() && capture_.read(img)) {
+		cv::imwrite(cfile, img);
 
+	}
 }
 
 void CvrmfcDlg::do_file_manager()
