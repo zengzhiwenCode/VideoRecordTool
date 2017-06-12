@@ -16,6 +16,7 @@ using DuiLib::CButtonUI;
 using DuiLib::CTabLayoutUI;
 using DuiLib::COptionUI;
 using DuiLib::CSliderUI;
+using DuiLib::CLabelUI;
 
 //#ifdef _DEBUG
 #   pragma comment(lib, "../Debug/DuiLib_Debug.lib")

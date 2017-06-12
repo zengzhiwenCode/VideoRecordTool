@@ -17,4 +17,5 @@ public:
 
 protected:
 	void on_fps();
+	void on_rec_time();
 };

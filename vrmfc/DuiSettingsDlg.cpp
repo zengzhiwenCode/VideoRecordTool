@@ -69,6 +69,8 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 	} else if (type == "valuechanged") {
 		if (name == "fps") {
 			on_fps();
+		} else if (name == "rec_time") {
+			on_rec_time();
 		}
 	}	
 
@@ -108,6 +110,24 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 				on_fps();
 			}
 		}
+	} else if (name == "rec_time_dec") {
+		auto rec_time = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"rec_time")); assert(rec_time);
+		if (rec_time) {
+			auto val = rec_time->GetValue();
+			if (val > rec_time->GetMinValue()) {
+				rec_time->SetValue(--val);
+				on_rec_time();
+			}
+		}
+	} else if (name == "rec_time_inc") {
+		auto rec_time = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"rec_time")); assert(rec_time);
+		if (rec_time) {
+			auto val = rec_time->GetValue();
+			if (val < rec_time->GetMaxValue()) {
+				rec_time->SetValue(++val);
+				on_rec_time();
+			}
+		}
 	}
 
 
@@ -120,4 +140,20 @@ void CDuiSettingsDlg::on_fps()
 	if (!fps)return;
 	auto val = fps->GetValue();
 	JLOG_INFO("fps changed to {}", val);
+}
+
+void CDuiSettingsDlg::on_rec_time()
+{
+	auto rec_time = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"rec_time")); assert(rec_time);
+	if (!rec_time) { return; }
+	auto val = rec_time->GetValue();
+	JLOG_INFO("record time changed to {}", val);
+	auto rec_time_text = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"rec_time_text")); assert(rec_time_text);
+	if (rec_time_text) {
+		if (val == 0) {
+			rec_time_text->SetText(L"max");
+		} else {
+			rec_time_text->SetText((std::to_wstring(val) + L"min").c_str());
+		}
+	}
 }
