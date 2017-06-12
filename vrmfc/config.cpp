@@ -130,16 +130,18 @@ std::string config::get_capture_path() const
 
 std::string config::create_new_video_path() const
 {
-	auto s = now_to_string(true);
-	std::replace(s.begin(), s.end(), ' ', '_');
-	std::replace(s.begin(), s.end(), ':', '-');
+	auto s = now_to_string();
+	s.erase(std::remove(s.begin(), s.end(), '-'), s.end());
+	s.erase(std::remove(s.begin(), s.end(), ':'), s.end());
+	std::replace(s.begin(), s.end(), ' ', '-');
 	return get_video_path() + "\\" + s + VR_VIDEO_EXT;
 }
 
 std::string config::create_new_capture_path() const
 {
-	auto s = now_to_string(true);
-	std::replace(s.begin(), s.end(), ' ', '_');
-	std::replace(s.begin(), s.end(), ':', '-');
+	auto s = now_to_string();
+	s.erase(std::remove(s.begin(), s.end(), '-'), s.end());
+	s.erase(std::remove(s.begin(), s.end(), ':'), s.end());
+	std::replace(s.begin(), s.end(), ' ', '-');
 	return get_capture_path() + "\\" + s + VR_CAPTRUE_EXT;
 }
