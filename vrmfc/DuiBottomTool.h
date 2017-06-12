@@ -11,6 +11,8 @@ public:
 	explicit CDuiBottomTool(const wchar_t* xmlpath);
 	virtual ~CDuiBottomTool();
 
+	void enable_btns(bool able);
+
 	DUI_DECLARE_MESSAGE_MAP();
 	virtual void InitWindow() override;
 	virtual LPCTSTR GetWindowClassName() const override { return L"CDuiBottomTool"; }

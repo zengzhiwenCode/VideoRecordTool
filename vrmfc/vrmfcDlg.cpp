@@ -542,7 +542,7 @@ void CvrmfcDlg::do_record()
 {
 	AUTO_LOG_FUNCTION;
 	JLOG_INFO("recording_={}", record_.recording);
-	if (record_.recording) { return; }
+	if (record_.recording) { do_stop_record(); return; }
 	if (!capture_.isOpened()) { return; }
 	record_.file = config::get_instance()->create_new_video_path();
 	auto width = static_cast<int>(capture_.get(CAP_PROP_FRAME_WIDTH));
@@ -560,6 +560,7 @@ void CvrmfcDlg::do_record()
 											 true);
 	
 	record_.begin = std::chrono::steady_clock::now();
+	dui_bt_->enable_btns(false);
 }
 
 void CvrmfcDlg::do_stop_record()
@@ -571,12 +572,12 @@ void CvrmfcDlg::do_stop_record()
 	//rec_tip_->Hide();
 	fps_.frames = 0;
 	fps_.begin = std::chrono::steady_clock::now();
+	dui_bt_->enable_btns(true);
 }
 
 void CvrmfcDlg::do_capture()
 {
 	AUTO_LOG_FUNCTION;
-	do_stop_record();
 	auto cfile = config::get_instance()->create_new_capture_path();
 	cv::Mat img;
 	if (capture_.isOpened() && capture_.read(img)) {
@@ -610,7 +611,6 @@ void CvrmfcDlg::do_capture()
 void CvrmfcDlg::do_file_manager()
 {
 	AUTO_LOG_FUNCTION;
-
 }
 
 void CvrmfcDlg::do_settings()
@@ -624,7 +624,6 @@ void CvrmfcDlg::do_settings()
 void CvrmfcDlg::do_system_info()
 {
 	AUTO_LOG_FUNCTION;
-
 }
 
 void CvrmfcDlg::do_adjust_brightness()
@@ -634,7 +633,6 @@ void CvrmfcDlg::do_adjust_brightness()
 
 std::string CvrmfcDlg::_record::get_time()
 {
-	
 	auto now = std::chrono::steady_clock::now();
 	auto diff = now - begin;
 
@@ -648,17 +646,17 @@ std::string CvrmfcDlg::_record::get_time()
 	auto min = std::chrono::duration_cast<std::chrono::minutes>(diff).count() % 60;
 	
 	std::stringstream ss;
-	ss << std::setw(2) << std::setfill('0');
+	//ss << std::setw(2) << std::setfill('0');
 
 	if (day > 0) {
-		ss << day << ":";
+		ss << std::setw(2) << std::setfill('0') << day << ":";
 	}
 
 	if (hour > 0) {
-		ss << hour << ":";
+		ss << std::setw(2) << std::setfill('0') << hour << ":";
 	}
 
-	ss << min << ":" << sec;
+	ss << std::setw(2) << std::setfill('0') << min << ":" << std::setw(2) << std::setfill('0') << sec;
 
 	prev_time_str = ss.str();
 	return prev_time_str;;

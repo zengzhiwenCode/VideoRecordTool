@@ -18,6 +18,43 @@ CDuiBottomTool::~CDuiBottomTool()
 {
 }
 
+void CDuiBottomTool::enable_btns(bool able)
+{
+	//auto bk_color = able ? RGB(0x32, 0x75, 0xEE) : RGB(0xD7, 0x7E, 0x44);
+	auto bk_color = able ? 0xFF3275EE : 0xFFD77E44;
+
+	if (0) {
+		auto btn_exit = static_cast<CButtonUI*>(m_PaintManager.FindControl(L"exit"));
+		if (btn_exit) {
+			
+			btn_exit->SetBkColor(bk_color);
+			btn_exit->SetEnabled(able);
+			auto container = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"container")); assert(container);
+			if (!container) { return; }
+			container->NeedUpdate();
+		}
+		return;
+	}
+
+#define __apply_dui_bottom_tool_btn(name) \
+	CButtonUI* btn_##name = static_cast<CButtonUI*>(m_PaintManager.FindControl(utf8::a2w(#name).c_str())); \
+	if (btn_##name) { \
+		btn_##name->SetEnabled(able); \
+		btn_##name->SetBkColor(bk_color); \
+	}
+
+	__apply_dui_bottom_tool_btn(exit);
+	__apply_dui_bottom_tool_btn(cap);
+	__apply_dui_bottom_tool_btn(file);
+	__apply_dui_bottom_tool_btn(set);
+	__apply_dui_bottom_tool_btn(system);
+	__apply_dui_bottom_tool_btn(bright);
+
+	auto container = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"container")); assert(container);
+	if (!container) { return; }
+	container->NeedUpdate();
+}
+
 void CDuiBottomTool::InitWindow()
 {
 	
