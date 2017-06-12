@@ -627,6 +627,7 @@ void CvrmfcDlg::do_capture()
 void CvrmfcDlg::do_file_manager()
 {
 	AUTO_LOG_FUNCTION;
+	dui_bt_->set_mode(CDuiBottomTool::mode::filemgr);
 	CDuiFileManagerDlg dlg(L"filemanager.xml");
 	dlg.Create(dui_bt_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 	CRect rc;

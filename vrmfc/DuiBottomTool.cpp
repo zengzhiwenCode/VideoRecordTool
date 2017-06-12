@@ -81,11 +81,11 @@ void CDuiBottomTool::set_mode(mode m)
 
 	container->RemoveAll();
 
-	const int GAP_WIDHT = 50;
+	int GAP_WIDHT = 50;
 	const int BTN_ROUND = 15;
 	const SIZE BORDER_RND = { BTN_ROUND, BTN_ROUND };
 
-	auto add_gap = [&container, GAP_WIDHT]() {
+	auto add_gap = [&container, &GAP_WIDHT]() {
 		auto vert = new CVerticalLayoutUI();
 		vert->SetFixedWidth(GAP_WIDHT);
 		container->Add(vert);
@@ -124,14 +124,29 @@ void CDuiBottomTool::set_mode(mode m)
 			{ L"bright", trw(IDS_STRING_BRIGHTNESS) }
 		};
 
+		GAP_WIDHT = 10;
 		do_create(vv);
 	}
 		break;
+
 	case CDuiBottomTool::filemgr:
 	{
+		tv vv = {
+			{ L"back", trw(IDS_STRING_BACK) },
+			{ L"edit", trw(IDS_STRING_EDIT) },
+			{ L"filter", trw(IDS_STRING_FILTER) },
+			{ L"page_up", trw(IDS_STRING_PAGE_UP) },
+			{ L"page_dn", trw(IDS_STRING_PAGE_DN) },
+			{ L"sel_all", trw(IDS_STRING_SEL_ALL) },
+			{ L"delete", trw(IDS_STRING_DELETE) },
+			{ L"cp_to_usb", trw(IDS_STRING_CP_TO_USB) }
+		};
 
+		GAP_WIDHT = 5;
+		do_create(vv);
 	}
 		break;
+
 	case CDuiBottomTool::view_pic:
 		break;
 	case CDuiBottomTool::view_video:
