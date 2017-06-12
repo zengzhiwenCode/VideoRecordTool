@@ -60,6 +60,22 @@ std::vector<char> list_removable_drives() {
 	return v;
 }
 
+bool modual_dialog_opened_ = false;
+
+#define UNLOCK_DLG do { modual_dialog_opened_ = false; } while(false);
+
+class auto_dlg_lock {
+public:
+	auto_dlg_lock() {}
+	~auto_dlg_lock() {
+		UNLOCK_DLG;
+	}
+};
+
+#define LOCK_DLG do { if (modual_dialog_opened_) return; modual_dialog_opened_ = true; } while(false); auto_dlg_lock adl;
+
+
+
 }
 
 using namespace cv;
@@ -546,8 +562,9 @@ void CvrmfcDlg::process_com(const std::string & data)
 void CvrmfcDlg::do_exit_windows()
 {
 	AUTO_LOG_FUNCTION;
+	LOCK_DLG;
 	CDuiConfirmExitDlg dlg(L"confirm_exit.xml");
-	dlg.Create(dui_bt_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 	dlg.ShowModal();
 	if (dlg.confirmed_) {
 		PostMessage(WM_CLOSE);
@@ -585,7 +602,6 @@ void CvrmfcDlg::do_stop_record()
 	record_.recording = false;
 	record_.writer.reset();
 	record_.file.clear();
-	//rec_tip_->Hide();
 	fps_.frames = 0;
 	fps_.begin = std::chrono::steady_clock::now();
 	dui_bt_->enable_btns(true);
@@ -593,32 +609,16 @@ void CvrmfcDlg::do_stop_record()
 
 void CvrmfcDlg::do_capture()
 {
-	AUTO_LOG_FUNCTION;
+	AUTO_LOG_FUNCTION; LOCK_DLG;
 	auto cfile = config::get_instance()->create_new_capture_path();
 	cv::Mat img;
 	if (capture_.isOpened() && capture_.read(img)) {
 		cv::imwrite(cfile, img);
-		/*cv::namedWindow("capture", cv::WindowFlags::WINDOW_FULLSCREEN);
-		cv::imshow("capture", img);
-
-		auto begin = std::chrono::steady_clock::now();
-		MSG msg;
-		while (GetMessage(&msg, nullptr, 0, 0)) {
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-			auto now = std::chrono::steady_clock::now();
-			auto diff = std::chrono::duration_cast<std::chrono::seconds>(now - begin);
-			if (diff.count() >= 1) {
-				break;
-			}
-		}
-
-		cv::destroyWindow("capture");*/
 
 		if (CDuiPreviewCaptureDlg::make_xml(img.cols, img.rows)) {
 			CDuiPreviewCaptureDlg dlg(L"capture.xml");
 			dlg.img_ = cfile;
-			dlg.Create(dui_bt_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+			dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 			dlg.ShowModal();
 		}
 	}
@@ -638,9 +638,9 @@ void CvrmfcDlg::do_file_manager()
 
 void CvrmfcDlg::do_settings()
 {
-	AUTO_LOG_FUNCTION;
+	AUTO_LOG_FUNCTION; LOCK_DLG;
 	CDuiSettingsDlg dlg(L"settings.xml");
-	dlg.Create(dui_bt_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 	dlg.ShowModal();
 }
 
