@@ -15,6 +15,6 @@ public:
 	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 	virtual void OnClick(TNotifyUI& msg) override;
 
-public:
-
+protected:
+	void on_fps();
 };

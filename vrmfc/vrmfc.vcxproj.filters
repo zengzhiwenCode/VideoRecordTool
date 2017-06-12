@@ -70,7 +70,7 @@
       <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="DuiPreviewCaptureDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -107,11 +107,11 @@
     <ClCompile Include="DuiConfirmExitDlg.cpp">
       <Filter>ui</Filter>
     </ClCompile>
-    <ClCompile Include="DuiSettingsDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DuiPreviewCaptureDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiSettingsDlg.cpp">
+      <Filter>ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

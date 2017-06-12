@@ -282,15 +282,29 @@ BOOL CvrmfcDlg::OnInitDialog()
 			//capture_.read(frame);
 			//capture_.set(CAP_PROP_FOURCC, CV_FOURCC('M', 'P', 'E', 'G'));
 			//auto f = capture_.get(CAP_PROP_FORMAT);
-			//int ex = static_cast<int>(capture_.get(CV_CAP_PROP_FOURCC));     // Get Codec Type- Int form
+			int ex = static_cast<int>(capture_.get(CV_CAP_PROP_FOURCC));     // Get Codec Type- Int form
 
 			//																   // Transform from int to char via Bitwise operators
-			//char EXT[] = { (char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0 };
+			char EXT[] = { (char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0 };
+			JLOG_INFO("fourcc={}", EXT);
+
+			auto get_fourcc = [this]() {
+
+			};
 
 			//
 			//
-			//capture_.set(CAP_PROP_MODE, CAP_MODE_BGR);
-			//capture_.set(CAP_PROP_MODE, CAP_MODE_YUYV);
+			bool ok = capture_.set(CAP_PROP_MODE, CAP_MODE_BGR);
+			JLOG_INFO("bgr {}", ok);
+
+			ok = capture_.set(CAP_PROP_MODE, CAP_MODE_YUYV); JLOG_INFO("yuyv {}", ok);
+
+			ok = capture_.set(CAP_PROP_FOURCC, CV_FOURCC('M', 'P', 'E', 'G')); JLOG_INFO("mpeg {}", ok);
+
+			ok = capture_.set(CAP_PROP_FOURCC, CV_FOURCC('Y', 'U', 'Y', '2')); JLOG_INFO("yuy2 {}", ok);
+
+			//ok = capture_.set(CAP_PROP_MODE, cap_mode_);
+
 			//auto mode = capture_.get(CAP_PROP_MODE);
 
 			adjust_player_size(cfg->get_video_w(), cfg->get_video_h());

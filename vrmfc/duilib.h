@@ -15,12 +15,13 @@ using DuiLib::CHorizontalLayoutUI;
 using DuiLib::CButtonUI;
 using DuiLib::CTabLayoutUI;
 using DuiLib::COptionUI;
+using DuiLib::CSliderUI;
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 #   pragma comment(lib, "../Debug/DuiLib_Debug.lib")
-#else
-#   pragma comment(lib, "../Release/DuiLib_Release.lib")
-#endif
+//#else
+//#   pragma comment(lib, "../Release/DuiLib_Release.lib")
+//#endif
 
 namespace DuiLib {
 
