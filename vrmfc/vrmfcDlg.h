@@ -41,6 +41,7 @@ protected:
 	int temperature_ = 0;
 	bool usb_storage_plugin_ = false;
 
+
 	struct _fps {
 		std::chrono::steady_clock::time_point begin = {};
 		long long frames = 0;

@@ -127,3 +127,13 @@ CString tr(UINT uid)
 	s.Format(L"String resource %d not found", uid);
 	return s;
 }
+
+std::wstring trw(UINT uid)
+{
+	return std::wstring(tr(uid).GetBuffer());
+}
+
+std::string tra(UINT uid)
+{
+	return utf8::w2a(trw(uid));
+}

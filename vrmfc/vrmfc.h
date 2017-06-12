@@ -32,3 +32,5 @@ public:
 extern CvrmfcApp theApp;
 
 CString tr(UINT uid);
+std::wstring trw(UINT uid);
+std::string tra(UINT uid);

@@ -19,6 +19,7 @@
 #include "DuiConfirmExitDlg.h"
 #include "DuiSettingsDlg.h"
 #include "DuiPreviewCaptureDlg.h"
+#include "DuiFileManagerDlg.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "serial/lib/Debug/serial.lib")
@@ -208,6 +209,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		dui_bt_ = std::make_shared<CDuiBottomTool>(L"bottomtool.xml");
 		dui_bt_->Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 		::MoveWindow(dui_bt_->GetHWND(), rc.left, rc.top, rc.Width(), rc.Height(), 0);
+		dui_bt_->set_mode(CDuiBottomTool::mode::mainwnd);
 		dui_bt_->ShowWindow(false, false);
 	}
 	
@@ -545,7 +547,7 @@ void CvrmfcDlg::do_exit_windows()
 {
 	AUTO_LOG_FUNCTION;
 	CDuiConfirmExitDlg dlg(L"confirm_exit.xml");
-	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	dlg.Create(dui_bt_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 	dlg.ShowModal();
 	if (dlg.confirmed_) {
 		PostMessage(WM_CLOSE);
@@ -616,7 +618,7 @@ void CvrmfcDlg::do_capture()
 		if (CDuiPreviewCaptureDlg::make_xml(img.cols, img.rows)) {
 			CDuiPreviewCaptureDlg dlg(L"capture.xml");
 			dlg.img_ = cfile;
-			dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+			dlg.Create(dui_bt_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 			dlg.ShowModal();
 		}
 	}
@@ -625,13 +627,20 @@ void CvrmfcDlg::do_capture()
 void CvrmfcDlg::do_file_manager()
 {
 	AUTO_LOG_FUNCTION;
+	CDuiFileManagerDlg dlg(L"filemanager.xml");
+	dlg.Create(dui_bt_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	CRect rc;
+	GetWindowRect(rc);
+	rc.bottom -= 100;
+	::MoveWindow(dlg.GetHWND(), rc.left, rc.top, rc.Width(), rc.Height(), 0);
+	dlg.ShowModal();
 }
 
 void CvrmfcDlg::do_settings()
 {
 	AUTO_LOG_FUNCTION;
 	CDuiSettingsDlg dlg(L"settings.xml");
-	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	dlg.Create(dui_bt_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 	dlg.ShowModal();
 }
 

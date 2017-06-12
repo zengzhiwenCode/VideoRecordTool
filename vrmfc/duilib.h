@@ -12,6 +12,7 @@ using DuiLib::DUI_PMSG;
 using DuiLib::DuiSig_end;
 using DuiLib::DuiSig_vn;
 using DuiLib::CHorizontalLayoutUI;
+using DuiLib::CVerticalLayoutUI;
 using DuiLib::CButtonUI;
 using DuiLib::CTabLayoutUI;
 using DuiLib::COptionUI;

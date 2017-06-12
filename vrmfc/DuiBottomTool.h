@@ -11,7 +11,7 @@ public:
 	explicit CDuiBottomTool(const wchar_t* xmlpath);
 	virtual ~CDuiBottomTool();
 
-	void enable_btns(bool able);
+	
 
 	DUI_DECLARE_MESSAGE_MAP();
 	virtual void InitWindow() override;
@@ -21,5 +21,16 @@ public:
 	virtual void OnClick(TNotifyUI& msg) override;
 
 protected:
+	
 
+public:
+	enum mode {
+		mainwnd,
+		filemgr,
+		view_pic,
+		view_video,
+	}mode_ = mainwnd;
+
+	void set_mode(mode m);
+	void enable_btns(bool able);
 };
