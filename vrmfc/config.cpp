@@ -145,3 +145,16 @@ std::string config::create_new_capture_path() const
 	std::replace(s.begin(), s.end(), ' ', '-');
 	return get_capture_path() + "\\" + s + VR_CAPTRUE_EXT;
 }
+
+std::string config::get_thumb_path() const
+{
+	auto p = _root + "\\" + VR_THUMBNAIL_FOLDER;
+	CreateDirectoryA(p.c_str(), nullptr);
+	return p;
+}
+
+std::string config::create_new_thumb_path(const std::string & stem)
+{
+	auto p = get_thumb_path() + "\\" + stem + VR_THUMBNAIL_EXT;
+	return p;
+}

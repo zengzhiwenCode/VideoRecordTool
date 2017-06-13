@@ -40,6 +40,8 @@ public:
 	std::string get_capture_path() const;
 	std::string create_new_video_path() const;
 	std::string create_new_capture_path() const;
+	std::string get_thumb_path() const;
+	std::string create_new_thumb_path(const std::string& stem);
 	
 
 #define declare_getter(type, val) type get##val() const { return val; }

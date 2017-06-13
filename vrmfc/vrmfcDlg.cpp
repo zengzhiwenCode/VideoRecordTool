@@ -647,7 +647,7 @@ bool CvrmfcDlg::do_file_manager(CRect& rc)
 	//dui_bt_->dlg_ = &dlg;
 	//dlg.ShowModal();
 	//dui_bt_->dlg_ = nullptr;
-	
+	return true;
 }
 
 void CvrmfcDlg::do_file_manager_over()

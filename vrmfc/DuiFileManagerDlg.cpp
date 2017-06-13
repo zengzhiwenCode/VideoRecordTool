@@ -101,6 +101,7 @@ void CDuiFileManagerDlg::update_content(filter f)
 	constexpr int content_height = img_height + text_height;
 	constexpr int gap_width = (window_width - img_width * max_col) / (max_col + 1) + 1;
 	constexpr int gap_height = 20;
+	const SIZE img_round = { 5,5 };
 
 	switch (f) {
 	case CDuiFileManagerDlg::all:
@@ -142,6 +143,7 @@ void CDuiFileManagerDlg::update_content(filter f)
 				auto pic = new COptionUI();
 				pic->SetFixedHeight(img_height);
 				pic->SetFixedWidth(img_width);
+				pic->SetBorderRound(img_round);
 				pic->SetBkImage(file.generic_wstring().c_str());
 				pic->SetGroup(L"img");
 				auto text = new CLabelUI();
@@ -160,6 +162,8 @@ void CDuiFileManagerDlg::update_content(filter f)
 				continue;
 			}
 		}
+
+		add_gap_for_row();
 	}
 		break;
 	case CDuiFileManagerDlg::video:
