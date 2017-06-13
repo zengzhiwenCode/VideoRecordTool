@@ -93,7 +93,14 @@ void CDuiFileManagerDlg::update_content(filter f)
 		return v1;
 	};
 
-	const int max_col = 4;
+	constexpr int window_width = 1000;
+	constexpr int max_col = 4;
+	constexpr int img_width = 220;
+	constexpr int img_height = img_width * 2 / 3;
+	constexpr int text_height = 10;
+	constexpr int content_height = img_height + text_height;
+	constexpr int gap_width = (window_width - img_width * max_col) / (max_col + 1) + 1;
+	constexpr int gap_height = 20;
 
 	switch (f) {
 	case CDuiFileManagerDlg::all:
@@ -105,38 +112,53 @@ void CDuiFileManagerDlg::update_content(filter f)
 	{
 		int col = 0;
 		CHorizontalLayoutUI* line = nullptr;
-		auto files = get_all_file();
+
+		auto add_gap_for_line = [&line, gap_width]() {
+			auto gap = new CVerticalLayoutUI();
+			gap->SetFixedWidth(gap_width);
+			line->Add(gap);
+		};
+
+		auto add_gap_for_row = [&container, gap_height]() {
+			auto gap = new CHorizontalLayoutUI();
+			gap->SetFixedHeight(gap_height);
+			container->Add(gap);
+		};
+
+		auto files = get_all_pic();
 		for (auto file : files) {
-#if 0
-			// rename 
-			{
-				auto name = file.stem().string();
-				auto npos = std::string::npos;
-				auto pos = name.find('.');
-				if (pos != npos) {
-					name = name.substr(0, pos);
-					name.erase(std::remove(name.begin(), name.end(), '-'), name.end());
-					name.erase(std::remove(name.begin(), name.end(), ':'), name.end());
-					std::replace(name.begin(), name.end(), ' ', '-');
-
-					name = (file.parent_path() / (name + file.extension().string())).string();
-					std::rename(file.string().c_str(), name.c_str());
-	}
-
-
-}
-#endif
-
-			if (col == 0) {
+			if (col == 0) { // new line
+				add_gap_for_row();
 				line = new CHorizontalLayoutUI();
-				auto gap = new CVerticalLayoutUI();
-				gap->SetFixedWidth(50);
-				line->Add(gap);
-			} else if (col == 3) { // line break
-
+				line->SetFixedHeight(content_height);
+				add_gap_for_line();
+				container->Add(line);
+			} 
+			
+			{ // content
+				auto content = new CVerticalLayoutUI();
+				content->SetFixedHeight(content_height);
+				content->SetFixedWidth(img_width);
+				auto pic = new COptionUI();
+				pic->SetFixedHeight(img_height);
+				pic->SetFixedWidth(img_width);
+				pic->SetBkImage(file.generic_wstring().c_str());
+				pic->SetGroup(L"img");
+				auto text = new CLabelUI();
+				text->SetFixedHeight(text_height);
+				text->SetBkColor(container->GetBkColor());
+				text->SetText(file.stem().generic_wstring().c_str());
+				content->Add(pic);
+				content->Add(text);
+				line->Add(content);
+				add_gap_for_line();
 			}
 
-
+			if (++col == max_col) { // line break
+				//add_gap_for_line();
+				col = 0;
+				continue;
+			}
 		}
 	}
 		break;
