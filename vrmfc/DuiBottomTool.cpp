@@ -67,12 +67,13 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			maindlg->do_capture();
 		} else if (name == "file") {
 			CRect rc;
-			maindlg->do_file_manager(rc);
-			set_mode(CDuiBottomTool::mode::filemgr);
-			file_dlg_ = std::make_shared<CDuiFileManagerDlg>(L"filemanager.xml");
-			file_dlg_->Create(GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
-			::MoveWindow(file_dlg_->GetHWND(), rc.left, rc.top, rc.Width(), rc.Height(), 0);
-			file_dlg_->ShowWindow();
+			if (maindlg->do_file_manager(rc)) {
+				set_mode(CDuiBottomTool::mode::filemgr);
+				file_dlg_ = std::make_shared<CDuiFileManagerDlg>(L"filemanager.xml");
+				file_dlg_->Create(GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+				::MoveWindow(file_dlg_->GetHWND(), rc.left, rc.top, rc.Width(), rc.Height(), 0);
+				file_dlg_->ShowWindow();
+			}
 		} else if (name == "set") {
 			maindlg->do_settings();
 		} else if (name == "system") {

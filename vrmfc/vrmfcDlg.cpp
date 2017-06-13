@@ -71,9 +71,9 @@ public:
 	}
 };
 
-#define LOCK_DLG do { if (modual_dialog_opened_) return; modual_dialog_opened_ = true; } while(false);
-
-#define AUTO_LOCK_DLG LOCK_DLG; auto_dlg_lock adl;
+#define TEST_LOCK_DLG	if (modual_dialog_opened_) return;
+#define LOCK_DLG		TEST_LOCK_DLG; modual_dialog_opened_ = true;
+#define AUTO_LOCK_DLG	LOCK_DLG; auto_dlg_lock adl;
 
 
 
@@ -574,7 +574,7 @@ void CvrmfcDlg::do_exit_windows()
 
 void CvrmfcDlg::do_record()
 {
-	AUTO_LOG_FUNCTION;
+	AUTO_LOG_FUNCTION; TEST_LOCK_DLG;
 	JLOG_INFO("recording_={}", record_.recording);
 	if (record_.recording) { do_stop_record(); return; }
 	if (!capture_.isOpened()) { return; }
@@ -625,9 +625,14 @@ void CvrmfcDlg::do_capture()
 	}
 }
 
-void CvrmfcDlg::do_file_manager(CRect& rc)
+bool CvrmfcDlg::do_file_manager(CRect& rc)
 {
-	AUTO_LOG_FUNCTION; LOCK_DLG;
+	AUTO_LOG_FUNCTION; 
+	if (modual_dialog_opened_) {
+		return false;
+	}
+	modual_dialog_opened_ = true;
+
 	tip_->Hide();
 	rec_tip_->Hide();
 	//CRect rc;
