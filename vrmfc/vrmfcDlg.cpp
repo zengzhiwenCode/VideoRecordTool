@@ -19,7 +19,6 @@
 #include "DuiConfirmExitDlg.h"
 #include "DuiSettingsDlg.h"
 #include "DuiPreviewCaptureDlg.h"
-#include "DuiFileManagerDlg.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "serial/lib/Debug/serial.lib")
@@ -72,7 +71,9 @@ public:
 	}
 };
 
-#define LOCK_DLG do { if (modual_dialog_opened_) return; modual_dialog_opened_ = true; } while(false); auto_dlg_lock adl;
+#define LOCK_DLG do { if (modual_dialog_opened_) return; modual_dialog_opened_ = true; } while(false);
+
+#define AUTO_LOCK_DLG LOCK_DLG; auto_dlg_lock adl;
 
 
 
@@ -217,8 +218,8 @@ BOOL CvrmfcDlg::OnInitDialog()
 		GetWindowRect(rc);
 		rc.top = rc.bottom - 85;
 		rc.bottom -= 5;
-		rc.left += 25;
-		rc.right -= 25;
+		rc.left += 5;
+		rc.right -= 5;
 
 		CPaintManagerUI::SetInstance(AfxGetInstanceHandle());                    // 指定duilib的实例
 		CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + L"\\skin");    // 指定duilib资源的路径，这里指定为和exe同目录
@@ -562,7 +563,7 @@ void CvrmfcDlg::process_com(const std::string & data)
 void CvrmfcDlg::do_exit_windows()
 {
 	AUTO_LOG_FUNCTION;
-	LOCK_DLG;
+	AUTO_LOCK_DLG;
 	CDuiConfirmExitDlg dlg(L"confirm_exit.xml");
 	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 	dlg.ShowModal();
@@ -609,7 +610,7 @@ void CvrmfcDlg::do_stop_record()
 
 void CvrmfcDlg::do_capture()
 {
-	AUTO_LOG_FUNCTION; LOCK_DLG;
+	AUTO_LOG_FUNCTION; AUTO_LOCK_DLG;
 	auto cfile = config::get_instance()->create_new_capture_path();
 	cv::Mat img;
 	if (capture_.isOpened() && capture_.read(img)) {
@@ -624,22 +625,36 @@ void CvrmfcDlg::do_capture()
 	}
 }
 
-void CvrmfcDlg::do_file_manager()
+void CvrmfcDlg::do_file_manager(CRect& rc)
 {
-	AUTO_LOG_FUNCTION;
-	dui_bt_->set_mode(CDuiBottomTool::mode::filemgr);
-	CDuiFileManagerDlg dlg(L"filemanager.xml");
-	dlg.Create(dui_bt_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
-	CRect rc;
+	AUTO_LOG_FUNCTION; LOCK_DLG;
+	tip_->Hide();
+	rec_tip_->Hide();
+	//CRect rc;
 	GetWindowRect(rc);
 	rc.bottom -= 100;
-	::MoveWindow(dlg.GetHWND(), rc.left, rc.top, rc.Width(), rc.Height(), 0);
-	dlg.ShowModal();
+
+	/*dui_bt_->set_mode(CDuiBottomTool::mode::filemgr);
+	CDuiFileManagerDlg dlg(L"filemanager.xml");
+	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	
+	::MoveWindow(dlg.GetHWND(), rc.left, rc.top, rc.Width(), rc.Height(), 0);*/
+	//dui_bt_->dlg_ = &dlg;
+	//dlg.ShowModal();
+	//dui_bt_->dlg_ = nullptr;
+	
+}
+
+void CvrmfcDlg::do_file_manager_over()
+{
+	UNLOCK_DLG;
+	tip_->Show();
+	rec_tip_->Show();
 }
 
 void CvrmfcDlg::do_settings()
 {
-	AUTO_LOG_FUNCTION; LOCK_DLG;
+	AUTO_LOG_FUNCTION; AUTO_LOCK_DLG;
 	CDuiSettingsDlg dlg(L"settings.xml");
 	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 	dlg.ShowModal();

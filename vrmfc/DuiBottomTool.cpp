@@ -2,12 +2,12 @@
 #include "vrmfc.h"
 #include "DuiBottomTool.h"
 #include "vrmfcDlg.h"
+#include "DuiFileManagerDlg.h"
 
 
-
-DUI_BEGIN_MESSAGE_MAP(CDuiBottomTool, CNotifyPump)
-DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
-DUI_END_MESSAGE_MAP()
+//DUI_BEGIN_MESSAGE_MAP(CDuiBottomTool, CNotifyPump)
+//DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
+//DUI_END_MESSAGE_MAP()
 
 
 CDuiBottomTool::CDuiBottomTool(const wchar_t * xmlpath)
@@ -21,7 +21,6 @@ CDuiBottomTool::~CDuiBottomTool()
 
 void CDuiBottomTool::InitWindow()
 {
-	
 	auto container = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"container")); assert(container);
 	if (!container) { return; }
 	int w = container->GetWidth();
@@ -40,7 +39,11 @@ void CDuiBottomTool::InitWindow()
 
 void CDuiBottomTool::Notify(DuiLib::TNotifyUI & msg)
 {
-	__super::Notify(msg);
+	if (msg.sType == L"click") {
+		OnClick(msg);
+		return;
+	}
+	//__super::Notify(msg);
 }
 
 LRESULT CDuiBottomTool::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -52,26 +55,45 @@ LRESULT CDuiBottomTool::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 void CDuiBottomTool::OnClick(TNotifyUI & msg)
 {
 	std::string name = utf8::w2a(msg.pSender->GetName().GetData()); range_log rl("CDuiBottomTool::OnClick " + name);
-	auto dlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(dlg); 
-	if (!dlg) { JLOG_CRTC("cannot find main dlg!"); return; }
+	auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
+	if (!maindlg) { JLOG_CRTC("cannot find main dlg!"); return; }
 
-	if (name == "exit") {
-		dlg->do_exit_windows();
-	} else if (name == "rec") {
-		dlg->do_record();
-	} else if (name == "cap") {
-		dlg->do_capture();
-	} else if (name == "file") {
-		dlg->do_file_manager();
-	} else if (name == "set") {
-		dlg->do_settings();
-	} else if (name == "system") {
-		dlg->do_system_info();
-	} else if (name == "bright") {
-		dlg->do_adjust_brightness();
+	if (mode_ == mainwnd) {
+		if (name == "exit") {
+			maindlg->do_exit_windows();
+		} else if (name == "rec") {
+			maindlg->do_record();
+		} else if (name == "cap") {
+			maindlg->do_capture();
+		} else if (name == "file") {
+			CRect rc;
+			maindlg->do_file_manager(rc);
+			set_mode(CDuiBottomTool::mode::filemgr);
+			file_dlg_ = std::make_shared<CDuiFileManagerDlg>(L"filemanager.xml");
+			file_dlg_->Create(GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+			::MoveWindow(file_dlg_->GetHWND(), rc.left, rc.top, rc.Width(), rc.Height(), 0);
+			file_dlg_->ShowWindow();
+		} else if (name == "set") {
+			maindlg->do_settings();
+		} else if (name == "system") {
+			maindlg->do_system_info();
+		} else if (name == "bright") {
+			maindlg->do_adjust_brightness();
+		}
+	} else if (mode_ == filemgr) {
+		//assert(dlg_);
+		if (name == "back") {
+			//dlg_->PostMessageW(WM_CLOSE);
+			assert(file_dlg_);
+			file_dlg_->SendMessageW(WM_CLOSE);
+			file_dlg_.reset();
+			maindlg->do_file_manager_over();
+			set_mode(mainwnd);
+			return;
+		}
 	}
 
-	__super::OnClick(msg);
+	//__super::OnClick(msg);
 }
 
 void CDuiBottomTool::set_mode(mode m)
@@ -91,17 +113,20 @@ void CDuiBottomTool::set_mode(mode m)
 		container->Add(vert);
 	};
 
-	auto add_btn = [&container, BORDER_RND](const wchar_t* name, const wchar_t* text) {
+	auto add_btn = [&container, BORDER_RND](const wchar_t* name, const wchar_t* text, int font_idx = 0) {
 		auto btn = new CButtonUI();
 		btn->SetName(name);
 		btn->SetText(text);
-		btn->SetFont(0);
+		btn->SetFont(font_idx);
 		btn->SetBkColor(0xFF3275EE);
 		btn->SetBorderRound(BORDER_RND);
 		container->Add(btn);
 	};
 
-	using tv = std::vector<std::pair<std::wstring, std::wstring>>;
+	// type of pair
+	using tp = std::pair<std::wstring, std::wstring>;
+	// type of vector
+	using tv = std::vector<tp>;
 
 	auto do_create = [add_gap, add_btn](const tv& vv) {
 		add_gap();
@@ -139,11 +164,16 @@ void CDuiBottomTool::set_mode(mode m)
 			{ L"page_dn", trw(IDS_STRING_PAGE_DN) },
 			{ L"sel_all", trw(IDS_STRING_SEL_ALL) },
 			{ L"delete", trw(IDS_STRING_DELETE) },
-			{ L"cp_to_usb", trw(IDS_STRING_CP_TO_USB) }
+			
 		};
 
 		GAP_WIDHT = 5;
 		do_create(vv);
+
+		tp p = { L"cp_to_usb", trw(IDS_STRING_CP_TO_USB) };
+		add_gap();
+		add_btn(p.first.c_str(), p.second.c_str(), 1);
+		add_gap();
 	}
 		break;
 
@@ -153,8 +183,12 @@ void CDuiBottomTool::set_mode(mode m)
 		break;
 	default:
 		assert(0);
+		return;
 		break;
 	}
+
+	mode_ = m;
+	container->NeedUpdate();
 }
 
 void CDuiBottomTool::enable_btns(bool able)

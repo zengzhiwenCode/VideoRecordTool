@@ -3,7 +3,7 @@
 #include "duilib.h"
 
 
-
+class CDuiFileManagerDlg;
 
 class CDuiBottomTool : public CXMLWnd
 {
@@ -11,9 +11,9 @@ public:
 	explicit CDuiBottomTool(const wchar_t* xmlpath);
 	virtual ~CDuiBottomTool();
 
-	
+	std::shared_ptr<CDuiFileManagerDlg> file_dlg_ = {};
 
-	DUI_DECLARE_MESSAGE_MAP();
+	//DUI_DECLARE_MESSAGE_MAP();
 	virtual void InitWindow() override;
 	virtual LPCTSTR GetWindowClassName() const override { return L"CDuiBottomTool"; }
 	virtual void Notify(DuiLib::TNotifyUI& msg) override;
