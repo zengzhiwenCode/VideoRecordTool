@@ -15,5 +15,16 @@ public:
 	virtual void OnClick(TNotifyUI& msg) override;
 
 	DUI_DECLARE_MESSAGE_MAP();
+
+protected:
+	enum filter {
+		all,
+		pic,
+		video
+	};
+
+	static filter filter_;
+
+	void update_content(filter f);
 };
 

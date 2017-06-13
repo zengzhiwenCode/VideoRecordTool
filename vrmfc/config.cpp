@@ -44,7 +44,7 @@ bool config::load()
 		_video_w = value[secVideo][keyWidth].asInt();
 		_video_h = value[secVideo][keyHeight].asInt();
 		_root = value[secVideo][keyRoot].asString();
-		if (_root.empty() || !std::tr2::sys::is_directory(_root) || !std::tr2::sys::exists(_root)) {
+		if (_root.empty() || !std::experimental::filesystem::is_directory(_root) || !std::experimental::filesystem::exists(_root)) {
 			init_root();
 		}
 

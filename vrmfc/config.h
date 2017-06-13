@@ -5,6 +5,8 @@
 #define VR_VIDEO_EXT		".avi"
 #define VR_CAPTURE_FOLDER	"capture"
 #define VR_CAPTRUE_EXT		".bmp"
+#define VR_THUMBNAIL_FOLDER "thumb"
+#define VR_THUMBNAIL_EXT	".png"
 
 class config : public dp::singleton<config>
 {
