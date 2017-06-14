@@ -635,19 +635,20 @@ bool CvrmfcDlg::do_file_manager(CRect& rc)
 
 	tip_->Hide();
 	rec_tip_->Hide();
-	//CRect rc;
 	GetWindowRect(rc);
 	rc.bottom -= 100;
 
-	/*dui_bt_->set_mode(CDuiBottomTool::mode::filemgr);
-	CDuiFileManagerDlg dlg(L"filemanager.xml");
-	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
-	
-	::MoveWindow(dlg.GetHWND(), rc.left, rc.top, rc.Width(), rc.Height(), 0);*/
-	//dui_bt_->dlg_ = &dlg;
-	//dlg.ShowModal();
-	//dui_bt_->dlg_ = nullptr;
 	return true;
+}
+
+void CvrmfcDlg::do_view_pic(fv pics, fviter iter)
+{
+	dui_bt_->view_pic(pics, iter);
+}
+
+void CvrmfcDlg::do_play_video(fv videos, fviter iter)
+{
+	dui_bt_->play_video(videos, iter);
 }
 
 void CvrmfcDlg::do_file_manager_over()

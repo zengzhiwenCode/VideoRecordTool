@@ -25,6 +25,10 @@ protected:
 
 	static filter filter_;
 
+	fv pics_ = {};
+	fv videos_ = {};
+	fv all_ = {};
+
 	void update_content(filter f);
 
 

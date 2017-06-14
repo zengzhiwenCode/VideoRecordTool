@@ -1,10 +1,14 @@
 #include "stdafx.h"
 #include "DuiFileManagerDlg.h"
 #include "config.h"
-#include <filesystem>
+#include "vrmfcDlg.h"
 
 namespace {
 
+enum content_tag {
+	pic = 1,
+	video,
+};
 
 
 
@@ -28,38 +32,6 @@ CDuiFileManagerDlg::~CDuiFileManagerDlg()
 
 void CDuiFileManagerDlg::InitWindow()
 {
-	update_content(filter_);
-	
-
-
-	
-}
-
-void CDuiFileManagerDlg::Notify(DuiLib::TNotifyUI & msg)
-{
-
-	__super::Notify(msg);
-}
-
-LRESULT CDuiFileManagerDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	return __super::HandleMessage(uMsg, wParam, lParam);
-}
-
-void CDuiFileManagerDlg::OnClick(TNotifyUI & msg)
-{
-
-	__super::OnClick(msg);
-}
-
-void CDuiFileManagerDlg::update_content(filter f)
-{
-	auto container = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(L"container")); assert(container);
-	if (!container)return;
-	container->RemoveAll();
-
-	namespace fs = std::experimental::filesystem;
-	using fv = std::list<fs::path>;
 	auto cfg = config::get_instance();
 
 	auto list_files = [](const fs::path& path) {
@@ -82,18 +54,84 @@ void CDuiFileManagerDlg::update_content(filter f)
 		return list_files(fs::canonical(cfg->get_video_path()));
 	};
 
-	auto get_all_file = [&cfg, get_all_pic, get_all_video] {
-		auto v1 = get_all_pic();
-		auto v2 = get_all_video();
-		v1.insert(v1.end(), v2.begin(), v2.end());
-		//std::sort(v1.begin(), v1.end());
-		v1.sort([](const fs::path& p1, const fs::path& p2) {
-			return p1.filename() < p2.filename();
-		});
-		return v1;
-	};
+	pics_ = get_all_pic();
+	videos_ = get_all_video();
 
-	typedef std::function<std::string(const fs::path& file)> get_picture;
+	std::copy(pics_.begin(), pics_.end(), std::back_inserter(all_));
+	std::copy(videos_.begin(), videos_.end(), std::back_inserter(all_));
+	//all_.sort([](const fs::path& p1, const fs::path& p2) {
+	//	return p1.filename() < p2.filename();
+	//});
+	std::sort(all_.begin(), all_.end(), [](const fs::path& p1, const fs::path& p2) {
+		return p1.filename() < p2.filename();
+	});
+
+	update_content(filter_);
+}
+
+void CDuiFileManagerDlg::Notify(DuiLib::TNotifyUI & msg)
+{
+
+	__super::Notify(msg);
+}
+
+LRESULT CDuiFileManagerDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	return __super::HandleMessage(uMsg, wParam, lParam);
+}
+
+void CDuiFileManagerDlg::OnClick(TNotifyUI & msg)
+{
+	auto name = utf8::w2a(msg.pSender->GetName().GetData());
+	auto tag = msg.pSender->GetTag();
+	auto mainwnd = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(mainwnd);
+	auto cfg = config::get_instance();
+
+	switch (tag) {
+	case content_tag::pic:
+	{
+		auto path = cfg->get_capture_path() + "\\" + name + VR_CAPTRUE_EXT;
+		fviter index = 0;
+		for (const auto& p : pics_) {
+			if (p.string() == path) {
+				mainwnd->do_view_pic(pics_, index);
+				break;
+			}
+			index++;
+		}
+	}
+		break;
+
+	case content_tag::video:
+	{
+		auto path = cfg->get_video_path() + "\\" + name + VR_VIDEO_EXT;
+		fviter index = 0;
+		for (const auto& v : videos_) {
+			if (v.string() == path) {
+				mainwnd->do_play_video(videos_, index);
+				break;
+			}
+			index++;
+		}
+	}
+		break;
+
+	default:
+		break;
+	}
+
+	__super::OnClick(msg);
+}
+
+void CDuiFileManagerDlg::update_content(filter f)
+{
+	auto container = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(L"container")); assert(container);
+	if (!container)return;
+	container->RemoveAll();
+
+	auto cfg = config::get_instance();
+
+	typedef std::function<std::pair<std::string, content_tag>(const fs::path& file)> get_picture;
 
 	auto create_content = [&container](fv& vv, const wchar_t* group, get_picture get) {
 		constexpr int window_width = 1000;
@@ -135,14 +173,17 @@ void CDuiFileManagerDlg::update_content(filter f)
 			content->SetFixedHeight(content_height);
 			content->SetFixedWidth(img_width);
 			auto pic = new COptionUI();
+			pic->SetName(file.stem().generic_wstring().c_str());
 			pic->SetFixedHeight(img_height);
 			pic->SetFixedWidth(img_width);
 			pic->SetBorderRound(img_round);
 
 			auto bkimg = get(file);
 
-			pic->SetBkImage(utf8::a2w(bkimg).c_str());
+			pic->SetBkImage(utf8::a2w(bkimg.first).c_str());
 			pic->SetGroup(group);
+			pic->SetTag(bkimg.second);
+
 			auto text = new CLabelUI();
 			text->SetFixedHeight(text_height);
 			text->SetBkColor(container->GetBkColor());
@@ -166,32 +207,32 @@ void CDuiFileManagerDlg::update_content(filter f)
 	switch (f) {
 	case CDuiFileManagerDlg::all:
 	{
-		auto files = get_all_file();
-		create_content(files, L"all", [cfg](const fs::path& p) {
+		create_content(all_, L"all", [cfg](const fs::path& p) {
 			if (p.parent_path().string() == cfg->get_capture_path()) {
-				return p.string();
+				return std::make_pair(p.string(), content_tag::pic);
 			} else if (p.parent_path().string() == cfg->get_video_path()) {
-				return cfg->get_thumb_of_video(p.string());
+				return std::make_pair(cfg->get_thumb_of_video(p.string()), content_tag::video);
 			} else {
-				assert(0); return std::string();
+				assert(0); return std::make_pair(std::string(), content_tag::pic);
 			}
 		});
 	}
 		break;
+
 	case CDuiFileManagerDlg::pic:
 	{
-		auto files = get_all_pic();
-		create_content(files, L"image", [](const fs::path& p) { return p.string(); });
+		create_content(pics_, L"image", [](const fs::path& p) { return std::make_pair(p.string(), content_tag::pic); });
 	}
 		break;
+
 	case CDuiFileManagerDlg::video:
 	{
-		auto files = get_all_video();
-		create_content(files, L"thumb", [cfg](const fs::path& p) {
-			return cfg->get_thumb_of_video(p.string());
+		create_content(videos_, L"thumb", [cfg](const fs::path& p) {
+			return std::make_pair(cfg->get_thumb_of_video(p.string()), content_tag::video);
 		});
 	}
 		break;
+
 	default:
 		break;
 	}

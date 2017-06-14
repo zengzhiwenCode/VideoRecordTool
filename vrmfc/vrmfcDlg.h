@@ -73,6 +73,8 @@ public:
 	void do_stop_record();
 	void do_capture();
 	bool do_file_manager(CRect& rc);
+	void do_view_pic(fv pics, fviter iter);
+	void do_play_video(fv videos, fviter iter);
 	void do_file_manager_over();
 	void do_settings();
 	void do_system_info();

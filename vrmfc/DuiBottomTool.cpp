@@ -58,7 +58,9 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 	auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
 	if (!maindlg) { JLOG_CRTC("cannot find main dlg!"); return; }
 
-	if (mode_ == mainwnd) {
+	switch (mode_) {
+	case CDuiBottomTool::mainwnd:
+	{
 		if (name == "exit") {
 			maindlg->do_exit_windows();
 		} else if (name == "rec") {
@@ -81,7 +83,12 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 		} else if (name == "bright") {
 			maindlg->do_adjust_brightness();
 		}
-	} else if (mode_ == filemgr) {
+
+		break;
+	}
+
+	case CDuiBottomTool::filemgr:
+	{
 		//assert(dlg_);
 		if (name == "back") {
 			//dlg_->PostMessageW(WM_CLOSE);
@@ -95,7 +102,32 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			assert(file_dlg_);
 			file_dlg_->update_filter();
 		}
+		
+		break;
 	}
+		
+	case CDuiBottomTool::pic_view:
+	{
+		if (name == "back") {
+			set_mode(filemgr);
+		}
+		
+		break;
+	}
+
+	case CDuiBottomTool::video_view:
+	{
+		if (name == "back") {
+			set_mode(filemgr);
+		}
+		
+		break;
+	}
+
+	default:
+		break;
+	}
+
 
 	//__super::OnClick(msg);
 }
@@ -181,10 +213,35 @@ void CDuiBottomTool::set_mode(mode m)
 	}
 		break;
 
-	case CDuiBottomTool::view_pic:
+	case CDuiBottomTool::pic_view:
+	{
+		tv vv = {
+			{ L"prev_pic", trw(IDS_STRING_PREV_PIC) },
+			{ L"back", trw(IDS_STRING_BACK) },
+			{ L"del", trw(IDS_STRING_DELETE) },
+
+		};
+
+		GAP_WIDHT = 25;
+		do_create(vv);
+
+		tp p = { L"cp_to_usb", trw(IDS_STRING_CP_TO_USB) };
+		add_btn(p.first.c_str(), p.second.c_str(), 1);
+
+		vv = { 
+			{ L"detail", trw(IDS_STRING_DETAIL) },
+			{ L"next_pic", trw(IDS_STRING_NEXT_PIC) },
+		};
+		do_create(vv);
+	}
 		break;
-	case CDuiBottomTool::view_video:
+
+	case CDuiBottomTool::video_view:
+	{
+
+	}
 		break;
+
 	default:
 		assert(0);
 		return;
@@ -226,11 +283,27 @@ void CDuiBottomTool::enable_btns(bool able)
 	__apply_dui_bottom_tool_btn(cap);
 	__apply_dui_bottom_tool_btn(file);
 	__apply_dui_bottom_tool_btn(set);
-	__apply_dui_bottom_tool_btn(system);
+	__apply_dui_bottom_tool_btn(sys);
 	__apply_dui_bottom_tool_btn(bright);
 
 	auto container = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"container")); assert(container);
 	if (!container) { return; }
 	container->NeedUpdate();
+}
+
+void CDuiBottomTool::view_pic(fv pics, fviter iter)
+{
+	pics_ = pics;
+	piter_ = iter;
+
+	set_mode(pic_view);
+}
+
+void CDuiBottomTool::play_video(fv videos, fviter iter)
+{
+	videos_ = videos;
+	viter_ = iter;
+
+	set_mode(video_view);
 }
 
