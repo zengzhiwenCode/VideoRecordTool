@@ -14,7 +14,7 @@ DUI_BEGIN_MESSAGE_MAP(CDuiFileManagerDlg, CNotifyPump)
 DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
 DUI_END_MESSAGE_MAP()
 
-CDuiFileManagerDlg::filter CDuiFileManagerDlg::filter_ = CDuiFileManagerDlg::filter::video;
+CDuiFileManagerDlg::filter CDuiFileManagerDlg::filter_ = CDuiFileManagerDlg::filter::all;
 
 CDuiFileManagerDlg::CDuiFileManagerDlg(const wchar_t* xmlpath)
 	: CXMLWnd(xmlpath)
@@ -93,24 +93,19 @@ void CDuiFileManagerDlg::update_content(filter f)
 		return v1;
 	};
 
-	constexpr int window_width = 1000;
-	constexpr int max_col = 4;
-	constexpr int img_width = 220;
-	constexpr int img_height = img_width * 2 / 3;
-	constexpr int text_height = 10;
-	constexpr int content_height = img_height + text_height;
-	constexpr int gap_width = (window_width - img_width * max_col) / (max_col + 1) + 1;
-	constexpr int gap_height = 20;
-	const SIZE img_round = { 5,5 };
+	typedef std::function<std::string(const fs::path& file)> get_picture;
 
-	switch (f) {
-	case CDuiFileManagerDlg::all:
-	{
-		
-	}
-		break;
-	case CDuiFileManagerDlg::pic:
-	{
+	auto create_content = [&container](fv& vv, const wchar_t* group, get_picture get) {
+		constexpr int window_width = 1000;
+		constexpr int max_col = 4;
+		constexpr int img_width = 220;
+		constexpr int img_height = img_width * 2 / 3;
+		constexpr int text_height = 10;
+		constexpr int content_height = img_height + text_height;
+		constexpr int gap_width = (window_width - img_width * max_col) / (max_col + 1) + 1;
+		constexpr int gap_height = 20;
+		const SIZE img_round = { 5,5 };
+
 		int col = 0;
 		CHorizontalLayoutUI* line = nullptr;
 
@@ -126,95 +121,37 @@ void CDuiFileManagerDlg::update_content(filter f)
 			container->Add(gap);
 		};
 
-		auto files = get_all_pic();
-		for (auto file : files) {
+		for (auto file : vv) {
 			if (col == 0) { // new line
 				add_gap_for_row();
 				line = new CHorizontalLayoutUI();
 				line->SetFixedHeight(content_height);
 				add_gap_for_line();
 				container->Add(line);
-			} 
+			}
+
+			// content
+			auto content = new CVerticalLayoutUI();
+			content->SetFixedHeight(content_height);
+			content->SetFixedWidth(img_width);
+			auto pic = new COptionUI();
+			pic->SetFixedHeight(img_height);
+			pic->SetFixedWidth(img_width);
+			pic->SetBorderRound(img_round);
+
+			auto bkimg = get(file);
+
+			pic->SetBkImage(utf8::a2w(bkimg).c_str());
+			pic->SetGroup(group);
+			auto text = new CLabelUI();
+			text->SetFixedHeight(text_height);
+			text->SetBkColor(container->GetBkColor());
+			text->SetText(file.stem().generic_wstring().c_str());
+			content->Add(pic);
+			content->Add(text);
+			line->Add(content);
+			add_gap_for_line();
 			
-			{ // content
-				auto content = new CVerticalLayoutUI();
-				content->SetFixedHeight(content_height);
-				content->SetFixedWidth(img_width);
-				auto pic = new COptionUI();
-				pic->SetFixedHeight(img_height);
-				pic->SetFixedWidth(img_width);
-				pic->SetBorderRound(img_round);
-				pic->SetBkImage(file.generic_wstring().c_str());
-				pic->SetGroup(L"image");
-				auto text = new CLabelUI();
-				text->SetFixedHeight(text_height);
-				text->SetBkColor(container->GetBkColor());
-				text->SetText(file.stem().generic_wstring().c_str());
-				content->Add(pic);
-				content->Add(text);
-				line->Add(content);
-				add_gap_for_line();
-			}
-
-			if (++col == max_col) { // line break
-				//add_gap_for_line();
-				col = 0;
-				continue;
-			}
-		}
-
-		add_gap_for_row();
-	}
-		break;
-	case CDuiFileManagerDlg::video:
-	{
-		int col = 0;
-		CHorizontalLayoutUI* line = nullptr;
-
-		auto add_gap_for_line = [&line, gap_width]() {
-			auto gap = new CVerticalLayoutUI();
-			gap->SetFixedWidth(gap_width);
-			line->Add(gap);
-		};
-
-		auto add_gap_for_row = [&container, gap_height]() {
-			auto gap = new CHorizontalLayoutUI();
-			gap->SetFixedHeight(gap_height);
-			container->Add(gap);
-		};
-
-		auto files = get_all_video();
-		for (auto file : files) {
-			if (col == 0) { // new line
-				add_gap_for_row();
-				line = new CHorizontalLayoutUI();
-				line->SetFixedHeight(content_height);
-				add_gap_for_line();
-				container->Add(line);
-			}
-
-			{ // content
-				auto content = new CVerticalLayoutUI();
-				content->SetFixedHeight(content_height);
-				content->SetFixedWidth(img_width);
-				auto pic = new COptionUI();
-				pic->SetFixedHeight(img_height);
-				pic->SetFixedWidth(img_width);
-				pic->SetBorderRound(img_round);
-
-				auto thumb_path = cfg->get_thumb_of_video(file.string());
-
-				pic->SetBkImage(utf8::a2w(thumb_path).c_str());
-				pic->SetGroup(L"thumb");
-				auto text = new CLabelUI();
-				text->SetFixedHeight(text_height);
-				text->SetBkColor(container->GetBkColor());
-				text->SetText(file.stem().generic_wstring().c_str());
-				content->Add(pic);
-				content->Add(text);
-				line->Add(content);
-				add_gap_for_line();
-			}
 
 			if (++col == max_col) { // line break
 									//add_gap_for_line();
@@ -224,6 +161,35 @@ void CDuiFileManagerDlg::update_content(filter f)
 		}
 
 		add_gap_for_row();
+	};
+
+	switch (f) {
+	case CDuiFileManagerDlg::all:
+	{
+		auto files = get_all_file();
+		create_content(files, L"all", [cfg](const fs::path& p) {
+			if (p.parent_path().string() == cfg->get_capture_path()) {
+				return p.string();
+			} else if (p.parent_path().string() == cfg->get_video_path()) {
+				return cfg->get_thumb_of_video(p.string());
+			} else {
+				assert(0); return std::string();
+			}
+		});
+	}
+		break;
+	case CDuiFileManagerDlg::pic:
+	{
+		auto files = get_all_pic();
+		create_content(files, L"image", [](const fs::path& p) { return p.string(); });
+	}
+		break;
+	case CDuiFileManagerDlg::video:
+	{
+		auto files = get_all_video();
+		create_content(files, L"thumb", [cfg](const fs::path& p) {
+			return cfg->get_thumb_of_video(p.string());
+		});
 	}
 		break;
 	default:
