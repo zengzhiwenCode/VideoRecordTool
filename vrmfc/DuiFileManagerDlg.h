@@ -26,5 +26,9 @@ protected:
 	static filter filter_;
 
 	void update_content(filter f);
+
+
+public:
+	void update_filter();
 };
 

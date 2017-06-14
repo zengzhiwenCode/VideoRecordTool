@@ -196,3 +196,23 @@ void CDuiFileManagerDlg::update_content(filter f)
 		break;
 	}
 }
+
+void CDuiFileManagerDlg::update_filter()
+{
+	switch (filter_) {
+	case CDuiFileManagerDlg::all:
+		filter_ = pic;
+		break;
+	case CDuiFileManagerDlg::pic:
+		filter_ = video;
+		break;
+	case CDuiFileManagerDlg::video:
+		filter_ = all;
+		break;
+	default:
+		assert(0);
+		break;
+	}
+
+	update_content(filter_);
+}

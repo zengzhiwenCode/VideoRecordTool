@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <Window size="1024,568" mininfo="1024,568" maxinfo="1024,568" caption="0,0,0,-1" sizebox="0,0,0,0">
+    <Include source="scrollbar.xml" />
     <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
 	<Font shared="true" id="1" name="幼圆" size="30" />
-	<HorizontalLayout bkcolor="FFD77E44#" bordersize="1" bordercolor="#FF707070" borderround="25,25"> <!--整个窗口-->
-        <VerticalLayout width="20" />
-        <VerticalLayout>
-            <HorizontalLayout height="10" />
-            <HorizontalLayout height="100" > <!--系统信息-->
-                <VerticalLayout width="20" />
-                <Label text="文件管理器" font="0" align="center" valign="center" textcolor="#FF000000"  />
-                <VerticalLayout width="20" />
-            </HorizontalLayout>
-            <HorizontalLayout height="10" />
+
+
+        <VerticalLayout name="container" bkcolor="FFD77E44#" vscrollbar="true" bordersize="1" bordercolor="#FF707070" borderround="5,5"> <!--整个窗口-->
+            
         </VerticalLayout>
-        <VerticalLayout width="20" />
-	</HorizontalLayout>
+
+
 </Window>
 
 

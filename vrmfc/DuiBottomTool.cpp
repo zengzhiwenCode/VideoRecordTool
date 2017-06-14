@@ -91,6 +91,9 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			maindlg->do_file_manager_over();
 			set_mode(mainwnd);
 			return;
+		} else if (name == "filter") {
+			assert(file_dlg_);
+			file_dlg_->update_filter();
 		}
 	}
 
