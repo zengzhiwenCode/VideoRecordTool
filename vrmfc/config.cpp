@@ -3,6 +3,7 @@
 #include <fstream>
 #include "jsoncpp/json.h"
 #include <filesystem>
+#include "duilib.h"
 
 namespace {
 
@@ -157,4 +158,66 @@ std::string config::create_new_thumb_path(const std::string & stem)
 {
 	auto p = get_thumb_path() + "\\" + stem + VR_THUMBNAIL_EXT;
 	return p;
+}
+
+std::string config::get_thumb_of_video(const std::string & vpath)
+{
+	namespace fs = std::experimental::filesystem;
+	auto thumb_path = create_new_thumb_path(fs::canonical(vpath).stem().string());
+	if (fs::exists(thumb_path)) {
+		return thumb_path;
+	} else {
+		using namespace cv;
+		VideoCapture capture(vpath);
+		if (capture.isOpened()) {
+			Mat frame;
+			capture >> frame; assert(!frame.empty());
+			int c = frame.channels();
+			//imshow("frame", frame);
+			
+			auto icon_play_path = utf8::w2a((CPaintManagerUI::GetResourcePath() + L"image\\play_128px.png").GetData());
+			Mat icon = cv::imread(icon_play_path); assert(!icon.empty());
+			//imshow("icon", icon);
+			c = icon.channels();
+
+			//Mat roi = frame(Range(frame.rows / 4, frame.rows * 3 / 4), Range(frame.cols / 4, frame.cols * 3 / 4));
+			Mat roi = frame(Range(frame.rows / 2 - icon.rows / 2, frame.rows / 2 + icon.rows / 2), 
+							Range(frame.cols / 2 - icon.cols / 2, frame.cols / 2 + icon.cols / 2));
+			//imshow("roi", roi);
+
+			//waitKey();
+			auto alpha = 0.5;
+			auto beta = 1.0 - alpha;
+			addWeighted(roi, alpha, icon, beta, 0, roi);
+			//bitwise_or(roi, icon, roi);
+
+			// Now create a mask of logo and create its inverse mask also
+			//Mat icon_gray;
+			//cvtColor(icon, icon_gray, COLOR_BGR2GRAY);
+			/*Mat mask;
+			threshold(icon, mask, 30, 200, THRESH_BINARY);
+
+			add(roi, icon, roi, mask);
+*/
+
+			////	ret, mask = cv2.threshold(img2gray, 10, 255, cv2.THRESH_BINARY)
+			//Mat mask_inv;
+			//bitwise_not(mask, mask_inv);
+			//// Now black - out the area of logo in ROI
+			////Mat roi_bg;
+			//bitwise_and(roi, roi, roi, mask_inv);
+			//// Take only region of logo from logo image.
+			//Mat icon_fg;
+			//bitwise_and(icon, icon, icon_fg, mask);
+			//// Put logo in ROI and modify the main image
+			////Mat roi_dst;
+			//add(roi, icon_fg, roi);
+			////roi = roi_dst;
+
+			imwrite(thumb_path, frame);
+			return thumb_path;
+		}
+	}
+
+	return std::string();
 }

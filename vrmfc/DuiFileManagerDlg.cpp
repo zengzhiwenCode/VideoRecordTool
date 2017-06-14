@@ -14,7 +14,7 @@ DUI_BEGIN_MESSAGE_MAP(CDuiFileManagerDlg, CNotifyPump)
 DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
 DUI_END_MESSAGE_MAP()
 
-CDuiFileManagerDlg::filter CDuiFileManagerDlg::filter_ = CDuiFileManagerDlg::filter::pic;
+CDuiFileManagerDlg::filter CDuiFileManagerDlg::filter_ = CDuiFileManagerDlg::filter::video;
 
 CDuiFileManagerDlg::CDuiFileManagerDlg(const wchar_t* xmlpath)
 	: CXMLWnd(xmlpath)
@@ -145,7 +145,7 @@ void CDuiFileManagerDlg::update_content(filter f)
 				pic->SetFixedWidth(img_width);
 				pic->SetBorderRound(img_round);
 				pic->SetBkImage(file.generic_wstring().c_str());
-				pic->SetGroup(L"img");
+				pic->SetGroup(L"image");
 				auto text = new CLabelUI();
 				text->SetFixedHeight(text_height);
 				text->SetBkColor(container->GetBkColor());
@@ -167,6 +167,64 @@ void CDuiFileManagerDlg::update_content(filter f)
 	}
 		break;
 	case CDuiFileManagerDlg::video:
+	{
+		int col = 0;
+		CHorizontalLayoutUI* line = nullptr;
+
+		auto add_gap_for_line = [&line, gap_width]() {
+			auto gap = new CVerticalLayoutUI();
+			gap->SetFixedWidth(gap_width);
+			line->Add(gap);
+		};
+
+		auto add_gap_for_row = [&container, gap_height]() {
+			auto gap = new CHorizontalLayoutUI();
+			gap->SetFixedHeight(gap_height);
+			container->Add(gap);
+		};
+
+		auto files = get_all_video();
+		for (auto file : files) {
+			if (col == 0) { // new line
+				add_gap_for_row();
+				line = new CHorizontalLayoutUI();
+				line->SetFixedHeight(content_height);
+				add_gap_for_line();
+				container->Add(line);
+			}
+
+			{ // content
+				auto content = new CVerticalLayoutUI();
+				content->SetFixedHeight(content_height);
+				content->SetFixedWidth(img_width);
+				auto pic = new COptionUI();
+				pic->SetFixedHeight(img_height);
+				pic->SetFixedWidth(img_width);
+				pic->SetBorderRound(img_round);
+
+				auto thumb_path = cfg->get_thumb_of_video(file.string());
+
+				pic->SetBkImage(utf8::a2w(thumb_path).c_str());
+				pic->SetGroup(L"thumb");
+				auto text = new CLabelUI();
+				text->SetFixedHeight(text_height);
+				text->SetBkColor(container->GetBkColor());
+				text->SetText(file.stem().generic_wstring().c_str());
+				content->Add(pic);
+				content->Add(text);
+				line->Add(content);
+				add_gap_for_line();
+			}
+
+			if (++col == max_col) { // line break
+									//add_gap_for_line();
+				col = 0;
+				continue;
+			}
+		}
+
+		add_gap_for_row();
+	}
 		break;
 	default:
 		break;

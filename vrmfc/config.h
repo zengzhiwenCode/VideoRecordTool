@@ -42,6 +42,7 @@ public:
 	std::string create_new_capture_path() const;
 	std::string get_thumb_path() const;
 	std::string create_new_thumb_path(const std::string& stem);
+	std::string get_thumb_of_video(const std::string& vpath); // if thumb not exist, create it.
 	
 
 #define declare_getter(type, val) type get##val() const { return val; }
