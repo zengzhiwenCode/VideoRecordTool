@@ -11,7 +11,7 @@ public:
 	explicit CDuiBottomTool(const wchar_t* xmlpath);
 	virtual ~CDuiBottomTool();
 
-	std::shared_ptr<CDuiFileManagerDlg> file_dlg_ = {};
+	
 
 	//DUI_DECLARE_MESSAGE_MAP();
 	virtual void InitWindow() override;
@@ -26,6 +26,8 @@ protected:
 	fv videos_ = {};
 	fviter viter_ = {};
 
+	CRect rc_filedlg_ = {};
+	std::shared_ptr<CDuiFileManagerDlg> file_dlg_ = {};
 	std::shared_ptr<CDuiPreviewCaptureDlg> pic_view_ = {};
 
 	

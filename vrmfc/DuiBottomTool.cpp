@@ -6,6 +6,39 @@
 #include "DuiPreviewCaptureDlg.h"
 
 
+namespace {
+
+namespace btn_names {
+
+auto back = L"back";
+auto rec = L"rec";
+auto cap = L"cap";
+auto file = L"file";
+auto set = L"set";
+auto sys = L"sys";
+auto bright = L"bright";
+auto edit = L"edit";
+auto filter = L"filter";
+auto page_up = L"page_up";
+auto page_dn = L"page_dn";
+auto sel_all = L"sel_all";
+auto del = L"delete";
+auto cp_to_usb = L"cp_to_usb";
+auto prev_pic = L"prev_pic";
+auto next_pic = L"next_pic";
+auto detail = L"detail";
+auto prev_video = L"prev_video";
+auto next_video = L"next_video";
+auto stop = L"stop";
+auto play = L"play";
+auto pause = L"pause";
+
+
+}
+
+}
+
+
 //DUI_BEGIN_MESSAGE_MAP(CDuiBottomTool, CNotifyPump)
 //DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
 //DUI_END_MESSAGE_MAP()
@@ -42,33 +75,29 @@ LRESULT CDuiBottomTool::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void CDuiBottomTool::OnClick(TNotifyUI & msg)
 {
-	std::string name = utf8::w2a(msg.pSender->GetName().GetData()); range_log rl("CDuiBottomTool::OnClick " + name);
+	//std::string name = utf8::w2a(msg.pSender->GetName().GetData()); range_log rl("CDuiBottomTool::OnClick " + name);
+	std::wstring name = msg.pSender->GetName().GetData();
 	auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
 	if (!maindlg) { JLOG_CRTC("cannot find main dlg!"); return; }
 
 	switch (mode_) {
 	case CDuiBottomTool::mainwnd:
 	{
-		if (name == "exit") {
+		if (name == btn_names::back) {
 			maindlg->do_exit_windows();
-		} else if (name == "rec") {
+		} else if (name == btn_names::rec) {
 			maindlg->do_record();
-		} else if (name == "cap") {
+		} else if (name == btn_names::cap) {
 			maindlg->do_capture();
-		} else if (name == "file") {
-			CRect rc;
-			if (maindlg->do_file_manager(rc)) {
+		} else if (name == btn_names::file) {
+			if (maindlg->do_file_manager(rc_filedlg_)) {
 				set_mode(CDuiBottomTool::mode::filemgr);
-				file_dlg_ = std::make_shared<CDuiFileManagerDlg>(L"filemanager.xml");
-				file_dlg_->Create(GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
-				::MoveWindow(file_dlg_->GetHWND(), rc.left, rc.top, rc.Width(), rc.Height(), 0);
-				file_dlg_->ShowWindow();
 			}
-		} else if (name == "set") {
+		} else if (name == btn_names::set) {
 			maindlg->do_settings();
-		} else if (name == "system") {
+		} else if (name == btn_names::sys) {
 			maindlg->do_system_info();
-		} else if (name == "bright") {
+		} else if (name == btn_names::bright) {
 			maindlg->do_adjust_brightness();
 		}
 
@@ -78,7 +107,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 	case CDuiBottomTool::filemgr:
 	{
 		//assert(dlg_);
-		if (name == "back") {
+		if (name == btn_names::back) {
 			//dlg_->PostMessageW(WM_CLOSE);
 			assert(file_dlg_);
 			file_dlg_->SendMessageW(WM_CLOSE);
@@ -86,7 +115,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			maindlg->do_file_manager_over();
 			set_mode(mainwnd);
 			return;
-		} else if (name == "filter") {
+		} else if (name == btn_names::filter) {
 			assert(file_dlg_);
 			file_dlg_->update_filter();
 		}
@@ -96,8 +125,22 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 		
 	case CDuiBottomTool::pic_view:
 	{
-		if (name == "back") {
+		if (name == btn_names::back) {
+			assert(pic_view_);
+			pic_view_->SendMessageW(WM_CLOSE);
+			pic_view_.reset();
+
 			set_mode(filemgr);
+		} else if (name == btn_names::prev_pic) {
+
+		} else if (name == btn_names::next_pic) {
+
+		} else if (name == btn_names::del) {
+
+		} else if (name == btn_names::cp_to_usb) {
+
+		} else if (name == btn_names::detail) {
+
 		}
 		
 		break;
@@ -105,8 +148,24 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 
 	case CDuiBottomTool::video_view:
 	{
-		if (name == "back") {
+		if (name == btn_names::back) {
 			set_mode(filemgr);
+		} else if (name == btn_names::prev_video) {
+
+		} else if (name == btn_names::next_video) {
+		
+		} else if (name == btn_names::stop) {
+		
+		} else if (name == btn_names::play) {
+
+		} else if (name == btn_names::pause) {
+
+		} else if (name == btn_names::del) {
+
+		} else if (name == btn_names::cp_to_usb) {
+
+		} else if (name == btn_names::detail) {
+
 		}
 		
 		break;
@@ -197,6 +256,13 @@ void CDuiBottomTool::set_mode(mode m)
 		tp p = { L"cp_to_usb", trw(IDS_STRING_CP_TO_USB) };
 		add_btn(p.first.c_str(), p.second.c_str(), 1);
 		add_gap();
+
+		if (!file_dlg_) {
+			file_dlg_ = std::make_shared<CDuiFileManagerDlg>(L"filemanager.xml");
+			file_dlg_->Create(GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+			::MoveWindow(file_dlg_->GetHWND(), rc_filedlg_.left, rc_filedlg_.top, rc_filedlg_.Width(), rc_filedlg_.Height(), 0);
+		}
+		file_dlg_->ShowWindow();
 	}
 		break;
 
