@@ -207,7 +207,6 @@ void CDuiBottomTool::set_mode(mode m)
 		do_create(vv);
 
 		tp p = { L"cp_to_usb", trw(IDS_STRING_CP_TO_USB) };
-		add_gap();
 		add_btn(p.first.c_str(), p.second.c_str(), 1);
 		add_gap();
 	}
@@ -238,7 +237,26 @@ void CDuiBottomTool::set_mode(mode m)
 
 	case CDuiBottomTool::video_view:
 	{
+		tv vv = {
+			{ L"prev_video", trw(IDS_STRING_PREV_VIDEO) },
+			{ L"stop", trw(IDS_STRING_STOP) },
+			{ L"pause", trw(IDS_STRING_PAUSE) },
+			{ L"back", trw(IDS_STRING_BACK) },
+			{ L"del", trw(IDS_STRING_DELETE) },
 
+		};
+
+		GAP_WIDHT = 5;
+		do_create(vv);
+
+		tp p = { L"cp_to_usb", trw(IDS_STRING_CP_TO_USB) };
+		add_btn(p.first.c_str(), p.second.c_str(), 1);
+
+		vv = {
+			{ L"detail", trw(IDS_STRING_DETAIL) },
+			{ L"next_video", trw(IDS_STRING_NEXT_VIDEO) },
+		};
+		do_create(vv);
 	}
 		break;
 
