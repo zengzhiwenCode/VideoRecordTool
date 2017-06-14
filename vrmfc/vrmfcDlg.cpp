@@ -624,7 +624,8 @@ void CvrmfcDlg::do_capture()
 
 		if (CDuiPreviewCaptureDlg::make_xml(img.cols, img.rows)) {
 			CDuiPreviewCaptureDlg dlg(L"capture.xml");
-			dlg.img_ = cfile;
+			dlg.set_auto_close();
+			dlg.set_image(cfile);
 			dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 			dlg.ShowModal();
 		}

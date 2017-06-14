@@ -40,9 +40,12 @@ CDuiPreviewCaptureDlg::~CDuiPreviewCaptureDlg()
 void CDuiPreviewCaptureDlg::InitWindow()
 {
 	CenterWindow();
-	auto pic = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"pic")); assert(pic);
-	if (pic && !img_.empty()) {
-		pic->SetBkImage(utf8::a2w(img_).c_str());
+
+	if (!img_.empty()) {
+		auto pic = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"pic")); assert(pic);
+		if (pic && !img_.empty()) {
+			pic->SetBkImage(utf8::a2w(img_).c_str());
+		}
 	}
 
 	if (auto_close_) {
@@ -57,4 +60,16 @@ LRESULT CDuiPreviewCaptureDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 	}
 
 	return __super::HandleMessage(uMsg, wParam, lParam);
+}
+
+void CDuiPreviewCaptureDlg::set_image(const std::string & img)
+{
+	img_ = img;
+
+	if (m_hWnd) {
+		auto pic = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"pic")); assert(pic);
+		if (pic && !img_.empty()) {
+			pic->SetBkImage(utf8::a2w(img_).c_str());
+		}
+	} 
 }

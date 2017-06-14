@@ -28,6 +28,7 @@ protected:
 
 	CRect rc_filedlg_ = {};
 	std::shared_ptr<CDuiFileManagerDlg> file_dlg_ = {};
+	SIZE sz_prevpic_ = {};
 	std::shared_ptr<CDuiPreviewCaptureDlg> pic_view_ = {};
 
 	

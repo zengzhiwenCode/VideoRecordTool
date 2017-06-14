@@ -132,9 +132,13 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 
 			set_mode(filemgr);
 		} else if (name == btn_names::prev_pic) {
-
+			if (piter_ > 0) {
+				view_pic(--piter_);
+			}
 		} else if (name == btn_names::next_pic) {
-
+			if (piter_ + 1 < pics_.size()) {
+				view_pic(++piter_);
+			}
 		} else if (name == btn_names::del) {
 
 		} else if (name == btn_names::cp_to_usb) {
@@ -387,21 +391,30 @@ void CDuiBottomTool::play_video(fv videos, fviter iter)
 
 void CDuiBottomTool::view_pic(fviter index)
 {
-	if (pic_view_) {
-		pic_view_->SendMessageW(WM_CLOSE);
-		pic_view_.reset();
-	}
-
 	if (0 <= index && index < pics_.size()) {
 		auto path = pics_[index];
 		cv::Mat mat = cv::imread(path.string());
+		if (!mat.empty()) {
+			if (sz_prevpic_.cx != mat.cols || sz_prevpic_.cy != mat.rows) {
+				if (pic_view_) {
+					pic_view_->SendMessageW(WM_CLOSE);
+					pic_view_.reset();
+				}
+			}
 
-		if (!mat.empty() && CDuiPreviewCaptureDlg::make_xml(mat.cols, mat.rows)) {
-			pic_view_ = std::make_shared<CDuiPreviewCaptureDlg>(L"capture.xml");
-			pic_view_->auto_close_ = false;
-			pic_view_->img_ = path.string();
-			pic_view_->Create(AfxGetMainWnd()->GetSafeHwnd(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
-			pic_view_->ShowWindow();
+			if (!pic_view_ && CDuiPreviewCaptureDlg::make_xml(mat.cols, mat.rows)) {
+				pic_view_ = std::make_shared<CDuiPreviewCaptureDlg>(L"capture.xml");
+				pic_view_->set_auto_close(false);
+				pic_view_->Create(AfxGetMainWnd()->GetSafeHwnd(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+			}
+			
+			if (pic_view_) {
+				pic_view_->set_image(path.string());
+				pic_view_->ShowWindow();
+			}
+
+			sz_prevpic_.cx = mat.cols;
+			sz_prevpic_.cy = mat.rows;
 		}
 	}
 }
