@@ -45,7 +45,9 @@ void CDuiPreviewCaptureDlg::InitWindow()
 		pic->SetBkImage(utf8::a2w(img_).c_str());
 	}
 
-	SetTimer(m_hWnd, 1, 1500, nullptr);
+	if (auto_close_) {
+		SetTimer(m_hWnd, 1, 1500, nullptr);
+	}
 }
 
 LRESULT CDuiPreviewCaptureDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)

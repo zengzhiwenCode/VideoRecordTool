@@ -2,7 +2,7 @@
 
 #include "duilib.h"
 
-
+class CDuiPreviewCaptureDlg;
 class CDuiFileManagerDlg;
 
 class CDuiBottomTool : public CXMLWnd
@@ -26,6 +26,10 @@ protected:
 	fv videos_ = {};
 	fviter viter_ = {};
 
+	std::shared_ptr<CDuiPreviewCaptureDlg> pic_view_ = {};
+
+	
+
 public:
 	enum mode {
 		mainwnd,
@@ -35,7 +39,12 @@ public:
 	}mode_ = mainwnd;
 
 	void set_mode(mode m);
+	mode get_mode() const { return mode_; }
 	void enable_btns(bool able);
 	void view_pic(fv pics, fviter iter);
 	void play_video(fv videos, fviter iter);
+	
+protected:
+	void view_pic(fviter index);
+	void play_video(fviter index);
 };

@@ -481,13 +481,19 @@ afx_msg LRESULT CvrmfcDlg::OnDeviceChange(WPARAM wParam, LPARAM lParam)
 
 void CvrmfcDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	if (bottom_show_) {
-		dui_bt_->ShowWindow(false, false);
-	} else {
-		dui_bt_->ShowWindow(true, true);
-	}
+	do {
+		if (bottom_show_) {
+			if (dui_bt_->get_mode() != CDuiBottomTool::mode::mainwnd) {
+				break;
+			}
 
-	bottom_show_ = !bottom_show_;
+			dui_bt_->ShowWindow(false, false);
+		} else {
+			dui_bt_->ShowWindow(true, true);
+		}
+
+		bottom_show_ = !bottom_show_;
+	} while (false);
 
 	CDialogEx::OnLButtonDown(nFlags, point);
 }

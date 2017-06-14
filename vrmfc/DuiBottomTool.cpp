@@ -3,6 +3,7 @@
 #include "DuiBottomTool.h"
 #include "vrmfcDlg.h"
 #include "DuiFileManagerDlg.h"
+#include "DuiPreviewCaptureDlg.h"
 
 
 //DUI_BEGIN_MESSAGE_MAP(CDuiBottomTool, CNotifyPump)
@@ -21,20 +22,7 @@ CDuiBottomTool::~CDuiBottomTool()
 
 void CDuiBottomTool::InitWindow()
 {
-	auto container = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"container")); assert(container);
-	if (!container) { return; }
-	int w = container->GetWidth();
-	int h = container->GetHeight();
 
-	const int BTN_W = 64;
-
-	/*SIZE sz = { 5, 0 };
-	auto btn = new CButtonUI();
-	btn->SetBkImage(L"image\\exit.png");
-	btn->SetFixedXY(sz);
-	btn->SetFixedWidth(BTN_W);
-	btn->SetFixedHeight(BTN_W);
-	container->Add(btn);*/
 }
 
 void CDuiBottomTool::Notify(DuiLib::TNotifyUI & msg)
@@ -232,6 +220,10 @@ void CDuiBottomTool::set_mode(mode m)
 			{ L"next_pic", trw(IDS_STRING_NEXT_PIC) },
 		};
 		do_create(vv);
+
+		file_dlg_->ShowWindow(false, false);
+
+		view_pic(piter_);
 	}
 		break;
 
@@ -323,5 +315,32 @@ void CDuiBottomTool::play_video(fv videos, fviter iter)
 	viter_ = iter;
 
 	set_mode(video_view);
+
+	play_video(viter_);
+}
+
+void CDuiBottomTool::view_pic(fviter index)
+{
+	if (pic_view_) {
+		pic_view_->SendMessageW(WM_CLOSE);
+		pic_view_.reset();
+	}
+
+	if (0 <= index && index < pics_.size()) {
+		auto path = pics_[index];
+		cv::Mat mat = cv::imread(path.string());
+
+		if (!mat.empty() && CDuiPreviewCaptureDlg::make_xml(mat.cols, mat.rows)) {
+			pic_view_ = std::make_shared<CDuiPreviewCaptureDlg>(L"capture.xml");
+			pic_view_->auto_close_ = false;
+			pic_view_->img_ = path.string();
+			pic_view_->Create(AfxGetMainWnd()->GetSafeHwnd(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+			pic_view_->ShowWindow();
+		}
+	}
+}
+
+void CDuiBottomTool::play_video(fviter index)
+{
 }
 
