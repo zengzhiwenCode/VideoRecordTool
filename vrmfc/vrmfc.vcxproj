@@ -193,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlarmTextDlg.h" />
+    <ClInclude Include="CameraDS.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="DuiBottomTool.h" />
     <ClInclude Include="DuiConfirmExitDlg.h" />
@@ -210,6 +211,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlarmTextDlg.cpp" />
+    <ClCompile Include="CameraDS.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="DuiBottomTool.cpp" />
     <ClCompile Include="DuiConfirmExitDlg.cpp" />

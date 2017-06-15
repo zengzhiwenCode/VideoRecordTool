@@ -282,7 +282,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 
 	// init video
 	{
-		if (!capture_.open(cfg->get_vidx())) {
+		if (!capture_.open(CV_CAP_DSHOW  + cfg->get_vidx())) {
 			if (capture_.open(0)) {
 				cfg->set_vidx(0);
 			}
@@ -301,27 +301,40 @@ BOOL CvrmfcDlg::OnInitDialog()
 			//capture_.read(frame);
 			//capture_.set(CAP_PROP_FOURCC, CV_FOURCC('M', 'P', 'E', 'G'));
 			//auto f = capture_.get(CAP_PROP_FORMAT);
-			int ex = static_cast<int>(capture_.get(CV_CAP_PROP_FOURCC));     // Get Codec Type- Int form
-
-			//																   // Transform from int to char via Bitwise operators
-			char EXT[] = { (char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0 };
-			JLOG_INFO("fourcc={}", EXT);
-
-			auto get_fourcc = [this]() {
-
+			
+			auto get_fourcc = [this]() -> std::string {
+				int ex = static_cast<int>(capture_.get(CV_CAP_PROP_FOURCC));
+				char EXT[] = { (char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0 };
+				return EXT;
 			};
 
 			//
 			//
-			bool ok = capture_.set(CAP_PROP_MODE, CAP_MODE_BGR);
-			JLOG_INFO("bgr {}", ok);
+			bool ok = false;
+			
+			ok = capture_.set(CAP_PROP_MODE, CAP_MODE_BGR);
+			JLOG_INFO("CAP_MODE_BGR {}", ok);
 
-			ok = capture_.set(CAP_PROP_MODE, CAP_MODE_YUYV); JLOG_INFO("yuyv {}", ok);
+			ok = capture_.set(CAP_PROP_MODE, CAP_MODE_RGB);
+			JLOG_INFO("CAP_MODE_RGB {}", ok);
 
-			ok = capture_.set(CAP_PROP_FOURCC, CV_FOURCC('M', 'P', 'E', 'G')); JLOG_INFO("mpeg {}", ok);
+			ok = capture_.set(CAP_PROP_MODE, CAP_MODE_YUYV);
+			JLOG_INFO("CAP_MODE_YUYV {}", ok);
 
-			ok = capture_.set(CAP_PROP_FOURCC, CV_FOURCC('Y', 'U', 'Y', '2')); JLOG_INFO("yuy2 {}", ok);
+			ok = capture_.set(CAP_PROP_CONVERT_RGB, false);
+			JLOG_INFO("CAP_PROP_CONVERT_RGB {}", ok);
 
+			//ok = capture_.set(CAP_PROP_MODE, CAP_MODE_YUYV); 
+			//JLOG_INFO("yuyv {}", ok);
+			//JLOG_INFO("fourcc={}", get_fourcc());
+
+			ok = capture_.set(CAP_PROP_FOURCC, CV_FOURCC('M', 'J', 'P', 'G'));
+			JLOG_INFO("MJPG {}", ok);
+			JLOG_INFO("fourcc={}", get_fourcc());
+
+			ok = capture_.set(CAP_PROP_FOURCC, CV_FOURCC('Y', 'U', 'Y', '2')); 
+			JLOG_INFO("YUY2 {}", ok);
+			JLOG_INFO("fourcc={}", get_fourcc());
 			//ok = capture_.set(CAP_PROP_MODE, cap_mode_);
 
 			//auto mode = capture_.get(CAP_PROP_MODE);

@@ -25,6 +25,9 @@
     <Filter Include="ui">
       <UniqueIdentifier>{98f2d0e6-b412-4b27-a4c2-d4568b1ef71e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ds">
+      <UniqueIdentifier>{7a5ef1be-c6a1-41f1-8db7-1624a55712db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -75,6 +78,9 @@
     <ClInclude Include="DuiFileManagerDlg.h">
       <Filter>ui</Filter>
     </ClInclude>
+    <ClInclude Include="CameraDS.h">
+      <Filter>ds</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vrmfc.cpp">
@@ -118,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="DuiFileManagerDlg.cpp">
       <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraDS.cpp">
+      <Filter>ds</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
