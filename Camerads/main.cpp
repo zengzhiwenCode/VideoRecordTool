@@ -56,10 +56,10 @@ int main()
 	// 直到找到可用的为止。
 	int m_iCamNum = 0; // 摄像头编号
 
-	IplImage *pFrame = NULL;
-
+	//IplImage *pFrame = NULL;
+	cv::Mat frame;
 	while (m_iCamNum < m_iCamCount) {
-		if ((!m_CamDS.OpenCamera(m_iCamNum, false, 960, 720)) || ((pFrame = m_CamDS.QueryFrame()) == NULL)) {
+		if ((!m_CamDS.OpenCamera(m_iCamNum, false, 960, 720))) {
 			m_iCamNum++;
 		} else { // 找到合适的摄像头，退出循环。
 			break;
@@ -75,16 +75,17 @@ int main()
 		return (-1);
 	}
 
-	cvNamedWindow(g_szTitle);
+	cv::namedWindow(g_szTitle);
 	//显示
-	cvShowImage(g_szTitle, pFrame);
+	//cvShowImage(g_szTitle, frame);
+	//cv::imshow(g_szTitle, frame);
 
 	while (1) {
 		//获取一帧
-		pFrame = m_CamDS.QueryFrame();
+		frame = m_CamDS.QueryFrame();
 
 		//显示
-		cvShowImage(g_szTitle, pFrame);
+		cv::imshow(g_szTitle, frame);
 
 		if (cvWaitKey(20) == 'q') {
 			break;
@@ -93,7 +94,7 @@ int main()
 
 	m_CamDS.CloseCamera(); //可不调用此函数，CCameraDS析构时会自动关闭摄像头
 
-	cvDestroyWindow(g_szTitle);
+	//cvDestroyWindow(g_szTitle);
 
 	return 0;
 }

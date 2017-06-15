@@ -4,6 +4,7 @@
 
 #pragma once
 #include "afxwin.h"
+#include "CameraDS.h"
 
 class CAlarmTextDlg;
 class PkMatToGDI;
@@ -30,7 +31,8 @@ protected:
 	HICON m_hIcon;
 	CStatic m_player;
 	std::shared_ptr<PkMatToGDI> drawer_ = {};
-	cv::VideoCapture capture_ = {};
+	//cv::VideoCapture capture_ = {};
+	CCameraDS dscap_ = {};
 	CBrush m_bkbrush = {};
 	std::shared_ptr<CAlarmTextDlg> tip_ = {};
 	std::shared_ptr<CAlarmTextDlg> rec_tip_ = {};

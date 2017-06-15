@@ -34,7 +34,7 @@ CCameraDS::CCameraDS()
 	m_nWidth = m_nHeight = 0;
 	m_nBufferSize = 0;
 
-	m_pFrame = NULL;
+	//m_pFrame = NULL;
 
 	m_pNullFilter = NULL;
 	m_pMediaEvent = NULL;
@@ -68,9 +68,9 @@ void CCameraDS::CloseCamera()
 	m_pNullFilter = NULL;
 	m_pNullInputPin = NULL;
 
-	if (m_pFrame) {
-		cvReleaseImage(&m_pFrame);
-	}
+	//if (m_pFrame) {
+	//	cvReleaseImage(&m_pFrame);
+	//}
 
 	m_bConnected = m_bLock = m_bChanged = false;
 	m_nWidth = m_nHeight = 0;
@@ -175,12 +175,13 @@ bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int 
 			VIDEOINFOHEADER *phead = (VIDEOINFOHEADER*)(pmt->pbFormat);
 			phead->bmiHeader.biWidth = nWidth;
 			phead->bmiHeader.biHeight = nHeight;
+			pmt->subtype = MEDIASUBTYPE_YUY2;
 			if ((hr = iconfig->SetFormat(pmt)) != S_OK) {
 				return false;
 			}
 		}
 
-		pmt->subtype = MEDIASUBTYPE_YUY2;
+		
 
 		iconfig->Release();
 		iconfig = NULL;
@@ -315,7 +316,7 @@ void CCameraDS::SetCrossBar()
 /*
 The returned image can not be released.
 */
-IplImage* CCameraDS::QueryFrame()
+cv::Mat CCameraDS::QueryFrame()
 {
 	long evCode, size = 0;
 
@@ -326,18 +327,21 @@ IplImage* CCameraDS::QueryFrame()
 
 	//if the buffer size changed
 	if (size != m_nBufferSize) {
-		if (m_pFrame) {
-			cvReleaseImage(&m_pFrame);
-		}
+		//if (m_pFrame) {
+		//	cvReleaseImage(&m_pFrame);
+		//}
 
 		m_nBufferSize = size;
-		m_pFrame = cvCreateImage(cvSize(m_nWidth, m_nHeight), IPL_DEPTH_8U, 3);
+		//m_pFrame = cvCreateImage(cvSize(m_nWidth, m_nHeight), IPL_DEPTH_8U, 3);
+		//if (!frame.data) {
+		frame.create(m_nHeight, m_nWidth, CV_8UC3);
 	}
 
-	m_pSampleGrabber->GetCurrentBuffer(&m_nBufferSize, (long*)m_pFrame->imageData);
-	cvFlip(m_pFrame);
+	m_pSampleGrabber->GetCurrentBuffer(&m_nBufferSize, (long*)frame.data);
+	//cvFlip(m_pFrame);
+	cv::flip(frame, frame, 0);
 
-	return m_pFrame;
+	return frame;
 }
 
 int CCameraDS::CameraCount()

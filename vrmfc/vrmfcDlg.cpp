@@ -282,62 +282,81 @@ BOOL CvrmfcDlg::OnInitDialog()
 
 	// init video
 	{
-		if (!capture_.open(CV_CAP_DSHOW  + cfg->get_vidx())) {
-			if (capture_.open(0)) {
-				cfg->set_vidx(0);
-			}
+		//if (!capture_.open(CV_CAP_DSHOW  + cfg->get_vidx())) {
+		//	if (capture_.open(0)) {
+		//		cfg->set_vidx(0);
+		//	}
+		//}
+
+		//if (capture_.isOpened()) {
+		//	if (cfg->get_video_w() == 0 || cfg->get_video_h() == 0) {
+		//		cfg->set_video_w(static_cast<int>(capture_.get(CAP_PROP_FRAME_WIDTH)));
+		//		cfg->set_video_h(static_cast<int>(capture_.get(CAP_PROP_FRAME_HEIGHT)));
+		//	} else {
+		//		capture_.set(CAP_PROP_FRAME_WIDTH, cfg->get_video_w());
+		//		capture_.set(CAP_PROP_FRAME_HEIGHT, cfg->get_video_h());
+		//	}
+
+		//	//Mat frame;
+		//	//capture_.read(frame);
+		//	//capture_.set(CAP_PROP_FOURCC, CV_FOURCC('M', 'P', 'E', 'G'));
+		//	//auto f = capture_.get(CAP_PROP_FORMAT);
+		//	
+		//	auto get_fourcc = [this]() -> std::string {
+		//		int ex = static_cast<int>(capture_.get(CV_CAP_PROP_FOURCC));
+		//		char EXT[] = { (char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0 };
+		//		return EXT;
+		//	};
+
+		//	//
+		//	//
+		//	bool ok = false;
+		//	
+		//	ok = capture_.set(CAP_PROP_MODE, CAP_MODE_BGR);
+		//	JLOG_INFO("CAP_MODE_BGR {}", ok);
+
+		//	ok = capture_.set(CAP_PROP_MODE, CAP_MODE_RGB);
+		//	JLOG_INFO("CAP_MODE_RGB {}", ok);
+
+		//	ok = capture_.set(CAP_PROP_MODE, CAP_MODE_YUYV);
+		//	JLOG_INFO("CAP_MODE_YUYV {}", ok);
+
+		//	ok = capture_.set(CAP_PROP_CONVERT_RGB, false);
+		//	JLOG_INFO("CAP_PROP_CONVERT_RGB {}", ok);
+
+		//	//ok = capture_.set(CAP_PROP_MODE, CAP_MODE_YUYV); 
+		//	//JLOG_INFO("yuyv {}", ok);
+		//	//JLOG_INFO("fourcc={}", get_fourcc());
+
+		//	ok = capture_.set(CAP_PROP_FOURCC, CV_FOURCC('M', 'J', 'P', 'G'));
+		//	JLOG_INFO("MJPG {}", ok);
+		//	JLOG_INFO("fourcc={}", get_fourcc());
+
+		//	ok = capture_.set(CAP_PROP_FOURCC, CV_FOURCC('Y', 'U', 'Y', '2')); 
+		//	JLOG_INFO("YUY2 {}", ok);
+		//	JLOG_INFO("fourcc={}", get_fourcc());
+		//	//ok = capture_.set(CAP_PROP_MODE, cap_mode_);
+
+		//	//auto mode = capture_.get(CAP_PROP_MODE);
+
+		//	adjust_player_size(cfg->get_video_w(), cfg->get_video_h());
+		//	drawer_ = std::make_shared<PkMatToGDI>(m_player.GetSafeHwnd(), false);		
+
+		//	fps_.begin = std::chrono::steady_clock::now();
+		//	fps_.frames = 0;
+		//}
+
+		int w = 960; int h = 720;
+		Mat frame;
+
+		if (cfg->get_video_w() != 0 && cfg->get_video_h() != 0) {
+			w = cfg->get_video_w();
+			h = cfg->get_video_h();
 		}
 
-		if (capture_.isOpened()) {
-			if (cfg->get_video_w() == 0 || cfg->get_video_h() == 0) {
-				cfg->set_video_w(static_cast<int>(capture_.get(CAP_PROP_FRAME_WIDTH)));
-				cfg->set_video_h(static_cast<int>(capture_.get(CAP_PROP_FRAME_HEIGHT)));
-			} else {
-				capture_.set(CAP_PROP_FRAME_WIDTH, cfg->get_video_w());
-				capture_.set(CAP_PROP_FRAME_HEIGHT, cfg->get_video_h());
-			}
-
-			//Mat frame;
-			//capture_.read(frame);
-			//capture_.set(CAP_PROP_FOURCC, CV_FOURCC('M', 'P', 'E', 'G'));
-			//auto f = capture_.get(CAP_PROP_FORMAT);
-			
-			auto get_fourcc = [this]() -> std::string {
-				int ex = static_cast<int>(capture_.get(CV_CAP_PROP_FOURCC));
-				char EXT[] = { (char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0 };
-				return EXT;
-			};
-
-			//
-			//
-			bool ok = false;
-			
-			ok = capture_.set(CAP_PROP_MODE, CAP_MODE_BGR);
-			JLOG_INFO("CAP_MODE_BGR {}", ok);
-
-			ok = capture_.set(CAP_PROP_MODE, CAP_MODE_RGB);
-			JLOG_INFO("CAP_MODE_RGB {}", ok);
-
-			ok = capture_.set(CAP_PROP_MODE, CAP_MODE_YUYV);
-			JLOG_INFO("CAP_MODE_YUYV {}", ok);
-
-			ok = capture_.set(CAP_PROP_CONVERT_RGB, false);
-			JLOG_INFO("CAP_PROP_CONVERT_RGB {}", ok);
-
-			//ok = capture_.set(CAP_PROP_MODE, CAP_MODE_YUYV); 
-			//JLOG_INFO("yuyv {}", ok);
-			//JLOG_INFO("fourcc={}", get_fourcc());
-
-			ok = capture_.set(CAP_PROP_FOURCC, CV_FOURCC('M', 'J', 'P', 'G'));
-			JLOG_INFO("MJPG {}", ok);
-			JLOG_INFO("fourcc={}", get_fourcc());
-
-			ok = capture_.set(CAP_PROP_FOURCC, CV_FOURCC('Y', 'U', 'Y', '2')); 
-			JLOG_INFO("YUY2 {}", ok);
-			JLOG_INFO("fourcc={}", get_fourcc());
-			//ok = capture_.set(CAP_PROP_MODE, cap_mode_);
-
-			//auto mode = capture_.get(CAP_PROP_MODE);
+		if (dscap_.OpenCamera(cfg->get_vidx(), false, w, h)) {
+			cfg->set_video_w(dscap_.GetWidth());
+			cfg->set_video_h(dscap_.GetHeight());
 
 			adjust_player_size(cfg->get_video_w(), cfg->get_video_h());
 			drawer_ = std::make_shared<PkMatToGDI>(m_player.GetSafeHwnd(), false);		
@@ -347,7 +366,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		}
 	}
 
-	SetTimer(timer_id::preview, 1, nullptr);
+	SetTimer(timer_id::preview, 30, nullptr);
 	SetTimer(timer_id::updatetip, 1000, nullptr);
 
 
@@ -412,17 +431,19 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 	switch (nIDEvent) {
 	case timer_id::preview:
 	{
-		Mat frame;
-		if (capture_.isOpened() && capture_.read(frame) && !frame.empty()) {
-			drawer_->DrawImg(frame);
+		if (dscap_.isOpened()) {
+			Mat frame = dscap_.QueryFrame();
+			if (frame.data) {
+				drawer_->DrawImg(frame);
 
-			if (record_.recording && record_.writer && record_.writer->isOpened()) {
-				record_.writer->write(frame);
-				rec_tip_->SetText(utf8::a2w(fps_.get_string() + " " + record_.get_time()).c_str());
-				rec_tip_->Invalidate();
-			} else {
-				rec_tip_->SetText(utf8::a2w(fps_.get_string()).c_str());
-				rec_tip_->Invalidate();
+				if (record_.recording && record_.writer && record_.writer->isOpened()) {
+					record_.writer->write(frame);
+					rec_tip_->SetText(utf8::a2w(fps_.get_string() + " " + record_.get_time()).c_str());
+					rec_tip_->Invalidate();
+				} else {
+					rec_tip_->SetText(utf8::a2w(fps_.get_string()).c_str());
+					rec_tip_->Invalidate();
+				}
 			}
 		}
 	}
@@ -596,15 +617,17 @@ void CvrmfcDlg::do_record()
 	AUTO_LOG_FUNCTION; TEST_LOCK_DLG;
 	JLOG_INFO("recording_={}", record_.recording);
 	if (record_.recording) { do_stop_record(); return; }
-	if (!capture_.isOpened()) { return; }
+	if (!dscap_.isOpened()) { return; }
 	record_.file = config::get_instance()->create_new_video_path();
-	auto width = static_cast<int>(capture_.get(CAP_PROP_FRAME_WIDTH));
-	auto height = static_cast<int>(capture_.get(CAP_PROP_FRAME_HEIGHT));
-	int ex = static_cast<int>(capture_.get(CV_CAP_PROP_FOURCC));
+	//auto width = static_cast<int>(capture_.get(CAP_PROP_FRAME_WIDTH));
+	//auto height = static_cast<int>(capture_.get(CAP_PROP_FRAME_HEIGHT));
+	auto width = dscap_.GetWidth();
+	auto height = dscap_.GetHeight();
+	//int ex = static_cast<int>(capture_.get(CV_CAP_PROP_FOURCC));
 	//char ext[] = { (char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0 };
 	//auto fourcc = CV_FOURCC(ext[0], ext[1], ext[2], ext[3]);
 	// auto fourcc = CV_FOURCC('P', 'I', 'M', '1');
-	auto fourcc = CV_FOURCC('M', 'J', 'P', 'G');
+	auto fourcc = CV_FOURCC('M', 'J', 'P', 'G'); // todo
 	record_.writer = std::make_shared<cv::VideoWriter>();
 	record_.recording = record_.writer->open(record_.file,
 											 fourcc /*ex*/ /*CV_FOURCC('P', 'I', 'M', '1')*/, // pim1 for avi
@@ -631,16 +654,19 @@ void CvrmfcDlg::do_capture()
 {
 	AUTO_LOG_FUNCTION; AUTO_LOCK_DLG;
 	auto cfile = config::get_instance()->create_new_capture_path();
-	cv::Mat img;
-	if (capture_.isOpened() && capture_.read(img)) {
-		cv::imwrite(cfile, img);
+	
+	if (dscap_.isOpened()) {
+		Mat img = dscap_.QueryFrame();
+		if (img.data) {
+			cv::imwrite(cfile, img);
 
-		if (CDuiPreviewCaptureDlg::make_xml(img.cols, img.rows)) {
-			CDuiPreviewCaptureDlg dlg(L"capture.xml");
-			dlg.set_auto_close();
-			dlg.set_image(cfile);
-			dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
-			dlg.ShowModal();
+			if (CDuiPreviewCaptureDlg::make_xml(img.cols, img.rows)) {
+				CDuiPreviewCaptureDlg dlg(L"capture.xml");
+				dlg.set_auto_close();
+				dlg.set_image(cfile);
+				dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+				dlg.ShowModal();
+			}
 		}
 	}
 }

@@ -38,7 +38,7 @@
 					(mt).pUnk = NULL;						\
 				}}									
 
-class CCameraDS  
+class CCameraDS
 {
 private:
 
@@ -48,7 +48,8 @@ private:
 
 	long m_nBufferSize;
 
-	IplImage *m_pFrame;
+	//IplImage *m_pFrame;
+	cv::Mat frame;
 
 	CComPtr<IGraphBuilder> m_pGraph;
 
@@ -81,12 +82,14 @@ public:
 	//nWidth和nHeight设置的摄像头的宽和高，如果摄像头不支持所设定的宽度和高度，则返回false
 	bool OpenCamera(int nCamID, bool bDisplayProperties = true, int nWidth = 320, int nHeight = 240);
 
+	bool isOpened() const { return m_bConnected; }
+
 	//关闭摄像头，析构函数会自动调用这个函数
 	void CloseCamera();
 
 	//返回摄像头的数目
 	//可以不用创建CCameraDS实例，采用int c=CCameraDS::CameraCount();得到结果。
-	static int CameraCount(); 
+	static int CameraCount();
 
 	//根据摄像头的编号返回摄像头的名字
 	//nCamID: 摄像头编号
@@ -96,14 +99,14 @@ public:
 	static int CameraName(int nCamID, char* sName, int nBufferSize);
 
 	//返回图像宽度
-	int GetWidth(){return m_nWidth;} 
+	int GetWidth() { return m_nWidth; }
 
 	//返回图像高度
-	int GetHeight(){return m_nHeight;}
+	int GetHeight() { return m_nHeight; }
 
 	//抓取一帧，返回的IplImage不可手动释放！
 	//返回图像数据的为RGB模式的Top-down(第一个字节为左上角像素)，即IplImage::origin=0(IPL_ORIGIN_TL)
-	IplImage * QueryFrame();
+	cv::Mat QueryFrame();
 };
 
 #endif 
