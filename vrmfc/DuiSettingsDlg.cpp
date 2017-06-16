@@ -100,6 +100,62 @@ void CDuiSettingsDlg::InitWindow()
 		on_rec_time();
 	} while (false);
 
+	// 视频设置
+	do {
+		auto vamp = cfg->get_procamp();
+
+		auto brightness = static_cast<COptionUI*>(m_PaintManager.FindControl(L"brightness"));
+		if (brightness) {
+			brightness->SetEnabled(vamp.brightness.valid_ > 0);
+		}
+
+#define adjust_video_btns(btnname) \
+		auto btnname = static_cast<COptionUI*>(m_PaintManager.FindControl(utf8::a2w(#btnname).c_str())); \
+		if (btnname) { \
+			btnname->SetEnabled(vamp.btnname.valid_ > 0); \
+		}
+
+		adjust_video_btns(contrast);
+		adjust_video_btns(hue);
+		adjust_video_btns(saturation);
+		adjust_video_btns(sharpness);
+		adjust_video_btns(gamma);
+		adjust_video_btns(white_balance);
+		adjust_video_btns(backlight);
+		adjust_video_btns(gain);
+
+#undef adjust_video_btns
+	} while (false);
+
+
+
+	// 摄像机设置
+	do {
+		auto cam = cfg->get_camera();
+
+		auto zoom = static_cast<COptionUI*>(m_PaintManager.FindControl(L"zoom"));
+		if (zoom) {
+			zoom->SetEnabled(cam.zoom.valid_ > 0);
+		}
+
+#define adjust_camera_btn(btname) \
+		auto btname = static_cast<COptionUI*>(m_PaintManager.FindControl(utf8::a2w(#btname).c_str())); \
+		if (btname) { \
+			btname->SetEnabled(cam.btname.valid_ > 0); \
+		} 
+
+		adjust_camera_btn(focus);
+		adjust_camera_btn(exposure);
+		adjust_camera_btn(pan);
+		adjust_camera_btn(tilt);
+		adjust_camera_btn(roll);
+		adjust_camera_btn(iris);
+
+#undef adjust_camera_btn
+
+	} while (false);
+
+	// 语言设置
 	do {
 		auto lang = cfg->get_lang();
 		auto opt_chinese = static_cast<COptionUI*>(m_PaintManager.FindControl(L"chinese")); assert(opt_chinese);
@@ -119,13 +175,16 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 	CTabLayoutUI* options = static_cast<CTabLayoutUI*>(m_PaintManager.FindControl(_T("options"))); assert(options);
 	auto cfg = config::get_instance();
 	if (type == "selectchanged") {
+		
+
 		if (name == "resolution") {		// 分辨率/格式设置
 			options->SelectItem(0);
-		} else if (name == "record") {
+		} else if (name == "record") {  // 录像设置
 			options->SelectItem(1);
-		} else if (name == "video") {
-			options->SelectItem(2);
-		} else if (name == "camera") {
+		} else if (name == "video") {	// 视频
+			options->SelectItem(2);	
+
+		} else if (name == "camera") {	// 摄像机
 			options->SelectItem(3);
 		} else if (name == "language") { // 语言设置
 			options->SelectItem(4);
@@ -133,11 +192,41 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 			cfg->set_lang("zh_CN"); SetThreadUILanguage(MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED));
 		} else if (name == "english") {
 			cfg->set_lang("en"); SetThreadUILanguage(MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
-		} else if (name == "time") {
+		} else if (name == "time") {	// 时间
 			options->SelectItem(5);
-		} else if (name == "recover") {
+		} else if (name == "recover") {	// 恢复
 			options->SelectItem(6);
 		}
+
+#define sel_elif(val) else if (name == val) 
+
+		auto video_min = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"video_min")); assert(video_min);
+		auto video_val = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"video_min")); assert(video_min);
+		auto video_max = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"video_min")); assert(video_min);
+
+		
+		if (name == "brightness") {
+
+		} sel_elif("contrast") {
+
+		} sel_elif("hue") {
+
+		} sel_elif("saturation") {
+
+		} sel_elif("sharpness") {
+
+		} sel_elif("gamma") {
+
+		} sel_elif("white_balance") {
+
+		} sel_elif("backlight") {
+
+		} sel_elif("gain") {
+
+		}
+
+#undef sel_elif
+
 	} else if (type == "valuechanged") {
 		if (name == "fps") {
 			on_fps();
