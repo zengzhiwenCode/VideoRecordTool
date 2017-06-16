@@ -34,6 +34,8 @@ void CDuiSettingsDlg::InitWindow()
 			opt->Selected(dst == rname);
 		}
 	}*/
+
+	// 分辨率/格式
 	do {
 		auto resolution = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(L"resolutions")); assert(resolution);
 		if (!resolution) { break; }
@@ -90,6 +92,13 @@ void CDuiSettingsDlg::InitWindow()
 
 	} while (false);
 
+	// 录像选项
+	do {
+		auto rec_time = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"rec_time")); assert(rec_time);
+		if (!rec_time) { break; }
+		rec_time->SetValue(cfg->get_max_rec_minutes());
+		on_rec_time();
+	} while (false);
 
 	do {
 		auto lang = cfg->get_lang();
@@ -251,6 +260,7 @@ void CDuiSettingsDlg::on_rec_time()
 	if (!rec_time) { return; }
 	auto val = rec_time->GetValue();
 	JLOG_INFO("record time changed to {}", val);
+	config::get_instance()->set_max_rec_minutes(val);
 	auto rec_time_text = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"rec_time_text")); assert(rec_time_text);
 	if (rec_time_text) {
 		if (val == 0) {

@@ -45,6 +45,7 @@ private:
 	int _video_h = 0;
 	std::string _root = {};
 	std::string _vtype = {};
+	int _max_rec_minutes = 0;
 
 	// serial
 	std::string _port = {};
@@ -90,5 +91,6 @@ public:
 	declare_gs_string(_vtype);
 
 	//declare_gs(mi, _mi);
+	declare_gs_int(_max_rec_minutes);
 };
 

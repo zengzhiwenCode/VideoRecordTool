@@ -15,6 +15,7 @@ auto secVideo = "video";
 	auto keyHeight = "height";
 	auto keyRoot = "root";
 	auto keyType = "type";
+	auto keyTime = "min";
 
 auto secSerial = "serial";
 	auto keyPort = "port";
@@ -50,6 +51,7 @@ bool config::load()
 			init_root();
 		}
 		_vtype = value[secVideo][keyType].asString();
+		_max_rec_minutes = value[secVideo][keyTime].asInt();
 
 		_port = value[secSerial][keyPort].asString();
 		_baudrate = value[secSerial][keyBaudrate].asInt();
@@ -78,6 +80,7 @@ bool config::save()
 	value[secVideo][keyHeight] = _video_h;
 	value[secVideo][keyRoot] = _root;
 	value[secVideo][keyType] = _vtype;
+	value[secVideo][keyTime] = _max_rec_minutes;
 
 	value[secSerial][keyPort] = _port;
 	value[secSerial][keyBaudrate] = _baudrate;
