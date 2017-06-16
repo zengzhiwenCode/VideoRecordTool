@@ -354,9 +354,14 @@ BOOL CvrmfcDlg::OnInitDialog()
 		//	h = cfg->get_video_h();
 		//}
 
-		mi mi;
-		if (dscap_.get_mi(cfg->get_vidx(), mi)) {
+		mi mi = {};
+		procamp vamp = {};
+		camera_set cam = {};
+		if (dscap_.get_info(cfg->get_vidx(), mi, vamp, cam)) {
 			cfg->set_mi(mi);
+			cfg->set_procamp(vamp);
+			cfg->set_camera(cam);
+
 			auto storaged_type = cfg->get_vtype();
 			auto iter = mi.find(storaged_type);
 			if (iter == mi.end()) {
@@ -466,7 +471,8 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 					rec_tip_->SetText(utf8::a2w(fps_.get_string() + " " + record_.get_time()).c_str());
 					rec_tip_->Invalidate();
 
-					if (record_.get_minutes() >= config::get_instance()->get_max_rec_minutes()) {
+					int rec_time = config::get_instance()->get_max_rec_minutes();
+					if (rec_time != 0 && record_.get_minutes() >= rec_time) {
 						do_stop_record();
 					}
 

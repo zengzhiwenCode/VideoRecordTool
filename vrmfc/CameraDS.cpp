@@ -167,7 +167,7 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 	MYFREEMEDIATYPE(*pmt);
 
 	//procamp vamp = {};
-	IAMVideoProcAmp* pamp = nullptr;
+	
 	hr = m_pDeviceFilter->QueryInterface(IID_IAMVideoProcAmp, (void**)&pamp);
 	if (SUCCEEDED(hr)) {
 		/*hr = pamp->GetRange(VideoProcAmp_BacklightCompensation, &vamp.backlight.min_, &vamp.backlight.max_, &vamp.backlight.step_, &vamp.backlight.default_, &vamp.backlight.flags_);
@@ -201,7 +201,7 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 	}
 
 	//camera_set cam = {};
-	IAMCameraControl* pcam = nullptr;
+	
 	hr = m_pDeviceFilter->QueryInterface(IID_IAMCameraControl, (void**)&pcam);
 	if (SUCCEEDED(hr)) {
 		/*hr = pcam->GetRange(CameraControl_Exposure, &cam.exposure.min_, &cam.exposure.max_, &cam.exposure.step_, &cam.exposure.default_, &cam.exposure.flags_);
@@ -439,6 +439,9 @@ bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int 
 	m_nWidth = videoHeader->bmiHeader.biWidth;
 	m_nHeight = videoHeader->bmiHeader.biHeight;
 	m_bConnected = true;
+
+	m_pDeviceFilter->QueryInterface(IID_IAMVideoProcAmp, (void**)&pamp);
+	m_pDeviceFilter->QueryInterface(IID_IAMCameraControl, (void**)&pcam);
 
 	pEnum = NULL;
 	return true;

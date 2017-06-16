@@ -73,6 +73,10 @@ private:
 	CComPtr<IPin> m_pCameraOutput;
 	CComPtr<IPin> m_pNullInputPin;
 
+	//CComPtr<IAMCameraControl> pcam = {};
+	IAMCameraControl* pcam = nullptr;
+	IAMVideoProcAmp* pamp = nullptr;
+
 	bool BindFilter(int nCamIDX, IBaseFilter **pFilter);
 
 	void SetCrossBar();

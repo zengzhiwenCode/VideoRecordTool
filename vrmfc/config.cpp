@@ -144,23 +144,42 @@ bool config::save()
 	value[secVideo][keyType] = _vtype;
 	value[secVideo][keyTime] = _max_rec_minutes;
 
-	value[secVideo][segProcamp][keyBacklight]= _procamp.backlight.val_;
-	value[secVideo][segProcamp][keyBrightness] = _procamp.brightness.val_;
-	value[secVideo][segProcamp][keyContrast] = _procamp.contrast.val_;
-	value[secVideo][segProcamp][keyGain] = _procamp.gain.val_;
-	value[secVideo][segProcamp][keyGamma] = _procamp.gamma.val_;
-	value[secVideo][segProcamp][keyHue] = _procamp.hue.val_;
-	value[secVideo][segProcamp][keySaturation]= _procamp.saturation.val_;
-	value[secVideo][segProcamp][keySharpness] = _procamp.sharpness.val_;
-	value[secVideo][segProcamp][keyWhiteBalance] = _procamp.white_balance.val_;
+	value[secVideo][segProcamp][keyBacklight][keyValid] = _procamp.backlight.valid_;
+	value[secVideo][segProcamp][keyBrightness][keyValid] = _procamp.brightness.valid_;
+	value[secVideo][segProcamp][keyContrast][keyValid] = _procamp.contrast.valid_;
+	value[secVideo][segProcamp][keyGain][keyValid] = _procamp.gain.valid_;
+	value[secVideo][segProcamp][keyGamma][keyValid] = _procamp.gamma.valid_;
+	value[secVideo][segProcamp][keyHue][keyValid] = _procamp.hue.valid_;
+	value[secVideo][segProcamp][keySaturation][keyValid] = _procamp.saturation.valid_;
+	value[secVideo][segProcamp][keySharpness][keyValid] = _procamp.sharpness.valid_;
+	value[secVideo][segProcamp][keyWhiteBalance][keyValid] = _procamp.white_balance.valid_;
 
-	value[secVideo][segCamera][keyExposure] = _camera.exposure.val_;
-	value[secVideo][segCamera][keyFocus] = _camera.focus.val_;
-	value[secVideo][segCamera][keyIris] = _camera.iris.val_;
-	value[secVideo][segCamera][keyPan] = _camera.pan.val_;
-	value[secVideo][segCamera][keyRoll] = _camera.roll.val_;
-	value[secVideo][segCamera][keyTilt] = _camera.tilt.val_;
-	value[secVideo][segCamera][keyZoom] = _camera.zoom.val_;
+	value[secVideo][segProcamp][keyBacklight][keyValue] = _procamp.backlight.val_;
+	value[secVideo][segProcamp][keyBrightness][keyValue] = _procamp.brightness.val_;
+	value[secVideo][segProcamp][keyContrast][keyValue] = _procamp.contrast.val_;
+	value[secVideo][segProcamp][keyGain][keyValue] = _procamp.gain.val_;
+	value[secVideo][segProcamp][keyGamma][keyValue] = _procamp.gamma.val_;
+	value[secVideo][segProcamp][keyHue][keyValue] = _procamp.hue.val_;
+	value[secVideo][segProcamp][keySaturation][keyValue] = _procamp.saturation.val_;
+	value[secVideo][segProcamp][keySharpness][keyValue] = _procamp.sharpness.val_;
+	value[secVideo][segProcamp][keyWhiteBalance][keyValue] = _procamp.white_balance.val_;
+
+	value[secVideo][segCamera][keyExposure][keyValid] = _camera.exposure.valid_;
+	value[secVideo][segCamera][keyFocus][keyValid] = _camera.focus.valid_;
+	value[secVideo][segCamera][keyIris][keyValid] = _camera.iris.valid_;
+	value[secVideo][segCamera][keyPan][keyValid] = _camera.pan.valid_;
+	value[secVideo][segCamera][keyRoll][keyValid] = _camera.roll.valid_;
+	value[secVideo][segCamera][keyTilt][keyValid] = _camera.tilt.valid_;
+	value[secVideo][segCamera][keyZoom][keyValid] = _camera.zoom.valid_;
+
+	value[secVideo][segCamera][keyExposure][keyValue] = _camera.exposure.val_;
+	value[secVideo][segCamera][keyFocus][keyValue] = _camera.focus.val_;
+	value[secVideo][segCamera][keyIris][keyValue] = _camera.iris.val_;
+	value[secVideo][segCamera][keyPan][keyValue] = _camera.pan.val_;
+	value[secVideo][segCamera][keyRoll][keyValue] = _camera.roll.val_;
+	value[secVideo][segCamera][keyTilt][keyValue] = _camera.tilt.val_;
+	value[secVideo][segCamera][keyZoom][keyValue] = _camera.zoom.val_;
+
 
 	value[secSerial][keyPort] = _port;
 	value[secSerial][keyBaudrate] = _baudrate;
