@@ -22,6 +22,14 @@
 //////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "CameraDS.h"
+#include <Streams.h>
+
+#ifdef _DEBUG
+#pragma comment(lib, "strmbasd.lib")
+#else
+#pragma comment(lib, "strmbase.lib")
+#endif // _DEBUG
+
 
 #pragma comment(lib,"Strmiids.lib") 
 //////////////////////////////////////////////////////////////////////
@@ -48,6 +56,151 @@ CCameraDS::~CCameraDS()
 {
 	CloseCamera();
 	CoUninitialize();
+}
+
+bool CCameraDS::get_mi(int nCamID, mi& mi_)
+{
+	HRESULT hr = S_OK;
+
+	CoInitialize(NULL);
+	// Create the Filter Graph Manager.
+	hr = CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC, IID_IGraphBuilder, (void **)&m_pGraph);
+
+	hr = CoCreateInstance(CLSID_SampleGrabber, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (LPVOID *)&m_pSampleGrabberFilter);
+
+	hr = m_pGraph->QueryInterface(IID_IMediaControl, (void **)&m_pMediaControl);
+	hr = m_pGraph->QueryInterface(IID_IMediaEvent, (void **)&m_pMediaEvent);
+
+	hr = CoCreateInstance(CLSID_NullRenderer, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (LPVOID*)&m_pNullFilter);
+
+	hr = m_pGraph->AddFilter(m_pNullFilter, L"NullRenderer");
+
+	hr = m_pSampleGrabberFilter->QueryInterface(IID_ISampleGrabber, (void**)&m_pSampleGrabber);
+
+	AM_MEDIA_TYPE   mt;
+	ZeroMemory(&mt, sizeof(AM_MEDIA_TYPE));
+	mt.majortype = MEDIATYPE_Video;
+	mt.subtype = MEDIASUBTYPE_RGB24;
+	//mt.subtype = MEDIASUBTYPE_YUY2;
+	mt.formattype = FORMAT_VideoInfo;
+	hr = m_pSampleGrabber->SetMediaType(&mt);
+	MYFREEMEDIATYPE(mt);
+
+	m_pGraph->AddFilter(m_pSampleGrabberFilter, L"Grabber");
+
+	// Bind Device Filter.  We know the device because the id was passed in
+	BindFilter(nCamID, &m_pDeviceFilter);
+	m_pGraph->AddFilter(m_pDeviceFilter, NULL);
+
+	CComPtr<IEnumPins> pEnum;
+	m_pDeviceFilter->EnumPins(&pEnum);
+
+	hr = pEnum->Reset();
+	hr = pEnum->Next(1, &m_pCameraOutput, NULL);
+
+	pEnum = NULL;
+	m_pSampleGrabberFilter->EnumPins(&pEnum);
+	pEnum->Reset();
+	hr = pEnum->Next(1, &m_pGrabberInput, NULL);
+
+	pEnum = NULL;
+	m_pSampleGrabberFilter->EnumPins(&pEnum);
+	pEnum->Reset();
+	pEnum->Skip(1);
+	hr = pEnum->Next(1, &m_pGrabberOutput, NULL);
+
+	pEnum = NULL;
+	m_pNullFilter->EnumPins(&pEnum);
+	pEnum->Reset();
+	hr = pEnum->Next(1, &m_pNullInputPin, NULL);
+	
+	IAMStreamConfig *iconfig = NULL;
+	hr = m_pCameraOutput->QueryInterface(IID_IAMStreamConfig, (void**)&iconfig);
+
+	AM_MEDIA_TYPE *pmt;
+	if (iconfig->GetFormat(&pmt) != S_OK) {
+		return false;
+	}
+
+	IEnumMediaTypes *mediaTypesEnumerator = NULL;
+	VIDEOINFOHEADER* videoInfoHeader = NULL;
+	hr = m_pCameraOutput->EnumMediaTypes(&mediaTypesEnumerator);
+	if (hr != S_OK) {
+		return false;
+	}
+
+	while (S_OK == mediaTypesEnumerator->Next(1, &pmt, NULL)) {
+		if ((pmt->majortype == MEDIATYPE_Video) &&
+			(pmt->formattype == FORMAT_VideoInfo) &&
+			(pmt->cbFormat >= sizeof(VIDEOINFOHEADER)) &&
+			(pmt->pbFormat != NULL)) {
+			pmt->subtype;
+			auto name = GuidNames[pmt->subtype];
+			videoInfoHeader = (VIDEOINFOHEADER*)pmt->pbFormat;
+			videoInfoHeader->bmiHeader.biWidth;  // Supported width
+			videoInfoHeader->bmiHeader.biHeight; // Supported height
+
+			if (pmt->subtype == MEDIASUBTYPE_YUY2) {
+				mi_[MT_YUY2].type = MT_YUY2;
+				misz sz = { videoInfoHeader->bmiHeader.biWidth , videoInfoHeader->bmiHeader.biHeight };
+				if (mi_[MT_YUY2].sizes.find(sz) == mi_[MT_YUY2].sizes.end()) {
+					mi_[MT_YUY2].sizes.insert(sz);
+				} else {
+					mi_[MT_YUY2].default_sz = sz;
+				}
+			} else if (pmt->subtype == MEDIASUBTYPE_MJPG) {
+				mi_[MT_MJPG].type = MT_MJPG;
+				misz sz = { videoInfoHeader->bmiHeader.biWidth , videoInfoHeader->bmiHeader.biHeight };
+
+				if (mi_[MT_MJPG].sizes.find(sz) == mi_[MT_MJPG].sizes.end()) {
+					mi_[MT_MJPG].sizes.insert(sz);
+				} else {
+					mi_[MT_MJPG].default_sz = sz;
+				}
+			}
+		}
+		MYFREEMEDIATYPE(*pmt);
+	}
+
+	iconfig->Release();
+	iconfig = NULL;
+	MYFREEMEDIATYPE(*pmt);
+
+	hr = m_pGraph->Connect(m_pCameraOutput, m_pGrabberInput);
+	hr = m_pGraph->Connect(m_pGrabberOutput, m_pNullInputPin);
+
+	if (FAILED(hr)) {
+		switch (hr) {
+		case VFW_S_NOPREVIEWPIN:
+			break;
+		case E_FAIL:
+			break;
+		case E_INVALIDARG:
+			break;
+		case E_POINTER:
+			break;
+		}
+	}
+
+	m_pSampleGrabber->SetBufferSamples(TRUE);
+	m_pSampleGrabber->SetOneShot(TRUE);
+
+	hr = m_pSampleGrabber->GetConnectedMediaType(&mt);
+	if (FAILED(hr)) {
+		return false;
+	}
+
+	VIDEOINFOHEADER *videoHeader;
+	videoHeader = reinterpret_cast<VIDEOINFOHEADER*>(mt.pbFormat);
+	m_nWidth = videoHeader->bmiHeader.biWidth;
+	m_nHeight = videoHeader->bmiHeader.biHeight;
+	m_bConnected = true;
+
+	pEnum = NULL;
+
+	CloseCamera();
+
+	return true;
 }
 
 void CCameraDS::CloseCamera()
@@ -77,7 +230,7 @@ void CCameraDS::CloseCamera()
 	m_nBufferSize = 0;
 }
 
-bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int nHeight)
+bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int nHeight, const char* mstype)
 {
 	HRESULT hr = S_OK;
 
@@ -169,19 +322,23 @@ bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int 
 			//printf("GetFormat Failed ! \n");
 			return false;
 		}
-
+		
 		// 3、考虑如果此时的的图像大小正好是 nWidth * nHeight，则就不用修改了。
-		if ((pmt->lSampleSize != (nWidth * nHeight * 3)) && (pmt->formattype == FORMAT_VideoInfo)) {
+		//if ((pmt->lSampleSize != (nWidth * nHeight * 3)) && (pmt->formattype == FORMAT_VideoInfo)) {
 			VIDEOINFOHEADER *phead = (VIDEOINFOHEADER*)(pmt->pbFormat);
 			phead->bmiHeader.biWidth = nWidth;
 			phead->bmiHeader.biHeight = nHeight;
-			pmt->subtype = MEDIASUBTYPE_YUY2;
+
+			if (mstype == MT_YUY2) {
+				pmt->subtype = MEDIASUBTYPE_YUY2;
+			} else if (mstype == MT_MJPG) {
+				pmt->subtype = MEDIASUBTYPE_MJPG;
+			}
+			
 			if ((hr = iconfig->SetFormat(pmt)) != S_OK) {
 				return false;
 			}
-		}
-
-		
+		//}		
 
 		iconfig->Release();
 		iconfig = NULL;

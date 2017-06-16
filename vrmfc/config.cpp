@@ -14,6 +14,7 @@ auto secVideo = "video";
 	auto keyWidth = "width";
 	auto keyHeight = "height";
 	auto keyRoot = "root";
+	auto keyType = "type";
 
 auto secSerial = "serial";
 	auto keyPort = "port";
@@ -48,6 +49,7 @@ bool config::load()
 		if (_root.empty() || !std::experimental::filesystem::is_directory(_root) || !std::experimental::filesystem::exists(_root)) {
 			init_root();
 		}
+		_vtype = value[secVideo][keyType].asString();
 
 		_port = value[secSerial][keyPort].asString();
 		_baudrate = value[secSerial][keyBaudrate].asInt();
@@ -75,6 +77,7 @@ bool config::save()
 	value[secVideo][keyWidth] = _video_w;
 	value[secVideo][keyHeight] = _video_h;
 	value[secVideo][keyRoot] = _root;
+	value[secVideo][keyType] = _vtype;
 
 	value[secSerial][keyPort] = _port;
 	value[secSerial][keyBaudrate] = _baudrate;

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <set>
+
+
 #define VR_ROOT_FOLDER		"root"
 #define VR_VIDEO_FOLDER		"video" 
 #define VR_VIDEO_EXT		".avi"
@@ -7,6 +10,18 @@
 #define VR_CAPTRUE_EXT		".bmp"
 #define VR_THUMBNAIL_FOLDER "thumb"
 #define VR_THUMBNAIL_EXT	".png"
+
+using misz = std::pair<int, int>;
+struct media_info {
+	std::string type;
+	misz default_sz;
+	std::set<misz> sizes;
+};
+
+#define MT_YUY2 "YUY2"
+#define MT_MJPG "MJPG"
+
+using mi = std::map<std::string, media_info>;
 
 class config : public dp::singleton<config>
 {
@@ -16,6 +31,8 @@ protected:
 	bool save();
 	void init();
 	void init_root();
+	
+	mi _mi = {};
 
 private:
 	std::string cfg_file_ = {};
@@ -27,6 +44,7 @@ private:
 	int _video_w = 0;
 	int _video_h = 0;
 	std::string _root = {};
+	std::string _vtype = {};
 
 	// serial
 	std::string _port = {};
@@ -36,6 +54,10 @@ private:
 	std::string _lang = {};
 
 public:
+
+	void set_mi(mi mi) { _mi = mi; }
+	mi get_mi() const { return _mi; }
+
 	std::string get_video_path() const;
 	std::string get_capture_path() const;
 	std::string create_new_video_path() const;
@@ -65,8 +87,8 @@ public:
 	declare_gs_string(_port);
 	declare_gs_int(_baudrate);
 	declare_gs_string(_lang);
+	declare_gs_string(_vtype);
 
-
-	
+	//declare_gs(mi, _mi);
 };
 

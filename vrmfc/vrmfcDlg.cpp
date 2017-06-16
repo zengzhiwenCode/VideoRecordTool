@@ -346,15 +346,40 @@ BOOL CvrmfcDlg::OnInitDialog()
 		//	fps_.frames = 0;
 		//}
 
-		int w = 960; int h = 720;
+		//int w = 960; int h = 720;
 		Mat frame;
 
-		if (cfg->get_video_w() != 0 && cfg->get_video_h() != 0) {
-			w = cfg->get_video_w();
-			h = cfg->get_video_h();
+		//if (cfg->get_video_w() != 0 && cfg->get_video_h() != 0) {
+		//	w = cfg->get_video_w();
+		//	h = cfg->get_video_h();
+		//}
+
+		mi mi;
+		if (dscap_.get_mi(cfg->get_vidx(), mi)) {
+			cfg->set_mi(mi);
+			auto storaged_type = cfg->get_vtype();
+			auto iter = mi.find(storaged_type);
+			if (iter == mi.end()) {
+				cfg->set_vtype(mi.begin()->first);
+				cfg->set_video_w(mi.begin()->second.default_sz.first);
+				cfg->set_video_h(mi.begin()->second.default_sz.second);
+			} else {
+				bool sz_found = false;
+				for (auto sz : iter->second.sizes) {
+					if (sz.first == cfg->get_video_w() && sz.second == cfg->get_video_h()) {
+						sz_found = true;
+						break;
+					}
+				}
+
+				if (!sz_found) {
+					cfg->set_video_w(mi.begin()->second.default_sz.first);
+					cfg->set_video_h(mi.begin()->second.default_sz.second);
+				}
+			}
 		}
 
-		if (dscap_.OpenCamera(cfg->get_vidx(), false, w, h)) {
+		if (dscap_.OpenCamera(cfg->get_vidx(), false, cfg->get_video_w(), cfg->get_video_h(), cfg->get_vtype().c_str())) {
 			cfg->set_video_w(dscap_.GetWidth());
 			cfg->set_video_h(dscap_.GetHeight());
 

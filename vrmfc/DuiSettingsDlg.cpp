@@ -20,13 +20,69 @@ void CDuiSettingsDlg::InitWindow()
 	CenterWindow();
 	auto cfg = config::get_instance();
 	auto dst = std::to_wstring(cfg->get_video_w()) + L"*" + std::to_wstring(cfg->get_video_h());
-	auto names = { L"320*240", L"640*360", L"640*480", L"920*720", L"1280*720" };
+	/*auto names = { L"320*240", L"640*360", L"640*480", L"920*720", L"1280*720" };
 	for (auto rname : names) {
 		auto opt = static_cast<COptionUI*>(m_PaintManager.FindControl(rname));
 		if (opt) {
 			opt->Selected(dst == rname);
 		}
-	}
+	}*/
+	do {
+		auto resolution = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(L"resolutions")); assert(resolution);
+		if (!resolution) { break; }
+		resolution->RemoveAll();
+
+		auto cap_mode = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(L"cap_mode")); assert(cap_mode);
+		if (!cap_mode) { break; }
+		cap_mode->RemoveAll();
+
+		auto mi = cfg->get_mi();
+		for (const auto& i : mi) {
+			auto opt = new COptionUI();
+			auto name = utf8::a2w(i.first);
+			opt->SetName(name.c_str());
+			opt->SetText(name.c_str());
+			opt->SetFont(0);
+			opt->SetBkColor(0xFF3275EE);
+			SIZE sz = { 15,15 };
+			opt->SetBorderRound(sz);
+			opt->SetGroup(L"cap_mode");
+
+			if (i.first == cfg->get_vtype()) {
+				opt->Selected(true);
+			}
+
+			cap_mode->Add(opt);
+
+			auto horz = new CHorizontalLayoutUI();
+			horz->SetFixedHeight(5);
+			cap_mode->Add(horz);
+		}
+
+		for (auto i : mi[cfg->get_vtype()].sizes) {
+			auto opt = new COptionUI();
+			auto name = std::to_wstring(i.first) + L"*" + std::to_wstring(i.second);
+			opt->SetName(name.c_str());
+			opt->SetText(name.c_str());
+			opt->SetFont(0);
+			opt->SetBkColor(0xFF3275EE);
+			SIZE sz = { 15,15 };
+			opt->SetBorderRound(sz);
+			opt->SetGroup(L"resolutions");
+
+			if (i.first == cfg->get_video_w() && i.second == cfg->get_video_h()) {
+				opt->Selected(true);
+			}
+
+			resolution->Add(opt);
+
+			auto horz = new CHorizontalLayoutUI();
+			horz->SetFixedHeight(5);
+			resolution->Add(horz);
+		}
+
+	} while (false);
+
 
 	do {
 		auto lang = cfg->get_lang();
