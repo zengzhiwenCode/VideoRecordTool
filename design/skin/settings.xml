@@ -32,50 +32,19 @@
                         <Label text="分辨率格式yuv/mpeg" font="0" align="center" valign="center" textcolor="#FF000000"  />
                         <HorizontalLayout height="15" />
                         <HorizontalLayout>
-                            <VerticalLayout>
-                                <Option name="320*240" text="320*240" font="0" bkcolor="FF3275EE#" borderround="15,15" group="resolution"/> <HorizontalLayout height="5" />
-                                <Option name="640*360" text="640*360" font="0" bkcolor="FF3275EE#" borderround="15,15" group="resolution"/> <HorizontalLayout height="5" />
-                                <Option name="640*480" text="640*480" font="0" bkcolor="FF3275EE#" borderround="15,15" group="resolution"/> <HorizontalLayout height="5" />
-                                <Option name="920*720" text="920*720" font="0" bkcolor="FF3275EE#" borderround="15,15" group="resolution"/> <HorizontalLayout height="5" />
-                                <Option name="1280*720" text="1280*720" font="0" bkcolor="FF3275EE#" borderround="15,15" group="resolution"/> <HorizontalLayout height="5" />
+                            <VerticalLayout width="15" />
+                            <VerticalLayout name="resolutions">
                             </VerticalLayout>
                             <VerticalLayout width="15" />
-                            <VerticalLayout>
-                                <Option name="mod_yuv" text="YUV" font="0" bkcolor="FF3275EE#" borderround="15,15" group="cap_mode"/> <HorizontalLayout height="5" />
-                                <Option name="mod_mpg" text="MPEG" font="0" bkcolor="FF3275EE#" borderround="15,15" group="cap_mode"/> <HorizontalLayout height="5" />
-                                <Option name="mod_bgr" text="BGR" font="0" bkcolor="FF3275EE#" borderround="15,15" group="cap_mode"/> <HorizontalLayout height="5" />
+                            <VerticalLayout name="cap_mode">
                             </VerticalLayout>
+                            <VerticalLayout width="15" />
                         </HorizontalLayout>
                         <HorizontalLayout height="15" />
                     </VerticalLayout>
                     <VerticalLayout> <!--录像选项-->
                         <Label text="录像选项" font="0" align="center" valign="center" textcolor="#FF000000"  />
                         <HorizontalLayout height="25" />
-                        <VerticalLayout bkcolor="FFFFD966#" bordersize="1" bordercolor="#FF707070">
-                            <Label text="帧率（值）" font="0" align="center" valign="center" textcolor="#FF000000"  />
-                            <HorizontalLayout>
-                                <VerticalLayout width="25" />
-                                <Label text="max" font="0" align="center" valign="center" textcolor="#FF000000"  />
-                                <Label text="10fps" font="0" align="center" valign="center" textcolor="#FF000000"  />
-                                <Label text="15fps" font="0" align="center" valign="center" textcolor="#FF000000"  />
-                                <Label text="30fps" font="0" align="center" valign="center" textcolor="#FF000000"  />
-                                <Label text="60fps" font="0" align="center" valign="center" textcolor="#FF000000"  />
-                                <Label text="120fps" font="0" align="center" valign="center" textcolor="#FF000000"  />
-                                <VerticalLayout width="25" />
-                            </HorizontalLayout>
-                            <HorizontalLayout height="15" />
-                            <HorizontalLayout>
-                                <VerticalLayout width="5" />
-                                <Button name="fps_dec" width="45" height="25" normalimage="file='image\slider\left.bmp'" />
-                                <VerticalLayout width="5" />
-                                <Slider name="fps" min="0" max="5" step="1" height="20" valign="center"/>
-                                <VerticalLayout width="5" />
-                                <Button name="fps_inc" width="45" height="25" normalimage="file='image\slider\right.bmp'" />
-                                <VerticalLayout width="5" />
-                            </HorizontalLayout>
-                            <HorizontalLayout height="25" />
-                        </VerticalLayout>
-                        <HorizontalLayout height="15" />
                         <VerticalLayout bkcolor="FFFFD966#" bordersize="1" bordercolor="#FF707070">
                             <Label text="时长（值）" font="0" align="center" valign="center" textcolor="#FF000000"  />
                             <HorizontalLayout>
@@ -284,7 +253,12 @@
                 </TabLayout>
                 <VerticalLayout width="20" />
             </HorizontalLayout>
-            <HorizontalLayout height="15" />
+            <HorizontalLayout height="35">
+                <VerticalLayout />
+                <Button name="closebtn" text="关闭" font="0" width="100" bkcolor="FF3275EE#" borderround="5,5" />
+                <VerticalLayout width="5"/>
+            </HorizontalLayout>
+            <HorizontalLayout height="5" />
         </VerticalLayout>
 	</HorizontalLayout>
 </Window>
