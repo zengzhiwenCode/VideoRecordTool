@@ -58,7 +58,7 @@ CCameraDS::~CCameraDS()
 	CoUninitialize();
 }
 
-bool CCameraDS::get_mi(int nCamID, mi& mi_)
+bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 {
 	HRESULT hr = S_OK;
 
@@ -165,6 +165,71 @@ bool CCameraDS::get_mi(int nCamID, mi& mi_)
 	iconfig->Release();
 	iconfig = NULL;
 	MYFREEMEDIATYPE(*pmt);
+
+	//procamp vamp = {};
+	IAMVideoProcAmp* pamp = nullptr;
+	hr = m_pDeviceFilter->QueryInterface(IID_IAMVideoProcAmp, (void**)&pamp);
+	if (SUCCEEDED(hr)) {
+		/*hr = pamp->GetRange(VideoProcAmp_BacklightCompensation, &vamp.backlight.min_, &vamp.backlight.max_, &vamp.backlight.step_, &vamp.backlight.default_, &vamp.backlight.flags_);
+		if (SUCCEEDED(hr)) {
+			hr = pamp->Get(VideoProcAmp_BacklightCompensation, &vamp.backlight.val_, &vamp.backlight.flags_);
+		}
+		if (SUCCEEDED(hr)) {
+			vamp.backlight.valid_ = 1;
+		}
+		*/
+
+#define get_video_property(p, n) \
+		hr = pamp->GetRange(p, &vamp.n.min_, &vamp.n.max_, &vamp.n.step_, &vamp.n.default_, &vamp.n.flags_); \
+		if (SUCCEEDED(hr)) { \
+			hr = pamp->Get(p, &vamp.n.val_, &vamp.n.flags_); \
+		} \
+		if (SUCCEEDED(hr)) { \
+			vamp.n.valid_ = 1; \
+		}
+
+		get_video_property(VideoProcAmp_BacklightCompensation, backlight);
+		get_video_property(VideoProcAmp_Brightness, brightness);
+		get_video_property(VideoProcAmp_Contrast, contrast);
+		get_video_property(VideoProcAmp_Gain, gain);
+		get_video_property(VideoProcAmp_Gamma, gamma);
+		get_video_property(VideoProcAmp_Hue, hue);
+		get_video_property(VideoProcAmp_Saturation, saturation);
+		get_video_property(VideoProcAmp_Sharpness, sharpness);
+		get_video_property(VideoProcAmp_WhiteBalance, white_balance);
+		
+	}
+
+	//camera_set cam = {};
+	IAMCameraControl* pcam = nullptr;
+	hr = m_pDeviceFilter->QueryInterface(IID_IAMCameraControl, (void**)&pcam);
+	if (SUCCEEDED(hr)) {
+		/*hr = pcam->GetRange(CameraControl_Exposure, &cam.exposure.min_, &cam.exposure.max_, &cam.exposure.step_, &cam.exposure.default_, &cam.exposure.flags_);
+		if (SUCCEEDED(hr)) {
+			hr = pcam->Get(CameraControl_Exposure, &cam.exposure.val_, &cam.exposure.flags_);
+		}
+		if (SUCCEEDED(hr)) {
+			cam.exposure.valid_ = 1;
+		}
+		*/
+
+#define get_camera_property(p, n) \
+		hr = pcam->GetRange(p, &cam.n.min_, &cam.n.max_, &cam.n.step_, &cam.n.default_, &cam.n.flags_); \
+		if (SUCCEEDED(hr)) { \
+			hr = pcam->Get(p, &cam.n.val_, &cam.n.flags_); \
+		} \
+		if (SUCCEEDED(hr)) { \
+			cam.n.valid_ = 1; \
+		}
+
+		get_camera_property(CameraControl_Exposure, exposure);
+		get_camera_property(CameraControl_Focus, focus);
+		get_camera_property(CameraControl_Iris, iris);
+		get_camera_property(CameraControl_Pan, pan);
+		get_camera_property(CameraControl_Roll, roll);
+		get_camera_property(CameraControl_Tilt, tilt);
+		get_camera_property(CameraControl_Zoom, zoom);
+	}
 
 	hr = m_pGraph->Connect(m_pCameraOutput, m_pGrabberInput);
 	hr = m_pGraph->Connect(m_pGrabberOutput, m_pNullInputPin);

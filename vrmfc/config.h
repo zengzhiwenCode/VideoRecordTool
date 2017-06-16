@@ -23,6 +23,38 @@ struct media_info {
 
 using mi = std::map<std::string, media_info>;
 
+struct vq {
+	long valid_;
+	long min_;
+	long max_;
+	long step_;
+	long default_;
+	long flags_;
+	long val_;
+};
+
+struct procamp {
+	vq backlight;
+	vq brightness;
+	vq contrast;
+	vq gain;
+	vq gamma;
+	vq hue;
+	vq saturation;
+	vq sharpness;
+	vq white_balance;
+};
+
+struct camera_set {
+	vq exposure;
+	vq focus;
+	vq iris;
+	vq pan;
+	vq roll;
+	vq tilt;
+	vq zoom;
+};
+
 class config : public dp::singleton<config>
 {
 protected:
@@ -33,6 +65,8 @@ protected:
 	void init_root();
 	
 	mi _mi = {};
+	procamp _procamp = {};
+	camera_set _camera = {};
 
 private:
 	std::string cfg_file_ = {};
@@ -58,6 +92,13 @@ public:
 
 	void set_mi(mi mi) { _mi = mi; }
 	mi get_mi() const { return _mi; }
+
+	void set_procamp(procamp pa) { _procamp = pa; save(); }
+	procamp get_procamp() const { return _procamp; }
+
+	void set_camera(camera_set cs) { _camera = cs; save(); }
+	camera_set get_camera() const { return _camera; }
+
 
 	std::string get_video_path() const;
 	std::string get_capture_path() const;

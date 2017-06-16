@@ -82,7 +82,7 @@ public:
 	CCameraDS();
 	virtual ~CCameraDS();
 
-	bool get_mi(int nCamID, mi& mi);
+	bool get_info(int nCamID, mi& mi, procamp& vamp, camera_set& cam);
 
 	//mi get_mi() const { return mi_; }
 
