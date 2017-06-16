@@ -175,7 +175,74 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 	CTabLayoutUI* options = static_cast<CTabLayoutUI*>(m_PaintManager.FindControl(_T("options"))); assert(options);
 	auto cfg = config::get_instance();
 	if (type == "selectchanged") {
-		
+#define sel_elif(val) else if (name == val) 
+
+#define get_ctrl(type, name) auto name = static_cast<type*>(m_PaintManager.FindControl(utf8::a2w(#name).c_str())); assert(name);
+
+		//auto video_min = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"video_min")); assert(video_min);
+		auto video_val = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"video_val")); assert(video_val);
+		auto video_max = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"video_max")); assert(video_max);
+		auto video_auto = static_cast<COptionUI*>(m_PaintManager.FindControl(L"video_auto")); assert(video_auto);
+		auto video_slider = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"video_slider")); assert(video_slider);
+		auto video_inc = static_cast<CButtonUI*>(m_PaintManager.FindControl(L"video_inc")); assert(video_inc);
+		auto video_dec = static_cast<CButtonUI*>(m_PaintManager.FindControl(L"video_dec")); assert(video_dec);
+		get_ctrl(CLabelUI, video_min);
+
+		auto vamp = cfg->get_procamp();
+
+#define set_video_min_text(vname) \
+		if (video_min) { \
+			video_min->SetText(std::to_wstring(vamp.vname.min_).c_str()); \
+		}
+
+#define set_video_val_text(vname) \
+		if (video_val) { \
+			video_val->SetText(std::to_wstring(vamp.vname.val_).c_str()); \
+		}
+
+#define set_video_max_text(vname) \
+		if (video_max) { \
+			video_max->SetText(std::to_wstring(vamp.vname.max_).c_str()); \
+		}
+
+#define adjust_video_dec(vname) \
+		if (video_dec) { \
+			video_dec->SetEnabled(vamp.vname.valid_ > 0); \
+		}
+
+#define adjust_video_inc(vname) \
+		if (video_inc) { \
+			video_inc->SetEnabled(vamp.vname.valid_ > 0); \
+		}
+
+#define adjust_video_slider(vname) \
+		if (video_slider) { \
+			video_slider->SetMinValue(vamp.vname.min_); \
+			video_slider->SetMaxValue(vamp.vname.max_); \
+			video_slider->SetChangeStep(vamp.vname.step_); \
+			video_slider->SetValue(vamp.vname.val_); \
+			video_slider->SetEnabled(vamp.vname.valid_ > 0); \
+		}
+
+#define adjust_video_auto(vname) \
+		if (video_auto) { \
+			video_auto->SetEnabled(vamp.vname.flags_ == VideoProcAmp_Flags_Auto || vamp.vname.flags_ == VideoProcAmp_Flags_Manual); \
+			video_auto->Selected(vamp.vname.flags_ == VideoProcAmp_Flags_Auto); \
+		} 
+
+		// adjust_video_auto(vname); 
+
+
+#define case_video(vname) \
+		else if (name == #vname) { \
+			set_video_min_text(vname); \
+			set_video_val_text(vname); \
+			set_video_max_text(vname); \
+			adjust_video_dec(vname); \
+			adjust_video_inc(vname); \
+			adjust_video_slider(vname); \
+		}
+
 
 		if (name == "resolution") {		// 分辨率/格式设置
 			options->SelectItem(0);
@@ -183,7 +250,6 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 			options->SelectItem(1);
 		} else if (name == "video") {	// 视频
 			options->SelectItem(2);	
-
 		} else if (name == "camera") {	// 摄像机
 			options->SelectItem(3);
 		} else if (name == "language") { // 语言设置
@@ -196,34 +262,45 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 			options->SelectItem(5);
 		} else if (name == "recover") {	// 恢复
 			options->SelectItem(6);
-		}
+		} /*else if (name == "brightness") {
+			if (video_min) {
+				video_min->SetText(std::to_wstring(vamp.brightness.min_).c_str()); 
+			}
+			if (video_val) {
+				video_val->SetText(std::to_wstring(vamp.brightness.val_).c_str());
+			}
+			if (video_max) {
+				video_max->SetText(std::to_wstring(vamp.brightness.max_).c_str());
+			}
+			if (video_auto) {
+				video_auto->SetEnabled(vamp.brightness.flags_ == VideoProcAmp_Flags_Auto || vamp.brightness.flags_ == VideoProcAmp_Flags_Manual);
+				video_auto->Selected(vamp.brightness.flags_ == VideoProcAmp_Flags_Auto);
+			}
+			if (video_dec) {
+				video_dec->SetEnabled(vamp.brightness.valid_ > 0);
+			}
+			if (video_inc) {
+				video_inc->SetEnabled(vamp.brightness.valid_ > 0);
+			}
+			if (video_slider) {
+				video_slider->SetMinValue(vamp.brightness.min_);
+				video_slider->SetMaxValue(vamp.brightness.max_);
+				video_slider->SetChangeStep(vamp.brightness.step_);
+				video_slider->SetEnabled(vamp.brightness.valid_ > 0);
+			}
+		}*/
 
-#define sel_elif(val) else if (name == val) 
-
-		auto video_min = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"video_min")); assert(video_min);
-		auto video_val = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"video_min")); assert(video_min);
-		auto video_max = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"video_min")); assert(video_min);
+		case_video(brightness)
+		case_video(contrast)
+		case_video(hue)
+		case_video(saturation)
+		case_video(sharpness)
+		case_video(gamma)
+		case_video(white_balance)
+		case_video(backlight)
+		case_video(gain)
 
 		
-		if (name == "brightness") {
-
-		} sel_elif("contrast") {
-
-		} sel_elif("hue") {
-
-		} sel_elif("saturation") {
-
-		} sel_elif("sharpness") {
-
-		} sel_elif("gamma") {
-
-		} sel_elif("white_balance") {
-
-		} sel_elif("backlight") {
-
-		} sel_elif("gain") {
-
-		}
 
 #undef sel_elif
 
