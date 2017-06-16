@@ -79,6 +79,7 @@ public:
 	void do_play_video(fv videos, fviter iter);
 	void do_file_manager_over();
 	void do_settings();
+	bool do_update_capmode(const std::string& mode);
 	void do_system_info();
 	void do_adjust_brightness();
 

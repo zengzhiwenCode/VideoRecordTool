@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DuiSettingsDlg.h"
 #include "config.h"
+#include "vrmfcDlg.h"
 
 DUI_BEGIN_MESSAGE_MAP(CDuiSettingsDlg, CNotifyPump)
 DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
@@ -40,7 +41,7 @@ void CDuiSettingsDlg::InitWindow()
 		for (const auto& i : mi) {
 			auto opt = new COptionUI();
 			auto name = utf8::a2w(i.first);
-			opt->SetName(name.c_str());
+			opt->SetName((L"cap_mod_" + name).c_str());
 			opt->SetText(name.c_str());
 			opt->SetFont(0);
 			opt->SetBkColor(0xFF3275EE);
@@ -99,7 +100,7 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 {
 	std::string type = utf8::w2a(msg.sType.GetData());
 	std::string name = utf8::w2a(msg.pSender->GetName().GetData());
-	//range_log rl("CDuiSettingsDlg::Notify type=" + type + " name=" + name);
+	range_log rl("CDuiSettingsDlg::Notify type=" + type + " name=" + name);
 	CTabLayoutUI* options = static_cast<CTabLayoutUI*>(m_PaintManager.FindControl(_T("options"))); assert(options);
 	auto cfg = config::get_instance();
 	if (type == "selectchanged") {
@@ -146,7 +147,25 @@ LRESULT CDuiSettingsDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 {
 	auto name = utf8::w2a(msg.pSender->GetName().GetData());
-	//range_log rl("CDuiSettingsDlg::OnClick " + name);
+	range_log rl("CDuiSettingsDlg::OnClick " + name);
+
+	auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
+	if (!maindlg) { return; }
+	
+	auto cfg = config::get_instance();
+	auto mi = cfg->get_mi();
+
+	std::string cap_mode = "cap_mod_";
+	if (name.find(cap_mode) != name.npos) {
+		auto mode = name.substr(cap_mode.length());
+		if (mi.find(mode) != mi.end()) {
+			if (maindlg->do_update_capmode(mode)) {
+				(static_cast<COptionUI*>(msg.pSender))->Selected(true);
+			}
+		}
+
+		return;
+	}
 
 	if (name == "fps_dec") {
 		auto fps = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"fps")); assert(fps);

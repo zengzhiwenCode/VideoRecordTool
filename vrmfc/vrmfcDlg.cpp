@@ -737,6 +737,17 @@ void CvrmfcDlg::do_settings()
 	dlg.ShowModal();
 }
 
+bool CvrmfcDlg::do_update_capmode(const std::string & mode)
+{
+	auto cfg = config::get_instance();
+	dscap_.CloseCamera();
+	if (dscap_.OpenCamera(cfg->get_vidx(), false, cfg->get_video_w(), cfg->get_video_h(), mode.c_str())) {
+		cfg->set_vtype(mode);
+		return true;
+	}
+	return false;
+}
+
 void CvrmfcDlg::do_system_info()
 {
 	AUTO_LOG_FUNCTION;
