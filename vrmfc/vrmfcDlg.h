@@ -61,6 +61,7 @@ protected:
 		std::string prev_time_str = {};
 		
 		std::string get_time();
+		int get_minutes();
 	} record_ = {};
 
 	void adjust_player_size(int w, int h);

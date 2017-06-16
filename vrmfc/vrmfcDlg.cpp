@@ -465,6 +465,11 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 					record_.writer->write(frame);
 					rec_tip_->SetText(utf8::a2w(fps_.get_string() + " " + record_.get_time()).c_str());
 					rec_tip_->Invalidate();
+
+					if (record_.get_minutes() >= config::get_instance()->get_max_rec_minutes()) {
+						do_stop_record();
+					}
+
 				} else {
 					rec_tip_->SetText(utf8::a2w(fps_.get_string()).c_str());
 					rec_tip_->Invalidate();
@@ -799,6 +804,14 @@ std::string CvrmfcDlg::_record::get_time()
 
 	prev_time_str = ss.str();
 	return prev_time_str;;
+}
+
+int CvrmfcDlg::_record::get_minutes()
+{
+	auto now = std::chrono::steady_clock::now();
+	auto diff = now - begin;
+	auto min = std::chrono::duration_cast<std::chrono::minutes>(diff).count();
+	return static_cast<int>(min);
 }
 
 int CvrmfcDlg::_fps::get()

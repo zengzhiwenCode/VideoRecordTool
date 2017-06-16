@@ -15,7 +15,7 @@ auto secVideo = "video";
 	auto keyHeight = "height";
 	auto keyRoot = "root";
 	auto keyType = "type";
-	auto keyTime = "min";
+	auto keyTime = "rectime";
 
 auto secSerial = "serial";
 	auto keyPort = "port";
