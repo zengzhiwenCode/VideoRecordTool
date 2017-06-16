@@ -3,6 +3,12 @@
 #include "config.h"
 #include "vrmfcDlg.h"
 
+namespace {
+
+
+
+}
+
 DUI_BEGIN_MESSAGE_MAP(CDuiSettingsDlg, CNotifyPump)
 DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
 DUI_END_MESSAGE_MAP()
@@ -63,7 +69,7 @@ void CDuiSettingsDlg::InitWindow()
 		for (auto i : mi[cfg->get_vtype()].sizes) {
 			auto opt = new COptionUI();
 			auto name = std::to_wstring(i.first) + L"*" + std::to_wstring(i.second);
-			opt->SetName(name.c_str());
+			opt->SetName((L"resolutions_" + name).c_str());
 			opt->SetText(name.c_str());
 			opt->SetFont(0);
 			opt->SetBkColor(0xFF3275EE);
@@ -155,15 +161,37 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 	auto cfg = config::get_instance();
 	auto mi = cfg->get_mi();
 
+	// 格式
 	std::string cap_mode = "cap_mod_";
 	if (name.find(cap_mode) != name.npos) {
 		auto mode = name.substr(cap_mode.length());
 		if (mi.find(mode) != mi.end()) {
 			if (maindlg->do_update_capmode(mode)) {
 				(static_cast<COptionUI*>(msg.pSender))->Selected(true);
+				// todo: maybe needless, update resolutions
 			}
 		}
 
+		return;
+	}
+
+	// 分辨率
+	std::string resolution = "resolutions_";
+	if (name.find(resolution) != name.npos) {
+		auto res = name.substr(resolution.length());
+		auto pos = res.find('*');
+		if (pos != res.npos) {
+			int x = std::stoi(res.substr(0, pos));
+			int y = std::stoi(res.substr(pos + 1));
+
+			misz sz = { x,y };
+			if (mi[cfg->get_vtype()].sizes.find(sz) != mi[cfg->get_vtype()].sizes.end()) {
+				if (maindlg->do_update_resolution(sz)) {
+					(static_cast<COptionUI*>(msg.pSender))->Selected(true);
+				}
+			}
+		}
+		
 		return;
 	}
 

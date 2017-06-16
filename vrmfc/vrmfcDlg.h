@@ -80,6 +80,7 @@ public:
 	void do_file_manager_over();
 	void do_settings();
 	bool do_update_capmode(const std::string& mode);
+	bool do_update_resolution(misz sz);
 	void do_system_info();
 	void do_adjust_brightness();
 

@@ -748,6 +748,18 @@ bool CvrmfcDlg::do_update_capmode(const std::string & mode)
 	return false;
 }
 
+bool CvrmfcDlg::do_update_resolution(misz sz)
+{
+	auto cfg = config::get_instance();
+	dscap_.CloseCamera();
+	if (dscap_.OpenCamera(cfg->get_vidx(), false, sz.first, sz.second, cfg->get_vtype().c_str())) {
+		cfg->set_video_w(sz.first);
+		cfg->set_video_h(sz.second);
+		return true;
+	}
+	return false;
+}
+
 void CvrmfcDlg::do_system_info()
 {
 	AUTO_LOG_FUNCTION;
