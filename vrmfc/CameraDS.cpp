@@ -276,34 +276,47 @@ bool CCameraDS::update_video(VideoProcAmpProperty p, int value)
 {
 	do {
 		if (!pcam || !pamp)break;
+
+#define set_video_property(ppp) \
+	if (vamp_.ppp.val_ != value) { \
+		hr = pamp->Set(p, value, vamp_.ppp.flags_); \
+		if (SUCCEEDED(hr)) { \
+			vamp_.ppp.val_ = value; \
+			return true; \
+		} \
+	}
+
 		HRESULT hr = S_FALSE;
 		switch (p) {
 		case VideoProcAmp_Brightness:
-			if (vamp_.brightness.val_ != value) {
-				hr = pamp->Set(p, value, vamp_.brightness.flags_);
-				if (SUCCEEDED(hr)) {
-					vamp_.brightness.val_ = value;
-					return true;
-				}
-			}
+			set_video_property(brightness);
 			break;
 		case VideoProcAmp_Contrast:
+			set_video_property(contrast);
 			break;
 		case VideoProcAmp_Hue:
+			set_video_property(hue);
 			break;
 		case VideoProcAmp_Saturation:
+			set_video_property(saturation);
 			break;
 		case VideoProcAmp_Sharpness:
+			set_video_property(sharpness);
 			break;
 		case VideoProcAmp_Gamma:
+			set_video_property(gamma);
 			break;
-		case VideoProcAmp_ColorEnable:
-			break;
+		//case VideoProcAmp_ColorEnable:
+		//	set_video_property(brightness);
+		//	break;
 		case VideoProcAmp_WhiteBalance:
+			set_video_property(white_balance);
 			break;
 		case VideoProcAmp_BacklightCompensation:
+			set_video_property(backlight);
 			break;
 		case VideoProcAmp_Gain:
+			set_video_property(gain);
 			break;
 		default:
 			break;

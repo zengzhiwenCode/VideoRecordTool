@@ -264,43 +264,17 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 			options->SelectItem(5);
 		} else if (name == "recover") {	// »Ö¸´
 			options->SelectItem(6);
-		} /*else if (name == "brightness") {
-			if (video_min) {
-				video_min->SetText(std::to_wstring(vamp.brightness.min_).c_str()); 
-			}
-			if (video_val) {
-				video_val->SetText(std::to_wstring(vamp.brightness.val_).c_str());
-			}
-			if (video_max) {
-				video_max->SetText(std::to_wstring(vamp.brightness.max_).c_str());
-			}
-			if (video_auto) {
-				video_auto->SetEnabled(vamp.brightness.flags_ == VideoProcAmp_Flags_Auto || vamp.brightness.flags_ == VideoProcAmp_Flags_Manual);
-				video_auto->Selected(vamp.brightness.flags_ == VideoProcAmp_Flags_Auto);
-			}
-			if (video_dec) {
-				video_dec->SetEnabled(vamp.brightness.valid_ > 0);
-			}
-			if (video_inc) {
-				video_inc->SetEnabled(vamp.brightness.valid_ > 0);
-			}
-			if (video_slider) {
-				video_slider->SetMinValue(vamp.brightness.min_);
-				video_slider->SetMaxValue(vamp.brightness.max_);
-				video_slider->SetChangeStep(vamp.brightness.step_);
-				video_slider->SetEnabled(vamp.brightness.valid_ > 0);
-			}
-		}*/
+		} 
 
 		case_video(brightness, VideoProcAmp_Brightness)
-		case_video(contrast, VideoProcAmp_Brightness)
-		case_video(hue, VideoProcAmp_Brightness)
-		case_video(saturation, VideoProcAmp_Brightness)
-		case_video(sharpness, VideoProcAmp_Brightness)
-		case_video(gamma, VideoProcAmp_Brightness)
-		case_video(white_balance, VideoProcAmp_Brightness)
-		case_video(backlight, VideoProcAmp_Brightness)
-		case_video(gain, VideoProcAmp_Brightness)
+		case_video(contrast, VideoProcAmp_Contrast)
+		case_video(hue, VideoProcAmp_Hue)
+		case_video(saturation, VideoProcAmp_Saturation)
+		case_video(sharpness, VideoProcAmp_Sharpness)
+		case_video(gamma, VideoProcAmp_Gamma)
+		case_video(white_balance, VideoProcAmp_WhiteBalance)
+		case_video(backlight, VideoProcAmp_BacklightCompensation)
+		case_video(gain, VideoProcAmp_Gain)
 
 		
 
@@ -380,7 +354,7 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 		if (control) { \
 			auto val = control->GetValue(); \
 			if (val > control->GetMinValue()) { \
-				control->SetValue(--val); \
+				control->SetValue(val - control->GetChangeStep()); \
 				handler(); \
 			} \
 		} \
@@ -392,7 +366,7 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 		if (control) { \
 			auto val = control->GetValue(); \
 			if (val < control->GetMaxValue()) { \
-				control->SetValue(++val); \
+				control->SetValue(val + control->GetChangeStep()); \
 				handler(); \
 			} \
 		} \
