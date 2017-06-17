@@ -76,7 +76,7 @@
                         <HorizontalLayout height="15" />
                         <HorizontalLayout>
                             <VerticalLayout width="5" />
-                            <Option name="bright" text="亮度" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
+                            <Option name="brightness" text="亮度" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
                             <VerticalLayout width="5" />
                             <Option name="contrast" text="对比度" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
                             <VerticalLayout width="5" />
@@ -88,13 +88,13 @@
                         <HorizontalLayout height="15" />
                         <HorizontalLayout>
                             <VerticalLayout width="5" />
-                            <Option name="bright" text="清晰度" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
+                            <Option name="sharpness" text="清晰度" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
                             <VerticalLayout width="5" />
-                            <Option name="bright" text="伽马" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
+                            <Option name="gamma" text="伽马" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
                             <VerticalLayout width="5" />
-                            <Option name="bright" text="白平衡" enabled="false" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
+                            <Option name="white_balance" text="白平衡" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
                             <VerticalLayout width="5" />
-                            <Option name="bright" text="逆光对比" enabled="false" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
+                            <Option name="backlight" text="逆光对比" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
                             <VerticalLayout width="5" />
                         </HorizontalLayout>
                         <HorizontalLayout height="15" />
@@ -102,18 +102,17 @@
                             <VerticalLayout width="5" />
                             <Option name="gain" text="增益" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
                             <VerticalLayout width="5" />
-                            <Option name="bright" text="电力线频率" font="0" bkcolor="FF3275EE#" borderround="5,5" group="video"/>
+                            <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
                             <VerticalLayout width="5" />
                             <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
                             <VerticalLayout width="5" />
-                            <Button name="reset_video" text="恢复默认" font="0" bkcolor="FF3275EE#" borderround="5,5" />
+                            <Option name="reset_video" text="恢复默认" font="0" bkcolor="FF3275EE#" group="video" borderround="5,5" />
                             <VerticalLayout width="5" />
                         </HorizontalLayout>
                         <HorizontalLayout height="55" />
                         <HorizontalLayout>
                             <VerticalLayout width="5" />
                             <VerticalLayout>
-                                <HorizontalLayout />
                                 <HorizontalLayout>
                                     <VerticalLayout width="5" />
                                     <Button name="video_dec" width="45" height="25" normalimage="file='image\slider\left.bmp'" />
@@ -123,9 +122,17 @@
                                     <Button name="video_inc" width="45" height="25" normalimage="file='image\slider\right.bmp'" />
                                     <VerticalLayout width="5" />
                                 </HorizontalLayout>
-                                <HorizontalLayout />
+                                <HorizontalLayout>
+                                    <VerticalLayout width="50" />
+                                    <Label name="video_min" text="0" font="0" align="left" valign="center" textcolor="#FF000000"  />
+                                    <VerticalLayout width="50" />
+                                    <Label name="video_val" text="10" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                                    <VerticalLayout width="50" />
+                                    <Label name="video_max" text="256" font="0" align="right" valign="center" textcolor="#FF000000"  />
+                                    <VerticalLayout width="50" />
+                                </HorizontalLayout>
                             </VerticalLayout>
-                            <Button name="bright" text="自动" width="100" font="0" bkcolor="FF3275EE#" borderround="5,5" />
+                            <Option name="video_auto" text="自动" enabled="false" width="100" font="0" bkcolor="FF3275EE#" borderround="5,5" />
                             <VerticalLayout width="5" />
                         </HorizontalLayout>
                         <HorizontalLayout height="15" />
@@ -135,56 +142,61 @@
                         <HorizontalLayout height="15" />
                         <HorizontalLayout>
                             <VerticalLayout width="5" />
-                            <Option name="scale" text="缩放" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
+                            <Option name="zoom" text="缩放" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
                             <VerticalLayout width="5" />
                             <Option name="focus" text="焦点" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
                             <VerticalLayout width="5" />
                             <Option name="exposure" text="曝光" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
                             <VerticalLayout width="5" />
-                            <Option name="ISO_speed" text="光圈" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
+                            <Option name="iris" text="光圈" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
                             <VerticalLayout width="5" />
                         </HorizontalLayout>
                         <HorizontalLayout height="15" />
                         <HorizontalLayout>
                             <VerticalLayout width="5" />
-                            <Button name="" enabled="false"text="" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
+                            <Option name="pan" text="全景" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
                             <VerticalLayout width="5" />
-                            <Button name="" enabled="false"text="" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
+                            <Option name="tilt" text="倾斜" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
                             <VerticalLayout width="5" />
-                            <Button name="" enabled="false"text="" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
-                            <VerticalLayout width="5" />
-                            <Button name="" enabled="false"text="" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
-                            <VerticalLayout width="5" />
-                        </HorizontalLayout>
-                        <HorizontalLayout height="15" />
-                        <HorizontalLayout>
-                            <VerticalLayout width="5" />
-                            <Option name="bright" text="" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
-                            <VerticalLayout width="5" />
-                            <Option name="bright" text="" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
+                            <Option name="roll" text="滚动" font="0" bkcolor="FF3275EE#" borderround="5,5" group="camera"/>
                             <VerticalLayout width="5" />
                             <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
                             <VerticalLayout width="5" />
-                            <Button name="reset_camera" text="恢复默认" font="0" bkcolor="FF3275EE#" borderround="5,5" />
+                        </HorizontalLayout>
+                        <HorizontalLayout height="15" />
+                        <HorizontalLayout>
+                            <VerticalLayout width="5" />
+                            <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
+                            <VerticalLayout width="5" />
+                            <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
+                            <VerticalLayout width="5" />
+                            <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
+                            <VerticalLayout width="5" />
+                            <Option name="reset_camera" text="恢复默认" font="0" bkcolor="FF3275EE#" group="camera" borderround="5,5" />
                             <VerticalLayout width="5" />
                         </HorizontalLayout>
                         <HorizontalLayout height="55" />
                         <HorizontalLayout>
                             <VerticalLayout width="5" />
                             <VerticalLayout>
-                                <HorizontalLayout />
                                 <HorizontalLayout>
                                     <VerticalLayout width="5" />
-                                    <Button name="video_dec" width="45" height="25" normalimage="file='image\slider\left.bmp'" />
+                                    <Button name="camera_dec" width="45" height="25" normalimage="file='image\slider\left.bmp'" />
                                     <VerticalLayout width="5" />
-                                    <Slider name="video_slider" min="0" max="5" step="1" height="20" valign="center"/>
+                                    <Slider name="camera_slider" min="0" max="5" step="1" height="20" valign="center"/>
                                     <VerticalLayout width="5" />
-                                    <Button name="video_inc" width="45" height="25" normalimage="file='image\slider\right.bmp'" />
+                                    <Button name="camera_inc" width="45" height="25" normalimage="file='image\slider\right.bmp'" />
                                     <VerticalLayout width="5" />
                                 </HorizontalLayout>
-                                <HorizontalLayout />
+                                <HorizontalLayout>
+                                    <VerticalLayout width="50" />
+                                    <Label name="camera_min" text="0" font="0" align="left" valign="center" textcolor="#FF000000"  />
+                                    <Label name="camera_val" text="10" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                                    <Label name="camera_max" text="256" font="0" align="right" valign="center" textcolor="#FF000000"  />
+                                    <VerticalLayout width="50" />
+                                </HorizontalLayout>
                             </VerticalLayout>
-                            <Button name="bright" text="自动" width="100" font="0" bkcolor="FF3275EE#" borderround="5,5" />
+                            <Option name="camera_auto" text="自动" enabled="false" width="100" font="0" bkcolor="FF3275EE#" borderround="5,5" />
                             <VerticalLayout width="5" />
                         </HorizontalLayout>
                         <HorizontalLayout height="15" />
@@ -207,7 +219,7 @@
                         <HorizontalLayout height="80" />
                         <HorizontalLayout>
                             <VerticalLayout width="50" />
-                            <Option name="year" text="2017年" font="0" bkcolor="FF3275EE#" borderround="5,5" group="time" />
+                            <Option name="year" selected="true" text="2017年" font="0" bkcolor="FF3275EE#" borderround="5,5" group="time" />
                             <VerticalLayout width="50" />
                             <Option name="month" text="05月" font="0" bkcolor="FF3275EE#" borderround="5,5" group="time" />
                             <VerticalLayout width="50" />
@@ -242,13 +254,13 @@
                         <Label text="是否恢复设置？" font="0" align="center" valign="center" textcolor="#FF000000"  />
                         <HorizontalLayout height="50" />
                         <HorizontalLayout>
-                            <VerticalLayout width="100" />
+                            <VerticalLayout width="80" />
                             <Button name="reset_ok" text="确定" font="0" bkcolor="FF3275EE#" borderround="5,5" />
                             <VerticalLayout width="50" />
                             <Button name="reset_cancel" text="取消" font="0" bkcolor="FF3275EE#" borderround="5,5" />
-                            <VerticalLayout width="100" />
+                            <VerticalLayout width="80" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="150" />
+                        <HorizontalLayout height="120" />
                     </VerticalLayout>
                 </TabLayout>
                 <VerticalLayout width="20" />

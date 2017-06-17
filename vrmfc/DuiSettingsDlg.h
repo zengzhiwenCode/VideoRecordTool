@@ -32,6 +32,8 @@ private:
 
 	COleDateTime time_ = {};
 	
+	std::vector<COptionUI*> capmode_btns_ = {};
+	std::vector<COptionUI*> resolution_btns_ = {};
 
 protected:
 	void on_fps();

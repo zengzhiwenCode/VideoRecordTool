@@ -41,14 +41,22 @@ void CDuiSettingsDlg::InitWindow()
 		auto resolution = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(L"resolutions")); assert(resolution);
 		if (!resolution) { break; }
 		resolution->RemoveAll();
+		resolution_btns_.clear();
 
 		auto cap_mode = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(L"cap_mode")); assert(cap_mode);
 		if (!cap_mode) { break; }
 		cap_mode->RemoveAll();
+		capmode_btns_.clear();
 
 		auto mi = cfg->get_mi();
 		for (const auto& i : mi) {
 			auto opt = new COptionUI();
+			capmode_btns_.push_back(opt);
+			cap_mode->Add(opt);
+			auto horz = new CHorizontalLayoutUI();
+			horz->SetFixedHeight(5);
+			cap_mode->Add(horz);
+
 			auto name = utf8::a2w(i.first);
 			opt->SetName((L"cap_mod_" + name).c_str());
 			opt->SetText(name.c_str());
@@ -56,39 +64,40 @@ void CDuiSettingsDlg::InitWindow()
 			opt->SetBkColor(0xFF3275EE);
 			SIZE sz = { 15,15 };
 			opt->SetBorderRound(sz);
-			opt->SetGroup(L"cap_mode");
+			opt->SetGroup(L"cap_modes");
 
 			if (i.first == cfg->get_vtype()) {
-				opt->Selected(true);
+				opt->Selected(true); 
+				opt->SetBkColor(0xFFD7E4FC);
+			} else {
+				opt->SetBkColor(0xFF3275EE);
 			}
-
-			cap_mode->Add(opt);
-
-			auto horz = new CHorizontalLayoutUI();
-			horz->SetFixedHeight(5);
-			cap_mode->Add(horz);
 		}
 
 		for (auto i : mi[cfg->get_vtype()].sizes) {
 			auto opt = new COptionUI();
-			auto name = std::to_wstring(i.first) + L"*" + std::to_wstring(i.second);
-			opt->SetName((L"resolutions_" + name).c_str());
-			opt->SetText(name.c_str());
+			resolution_btns_.push_back(opt);
+			resolution->Add(opt);
+			auto horz = new CHorizontalLayoutUI();
+			horz->SetFixedHeight(5);
+			resolution->Add(horz);
+
+			opt->SetName((L"resolutions_" + std::to_wstring(i.first) + L"_" + std::to_wstring(i.second)).c_str());
+			opt->SetText((std::to_wstring(i.first) + L"*" + std::to_wstring(i.second)).c_str());
 			opt->SetFont(0);
-			opt->SetBkColor(0xFF3275EE);
+			
 			SIZE sz = { 15,15 };
 			opt->SetBorderRound(sz);
 			opt->SetGroup(L"resolutions");
 
 			if (i.first == cfg->get_video_w() && i.second == cfg->get_video_h()) {
 				opt->Selected(true);
+				opt->SetBkColor(0xFFD7E4FC);
+			} else {
+				opt->SetBkColor(0xFF3275EE);
 			}
 
-			resolution->Add(opt);
-
-			auto horz = new CHorizontalLayoutUI();
-			horz->SetFixedHeight(5);
-			resolution->Add(horz);
+			
 		}
 
 	} while (false);
@@ -358,6 +367,20 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 		if (mi.find(mode) != mi.end()) {
 			if (maindlg->do_update_capmode(mode)) {
 				(static_cast<COptionUI*>(msg.pSender))->Selected(true);
+				
+				auto wname = utf8::a2w(name);
+				for(auto opt : capmode_btns_){
+					if (opt) {
+						if (opt->GetName().GetData() == wname) {
+							opt->Selected(true);
+							opt->SetBkColor(0xFFD7E4FC);
+						} else {
+							opt->Selected(false);
+							opt->SetBkColor(0xFF3275EE);
+						}
+					}
+				}
+				
 				// todo: maybe needless, update resolutions
 			}
 		}
@@ -369,7 +392,7 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 	std::string resolution = "resolutions_";
 	if (name.find(resolution) != name.npos) {
 		auto res = name.substr(resolution.length());
-		auto pos = res.find('*');
+		auto pos = res.find('_');
 		if (pos != res.npos) {
 			int x = std::stoi(res.substr(0, pos));
 			int y = std::stoi(res.substr(pos + 1));
@@ -378,6 +401,20 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 			if (mi[cfg->get_vtype()].sizes.find(sz) != mi[cfg->get_vtype()].sizes.end()) {
 				if (maindlg->do_update_resolution(sz)) {
 					(static_cast<COptionUI*>(msg.pSender))->Selected(true);
+					auto wname = utf8::a2w(name);
+					for(auto opt : resolution_btns_){
+						if (opt) {
+							if (opt->GetName().GetData() == wname) {
+								opt->Selected(true);
+								opt->SetBkColor(0xFFD7E4FC);
+							} else {
+								opt->Selected(false);
+								opt->SetBkColor(0xFF3275EE);
+							}
+						}
+
+						
+					}
 				}
 			}
 		}
