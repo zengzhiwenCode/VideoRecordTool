@@ -3,6 +3,7 @@
 #include "config.h"
 #include "vrmfcDlg.h"
 
+
 namespace {
 
 
@@ -233,7 +234,7 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 		// adjust_video_auto(vname); 
 
 
-#define case_video(vname) \
+#define case_video(vname, p) \
 		else if (name == #vname) { \
 			set_video_min_text(vname); \
 			set_video_val_text(vname); \
@@ -241,6 +242,7 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 			adjust_video_dec(vname); \
 			adjust_video_inc(vname); \
 			adjust_video_slider(vname); \
+			pvideo_ = p; \
 		}
 
 
@@ -290,15 +292,15 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 			}
 		}*/
 
-		case_video(brightness)
-		case_video(contrast)
-		case_video(hue)
-		case_video(saturation)
-		case_video(sharpness)
-		case_video(gamma)
-		case_video(white_balance)
-		case_video(backlight)
-		case_video(gain)
+		case_video(brightness, VideoProcAmp_Brightness)
+		case_video(contrast, VideoProcAmp_Brightness)
+		case_video(hue, VideoProcAmp_Brightness)
+		case_video(saturation, VideoProcAmp_Brightness)
+		case_video(sharpness, VideoProcAmp_Brightness)
+		case_video(gamma, VideoProcAmp_Brightness)
+		case_video(white_balance, VideoProcAmp_Brightness)
+		case_video(backlight, VideoProcAmp_Brightness)
+		case_video(gain, VideoProcAmp_Brightness)
 
 		
 
@@ -309,6 +311,8 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 			on_fps();
 		} else if (name == "rec_time") {
 			on_rec_time();
+		} else if (name == "video_slider") {
+			on_video_slider();
 		}
 	}	
 
@@ -370,44 +374,37 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 		return;
 	}
 
-	if (name == "fps_dec") {
-		auto fps = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"fps")); assert(fps);
-		if (fps) {
-			auto val = fps->GetValue();
-			if (val > fps->GetMinValue()) {
-				fps->SetValue(--val);
-				on_fps();
-			}
-		}
-	} else if (name == "fps_inc") {
-		auto fps = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"fps")); assert(fps);
-		if (fps) {
-			auto val = fps->GetValue();
-			if (val < fps->GetMaxValue()) {
-				fps->SetValue(++val);
-				on_fps();
-			}
-		}
-	} else if (name == "rec_time_dec") {
-		auto rec_time = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"rec_time")); assert(rec_time);
-		if (rec_time) {
-			auto val = rec_time->GetValue();
-			if (val > rec_time->GetMinValue()) {
-				rec_time->SetValue(--val);
-				on_rec_time();
-			}
-		}
-	} else if (name == "rec_time_inc") {
-		auto rec_time = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"rec_time")); assert(rec_time);
-		if (rec_time) {
-			auto val = rec_time->GetValue();
-			if (val < rec_time->GetMaxValue()) {
-				rec_time->SetValue(++val);
-				on_rec_time();
-			}
-		}
+#define case_slider_dec(sname, control, handler) \
+	else if (name == sname) { \
+		auto control = static_cast<CSliderUI*>(m_PaintManager.FindControl(utf8::a2w(#control).c_str())); assert(control); \
+		if (control) { \
+			auto val = control->GetValue(); \
+			if (val > control->GetMinValue()) { \
+				control->SetValue(--val); \
+				handler(); \
+			} \
+		} \
 	}
 
+#define case_slider_inc(sname, control, handler) \
+	else if (name == sname) { \
+		auto control = static_cast<CSliderUI*>(m_PaintManager.FindControl(utf8::a2w(#control).c_str())); assert(control); \
+		if (control) { \
+			auto val = control->GetValue(); \
+			if (val < control->GetMaxValue()) { \
+				control->SetValue(++val); \
+				handler(); \
+			} \
+		} \
+	}
+
+
+
+	case_slider_dec("rec_time_dec", rec_time, on_rec_time)
+	case_slider_inc("rec_time_inc", rec_time, on_rec_time)
+	case_slider_dec("video_dec", video_slider, on_video_slider)
+	case_slider_inc("video_inc", video_slider, on_video_slider)
+	
 
 	__super::OnClick(msg);
 }
@@ -434,5 +431,19 @@ void CDuiSettingsDlg::on_rec_time()
 		} else {
 			rec_time_text->SetText((std::to_wstring(val) + L"min").c_str());
 		}
+	}
+}
+
+void CDuiSettingsDlg::on_video_slider()
+{
+	auto video_slider = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"video_slider")); assert(video_slider);
+	if (!video_slider)return;
+	int val = video_slider->GetValue();
+
+	auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
+	if (maindlg && maindlg->do_update_video(pvideo_, val)) {
+		auto video_val = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"video_val")); assert(video_val);
+		if (!video_val)return;
+		video_val->SetText(std::to_wstring(val).c_str());
 	}
 }

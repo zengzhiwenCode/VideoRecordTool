@@ -265,7 +265,51 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 
 	CloseCamera();
 
+	this->mi_ = mi_;
+	vamp_ = vamp;
+	cam_ = cam;
+
 	return true;
+}
+
+bool CCameraDS::update_video(VideoProcAmpProperty p, int value)
+{
+	do {
+		if (!pcam || !pamp)break;
+		HRESULT hr = S_FALSE;
+		switch (p) {
+		case VideoProcAmp_Brightness:
+			if (vamp_.brightness.val_ != value) {
+				hr = pamp->Set(p, value, vamp_.brightness.flags_);
+				if (SUCCEEDED(hr)) {
+					vamp_.brightness.val_ = value;
+					return true;
+				}
+			}
+			break;
+		case VideoProcAmp_Contrast:
+			break;
+		case VideoProcAmp_Hue:
+			break;
+		case VideoProcAmp_Saturation:
+			break;
+		case VideoProcAmp_Sharpness:
+			break;
+		case VideoProcAmp_Gamma:
+			break;
+		case VideoProcAmp_ColorEnable:
+			break;
+		case VideoProcAmp_WhiteBalance:
+			break;
+		case VideoProcAmp_BacklightCompensation:
+			break;
+		case VideoProcAmp_Gain:
+			break;
+		default:
+			break;
+		}
+	} while (false);
+	return false;
 }
 
 void CCameraDS::CloseCamera()

@@ -46,6 +46,9 @@ class CCameraDS
 private:
 
 	//mi mi_ = {};
+	mi mi_ = {};
+	procamp vamp_ = {};
+	camera_set cam_ = {};
 
 	bool m_bConnected, m_bLock, m_bChanged;
 
@@ -87,6 +90,10 @@ public:
 	virtual ~CCameraDS();
 
 	bool get_info(int nCamID, mi& mi, procamp& vamp, camera_set& cam);
+	//bool set_info(procamp& vamp, camera_set& cam);
+	bool update_video(VideoProcAmpProperty p, int value);
+	procamp get_video() const { return vamp_; }
+	camera_set get_camera() const { return cam_; }
 
 	//mi get_mi() const { return mi_; }
 

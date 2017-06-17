@@ -771,6 +771,15 @@ bool CvrmfcDlg::do_update_resolution(misz sz)
 	return false;
 }
 
+bool CvrmfcDlg::do_update_video(VideoProcAmpProperty p, int value)
+{
+	if (dscap_.isOpened() && dscap_.update_video(p, value)) {
+		config::get_instance()->set_procamp(dscap_.get_video());
+		return true;
+	}
+	return false;
+}
+
 void CvrmfcDlg::do_system_info()
 {
 	AUTO_LOG_FUNCTION;
