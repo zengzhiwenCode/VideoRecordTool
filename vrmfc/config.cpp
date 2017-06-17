@@ -78,7 +78,7 @@ bool config::load()
 		_vtype = value[secVideo][keyType].asString();
 		_max_rec_minutes = value[secVideo][keyTime].asInt();
 
-		_procamp.backlight.val_ = value[secVideo][segProcamp][keyBacklight][keyValue].asInt();
+		/*_procamp.backlight.val_ = value[secVideo][segProcamp][keyBacklight][keyValue].asInt();
 		_procamp.brightness.val_ = value[secVideo][segProcamp][keyBrightness][keyValue].asInt();
 		_procamp.contrast.val_ = value[secVideo][segProcamp][keyContrast][keyValue].asInt();
 		_procamp.gain.val_ = value[secVideo][segProcamp][keyGain][keyValue].asInt();
@@ -112,7 +112,7 @@ bool config::load()
 		_camera.pan.valid_ = value[secVideo][segCamera][keyPan][keyValid].asInt();
 		_camera.roll.valid_ = value[secVideo][segCamera][keyRoll][keyValid].asInt();
 		_camera.tilt.valid_ = value[secVideo][segCamera][keyTilt][keyValid].asInt();
-		_camera.zoom.valid_ = value[secVideo][segCamera][keyZoom][keyValid].asInt();
+		_camera.zoom.valid_ = value[secVideo][segCamera][keyZoom][keyValid].asInt();*/
 
 
 		_port = value[secSerial][keyPort].asString();
@@ -144,7 +144,7 @@ bool config::save()
 	value[secVideo][keyType] = _vtype;
 	value[secVideo][keyTime] = _max_rec_minutes;
 
-	value[secVideo][segProcamp][keyBacklight][keyValid] = _procamp.backlight.valid_;
+	/*value[secVideo][segProcamp][keyBacklight][keyValid] = _procamp.backlight.valid_;
 	value[secVideo][segProcamp][keyBrightness][keyValid] = _procamp.brightness.valid_;
 	value[secVideo][segProcamp][keyContrast][keyValid] = _procamp.contrast.valid_;
 	value[secVideo][segProcamp][keyGain][keyValid] = _procamp.gain.valid_;
@@ -178,7 +178,7 @@ bool config::save()
 	value[secVideo][segCamera][keyPan][keyValue] = _camera.pan.val_;
 	value[secVideo][segCamera][keyRoll][keyValue] = _camera.roll.val_;
 	value[secVideo][segCamera][keyTilt][keyValue] = _camera.tilt.val_;
-	value[secVideo][segCamera][keyZoom][keyValue] = _camera.zoom.val_;
+	value[secVideo][segCamera][keyZoom][keyValue] = _camera.zoom.val_;*/
 
 
 	value[secSerial][keyPort] = _port;
