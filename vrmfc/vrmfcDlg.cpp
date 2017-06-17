@@ -780,6 +780,15 @@ bool CvrmfcDlg::do_update_video(VideoProcAmpProperty p, int value)
 	return false;
 }
 
+bool CvrmfcDlg::do_reset_video()
+{
+	if (dscap_.isOpened() && dscap_.reset_video()) {
+		config::get_instance()->set_procamp(dscap_.get_video());
+		return true;
+	}
+	return false;
+}
+
 void CvrmfcDlg::do_system_info()
 {
 	AUTO_LOG_FUNCTION;

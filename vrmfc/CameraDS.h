@@ -25,6 +25,7 @@
 #include "dshow.h"
 
 #include <windows.h>
+#include <strmif.h>
 //#include <opencv2/opencv.hpp>
 
 
@@ -92,6 +93,7 @@ public:
 	bool get_info(int nCamID, mi& mi, procamp& vamp, camera_set& cam);
 	//bool set_info(procamp& vamp, camera_set& cam);
 	bool update_video(VideoProcAmpProperty p, int value);
+	bool reset_video();
 	procamp get_video() const { return vamp_; }
 	camera_set get_camera() const { return cam_; }
 

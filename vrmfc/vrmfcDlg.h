@@ -83,6 +83,7 @@ public:
 	bool do_update_capmode(const std::string& mode);
 	bool do_update_resolution(misz sz);
 	bool do_update_video(VideoProcAmpProperty p, int value);
+	bool do_reset_video();
 	void do_system_info();
 	void do_adjust_brightness();
 

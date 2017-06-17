@@ -325,6 +325,28 @@ bool CCameraDS::update_video(VideoProcAmpProperty p, int value)
 	return false;
 }
 
+bool CCameraDS::reset_video()
+{
+	do {
+		if (!pcam || !pamp)break;
+		HRESULT hr = S_FALSE;
+
+#define reset_video_property(p, pp) \
+	if (vamp_.pp.valid_ && vamp_.pp.val_ != vamp_.pp.default_) { \
+		hr = pamp->Set(p, vamp_.pp.default_, vamp_.pp.flags_); \
+		if (SUCCEEDED(hr)) { \
+			vamp_.pp.val_ = vamp_.pp.default_; \
+		}  \
+	}
+
+		reset_video_property(VideoProcAmp_Brightness, brightness);
+
+		return true;
+	} while (false);
+	
+	return false;
+}
+
 void CCameraDS::CloseCamera()
 {
 	if (m_bConnected) {

@@ -380,6 +380,13 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 	case_slider_inc("video_inc", video_slider, on_video_slider)
 	
 
+	if (name == "reset_video") {
+		if (maindlg->do_reset_video()) {
+			//(static_cast<COptionUI*>(msg.pSender))->Selected(false);
+			//on_video_slider();
+		}
+	}
+
 	__super::OnClick(msg);
 }
 
