@@ -19,12 +19,13 @@ public:
 
 private:
 	VideoProcAmpProperty pvideo_ = VideoProcAmp_Brightness;
-	CameraControlProperty pcamera_ = CameraControl_Pan;
+	CameraControlProperty pcamera_ = CameraControl_Exposure;
 
 protected:
 	void on_fps();
 	void on_rec_time();
 	void on_video_slider();
+	void on_camera_slider();
 
 	//typedef std::function<void(void)> on_video_slider;
 

@@ -275,7 +275,7 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 bool CCameraDS::update_video(VideoProcAmpProperty p, int value)
 {
 	do {
-		if (!pcam || !pamp)break;
+		if (!pamp)break;
 
 #define set_video_property(ppp) \
 	if (vamp_.ppp.val_ != value) { \
@@ -328,7 +328,7 @@ bool CCameraDS::update_video(VideoProcAmpProperty p, int value)
 bool CCameraDS::reset_video()
 {
 	do {
-		if (!pcam || !pamp)break;
+		if (!pamp)break;
 		HRESULT hr = S_FALSE;
 
 #define reset_video_property(p, pp) \
@@ -344,6 +344,28 @@ bool CCameraDS::reset_video()
 		return true;
 	} while (false);
 	
+	return false;
+}
+
+bool CCameraDS::update_camera(CameraControlProperty p, int value)
+{
+	do {
+		if (!pcam) { break; }
+		HRESULT hr = S_FALSE;
+		if (cam_.exposure.val_ != value) {
+			hr = pcam->Set(p, value, cam_.exposure.flags_);
+			if (SUCCEEDED(hr)) {
+				cam_.exposure.val_ = value;
+				return true;
+			}
+		}
+
+	} while (false);
+	return false;
+}
+
+bool CCameraDS::reset_camera()
+{
 	return false;
 }
 

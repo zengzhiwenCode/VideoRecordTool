@@ -180,16 +180,24 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 
 #define get_ctrl(type, name) auto name = static_cast<type*>(m_PaintManager.FindControl(utf8::a2w(#name).c_str())); assert(name);
 
-		//auto video_min = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"video_min")); assert(video_min);
-		auto video_val = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"video_val")); assert(video_val);
-		auto video_max = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"video_max")); assert(video_max);
-		auto video_auto = static_cast<COptionUI*>(m_PaintManager.FindControl(L"video_auto")); assert(video_auto);
-		auto video_slider = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"video_slider")); assert(video_slider);
-		auto video_inc = static_cast<CButtonUI*>(m_PaintManager.FindControl(L"video_inc")); assert(video_inc);
-		auto video_dec = static_cast<CButtonUI*>(m_PaintManager.FindControl(L"video_dec")); assert(video_dec);
 		get_ctrl(CLabelUI, video_min);
+		get_ctrl(CLabelUI, video_val);
+		get_ctrl(CLabelUI, video_max);
+		get_ctrl(COptionUI, video_auto);
+		get_ctrl(CSliderUI, video_slider);
+		get_ctrl(CButtonUI, video_inc);
+		get_ctrl(CButtonUI, video_dec);
+
+		get_ctrl(CLabelUI, camera_min);
+		get_ctrl(CLabelUI, camera_val);
+		get_ctrl(CLabelUI, camera_max);
+		get_ctrl(COptionUI, camera_auto);
+		get_ctrl(CSliderUI, camera_slider);
+		get_ctrl(CButtonUI, camera_inc);
+		get_ctrl(CButtonUI, camera_dec);
 
 		auto vamp = cfg->get_procamp();
+		auto camera = cfg->get_camera();
 
 #define set_video_min_text(vname) \
 		if (video_min) { \
@@ -276,7 +284,18 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 		case_video(backlight, VideoProcAmp_BacklightCompensation)
 		case_video(gain, VideoProcAmp_Gain)
 
-		
+		else if (name == "exposure") {
+			camera_min->SetText(std::to_wstring(camera.exposure.min_).c_str());
+			camera_val->SetText(std::to_wstring(camera.exposure.val_).c_str());
+			camera_max->SetText(std::to_wstring(camera.exposure.max_).c_str());
+			camera_slider->SetMinValue(camera.exposure.min_);
+			camera_slider->SetMaxValue(camera.exposure.max_);
+			camera_slider->SetChangeStep(camera.exposure.step_);
+			camera_slider->SetValue(camera.exposure.val_);
+			camera_dec->SetEnabled(camera.exposure.valid_ > 0);
+			camera_inc->SetEnabled(camera.exposure.valid_ > 0);
+
+		}
 
 #undef sel_elif
 
@@ -287,6 +306,8 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 			on_rec_time();
 		} else if (name == "video_slider") {
 			on_video_slider();
+		} else if (name == "camera_slider") {
+			on_camera_slider();
 		}
 	}	
 
@@ -378,13 +399,16 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 	case_slider_inc("rec_time_inc", rec_time, on_rec_time)
 	case_slider_dec("video_dec", video_slider, on_video_slider)
 	case_slider_inc("video_inc", video_slider, on_video_slider)
-	
+	case_slider_dec("camera_dec", camera_slider, on_camera_slider)
+	case_slider_inc("camera_inc", camera_slider, on_camera_slider)
 
 	if (name == "reset_video") {
 		if (maindlg->do_reset_video()) {
 			//(static_cast<COptionUI*>(msg.pSender))->Selected(false);
 			//on_video_slider();
 		}
+	} else if (name == "reset_camera") {
+		maindlg->do_reset_camera();
 	}
 
 	__super::OnClick(msg);
@@ -427,4 +451,19 @@ void CDuiSettingsDlg::on_video_slider()
 		if (!video_val)return;
 		video_val->SetText(std::to_wstring(val).c_str());
 	}
+}
+
+void CDuiSettingsDlg::on_camera_slider()
+{
+	auto camera_slider = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"camera_slider")); assert(camera_slider);
+	if (!camera_slider)return;
+	int val = camera_slider->GetValue();
+
+	auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
+	if (maindlg && maindlg->do_update_camera(pcamera_, val)) {
+		auto camera_val = static_cast<CSliderUI*>(m_PaintManager.FindControl(L"camera_val")); assert(camera_val);
+		if (!camera_val)return;
+		camera_val->SetText(std::to_wstring(val).c_str());
+	}
+
 }

@@ -93,10 +93,10 @@ public:
 	void set_mi(mi mi) { _mi = mi; }
 	mi get_mi() const { return _mi; }
 
-	void set_procamp(procamp pa) { _procamp = pa; save(); }
+	void set_procamp(procamp pa) { _procamp = pa;  }
 	procamp get_procamp() const { return _procamp; }
 
-	void set_camera(camera_set cs) { _camera = cs; save(); }
+	void set_camera(camera_set cs) { _camera = cs;  }
 	camera_set get_camera() const { return _camera; }
 
 

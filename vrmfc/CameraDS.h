@@ -91,9 +91,13 @@ public:
 	virtual ~CCameraDS();
 
 	bool get_info(int nCamID, mi& mi, procamp& vamp, camera_set& cam);
-	//bool set_info(procamp& vamp, camera_set& cam);
+
 	bool update_video(VideoProcAmpProperty p, int value);
 	bool reset_video();
+
+	bool update_camera(CameraControlProperty p, int value);
+	bool reset_camera();
+
 	procamp get_video() const { return vamp_; }
 	camera_set get_camera() const { return cam_; }
 

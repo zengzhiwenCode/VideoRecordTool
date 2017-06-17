@@ -789,6 +789,24 @@ bool CvrmfcDlg::do_reset_video()
 	return false;
 }
 
+bool CvrmfcDlg::do_update_camera(CameraControlProperty p, int value)
+{
+	if (dscap_.isOpened() && dscap_.update_camera(p, value)) {
+		config::get_instance()->set_camera(dscap_.get_camera());
+		return true;
+	}
+	return false;
+}
+
+bool CvrmfcDlg::do_reset_camera()
+{
+	if (dscap_.isOpened() && dscap_.reset_camera()) {
+		config::get_instance()->set_camera(dscap_.get_camera());
+		return true;
+	}
+	return false;
+}
+
 void CvrmfcDlg::do_system_info()
 {
 	AUTO_LOG_FUNCTION;
