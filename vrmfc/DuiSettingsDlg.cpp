@@ -2,7 +2,7 @@
 #include "DuiSettingsDlg.h"
 #include "config.h"
 #include "vrmfcDlg.h"
-
+#include "vrmfc.h"
 
 namespace {
 
@@ -166,6 +166,12 @@ void CDuiSettingsDlg::InitWindow()
 		opt_chinese->Selected(lang == "zh_CN");
 		opt_english->Selected(lang == "en");
 	} while (false);
+
+	// Ê±¼äÉèÖÃ
+	//SetTimer(m_hWnd, 1, 1000, nullptr);
+	//GetLocalTime(&st_);
+	time_ = COleDateTime::GetCurrentTime();
+	update_time(time_);
 }
 
 void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
@@ -297,6 +303,13 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 
 		}
 
+#define case_dt(v) else if (name == #v){ dt_ = v; }
+		case_dt(year)
+		case_dt(month)
+		case_dt(day)
+		case_dt(hour)
+		case_dt(minute)
+
 #undef sel_elif
 
 	} else if (type == "valuechanged") {
@@ -320,7 +333,10 @@ LRESULT CDuiSettingsDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (wParam == VK_ESCAPE) {
 			PostMessage(WM_CLOSE);
 		}
+	} else if (uMsg == WM_TIMER) {
+		//update_time();
 	}
+
 	return __super::HandleMessage(uMsg, wParam, lParam);
 }
 
@@ -402,14 +418,22 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 	case_slider_dec("camera_dec", camera_slider, on_camera_slider)
 	case_slider_inc("camera_inc", camera_slider, on_camera_slider)
 
-	if (name == "reset_video") {
+	else if (name == "reset_video") {
 		if (maindlg->do_reset_video()) {
 			//(static_cast<COptionUI*>(msg.pSender))->Selected(false);
 			//on_video_slider();
 		}
 	} else if (name == "reset_camera") {
 		maindlg->do_reset_camera();
+	} else if (name == "inc_time") {
+		on_update_time(1);
+	} else if (name == "dec_time") {
+		on_update_time(-1);
+	} else if (name == "apply_time") {
+		on_apply_time();
 	}
+
+
 
 	__super::OnClick(msg);
 }
@@ -466,4 +490,79 @@ void CDuiSettingsDlg::on_camera_slider()
 		camera_val->SetText(std::to_wstring(val).c_str());
 	}
 
+}
+
+void CDuiSettingsDlg::on_update_time(int step)
+{
+
+	switch (dt_) {
+	case CDuiSettingsDlg::year:
+		if (step > 0) {
+			time_ += COleDateTimeSpan(365, 0, 0, 0);
+		} else {
+			time_ -= COleDateTimeSpan(365, 0, 0, 0);
+		}
+		break;
+	case CDuiSettingsDlg::month:
+		if (step > 0) {
+			time_ += COleDateTimeSpan(31, 0, 0, 0);
+		} else {
+			time_ -= COleDateTimeSpan(31, 0, 0, 0);
+		}
+		break;
+	case CDuiSettingsDlg::day:
+		if (step > 0) {
+			time_ += COleDateTimeSpan(1, 0, 0, 0);
+		} else {
+			time_ -= COleDateTimeSpan(1, 0, 0, 0);
+		}
+		break;
+	case CDuiSettingsDlg::hour:
+		if (step > 0) {
+			time_ += COleDateTimeSpan(0, 1, 0, 0);
+		} else {
+			time_ -= COleDateTimeSpan(0, 1, 0, 0);
+		}
+		break;
+	case CDuiSettingsDlg::minute:
+		if (step > 0) {
+			time_ += COleDateTimeSpan(0, 0, 1, 0);
+		} else {
+			time_ -= COleDateTimeSpan(0, 0, 1, 0);
+		}
+		break;
+	default:
+		return;
+		break;
+	}
+
+	update_time(time_);
+}
+
+void CDuiSettingsDlg::on_apply_time()
+{
+	SYSTEMTIME st = {};
+	COleDateTime t(time_);
+	t -= COleDateTimeSpan(0, 8, 0, 0);
+	if (t.GetAsSystemTime(st)) {
+		SetSystemTime(&st);
+	}
+}
+
+void CDuiSettingsDlg::update_time(COleDateTime& st)
+{
+	do {
+		auto cyear = static_cast<COptionUI*>(m_PaintManager.FindControl(L"year")); assert(cyear);
+		auto cmonth = static_cast<COptionUI*>(m_PaintManager.FindControl(L"month")); assert(cmonth);
+		auto cday = static_cast<COptionUI*>(m_PaintManager.FindControl(L"day")); assert(cday);
+		auto chour = static_cast<COptionUI*>(m_PaintManager.FindControl(L"hour")); assert(chour);
+		auto cmin = static_cast<COptionUI*>(m_PaintManager.FindControl(L"minute")); assert(cmin);
+
+		cyear->SetText((std::to_wstring(st.GetYear()) + trw(IDS_STRING_YEAR)).c_str());
+		cmonth->SetText((std::to_wstring(st.GetMonth()) + trw(IDS_STRING_MONTH)).c_str());
+		cday->SetText((std::to_wstring(st.GetDay()) + trw(IDS_STRING_DAY)).c_str());
+		chour->SetText((std::to_wstring(st.GetHour()) + trw(IDS_STRING_HOUR)).c_str());
+		cmin->SetText((std::to_wstring(st.GetMinute()) + trw(IDS_STRING_MINUTE)).c_str());
+
+	} while (false);
 }

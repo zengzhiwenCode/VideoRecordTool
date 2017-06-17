@@ -21,12 +21,26 @@ private:
 	VideoProcAmpProperty pvideo_ = VideoProcAmp_Brightness;
 	CameraControlProperty pcamera_ = CameraControl_Exposure;
 
+	enum dt {
+		year,
+		month,
+		day,
+		hour, 
+		minute,
+	};
+	dt dt_ = year;
+
+	COleDateTime time_ = {};
+	
+
 protected:
 	void on_fps();
 	void on_rec_time();
 	void on_video_slider();
 	void on_camera_slider();
 
-	//typedef std::function<void(void)> on_video_slider;
+	void on_update_time(int step);
+	void on_apply_time();
 
+	void update_time(COleDateTime& st);
 };
