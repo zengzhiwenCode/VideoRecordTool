@@ -340,6 +340,14 @@ bool CCameraDS::reset_video()
 	}
 
 		reset_video_property(VideoProcAmp_Brightness, brightness);
+		reset_video_property(VideoProcAmp_Contrast, contrast);
+		reset_video_property(VideoProcAmp_Hue, hue);
+		reset_video_property(VideoProcAmp_Saturation, saturation);
+		reset_video_property(VideoProcAmp_Sharpness, sharpness);
+		reset_video_property(VideoProcAmp_Gamma, gamma);
+		reset_video_property(VideoProcAmp_WhiteBalance, white_balance);
+		reset_video_property(VideoProcAmp_BacklightCompensation, backlight);
+		reset_video_property(VideoProcAmp_Gain, gain);
 
 		return true;
 	} while (false);
@@ -366,6 +374,16 @@ bool CCameraDS::update_camera(CameraControlProperty p, int value)
 
 bool CCameraDS::reset_camera()
 {
+	if (!pcam) { return false; }
+
+	if (cam_.exposure.val_ != cam_.exposure.default_) {
+		HRESULT hr = pcam->Set(CameraControl_Exposure, cam_.exposure.default_, cam_.exposure.flags_);
+		if (SUCCEEDED(hr)) {
+			cam_.exposure.val_ = cam_.exposure.default_;
+			return true;
+		}
+	}
+
 	return false;
 }
 
