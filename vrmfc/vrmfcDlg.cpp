@@ -355,6 +355,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		//	h = cfg->get_video_h();
 		//}
 
+		//bool need_adjust_video_or_camera = false;
 		mi mi = {};
 		procamp vamp = {};
 		camera_set cam = {};
