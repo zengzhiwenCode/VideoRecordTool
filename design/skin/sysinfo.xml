@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<Window size="300,200" mininfo="300,200" maxinfo="300,200" caption="0,0,0,-1" sizebox="0,0,0,0">
+<Window size="300,200" mininfo="300,400" maxinfo="300,400" caption="0,0,0,-1" sizebox="0,0,0,0">
     <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
-	<Font shared="true" id="1" name="幼圆" size="30" />
-	<HorizontalLayout bkcolor="FFD77E44#" bordersize="1" bordercolor="#FF707070" borderround="25,25"> <!--整个窗口-->
-        <VerticalLayout width="20" />
-        <VerticalLayout>
-            <HorizontalLayout height="10" />
-            <HorizontalLayout height="100" > <!--系统信息-->
-                <VerticalLayout width="20" />
-                <Label text="是否关机" font="0" align="center" valign="center" textcolor="#FF000000"  />
-                <VerticalLayout width="20" />
-            </HorizontalLayout>
-            <HorizontalLayout height="10" />
-        </VerticalLayout>
-        <VerticalLayout width="20" />
-	</HorizontalLayout>
+	<Font shared="true" id="1" name="宋体" size="20" />
+    <VerticalLayout bkcolor="FFD77E44#" bordersize="1" bordercolor="#FF707070" borderround="5,5"> <!--整个窗口-->
+        <HorizontalLayout height="50" bkcolor="#FFFFFFB0" bkcolor2="#FFAAAAAA" borderround="1,1">
+            <VerticalLayout width="60" />
+            <Label name="title" text="系统信息" align="center" valign="center" font="0" />
+            <Button name="closebtn" text="关闭" font="1" width="60" />
+        </HorizontalLayout>
+        <HorizontalLayout>
+            <VerticalLayout width="10" />
+            <VerticalLayout>
+                <HorizontalLayout height="15" />
+                <Label name="version" text="系统版本：1.0.0.1" font="0" />
+                <HorizontalLayout height="15" />
+                <Label name="space" text="剩余空间：834G" font="0" />
+            </VerticalLayout>
+            <VerticalLayout width="10" />
+        </HorizontalLayout>
+    </VerticalLayout>
 </Window>
 
 

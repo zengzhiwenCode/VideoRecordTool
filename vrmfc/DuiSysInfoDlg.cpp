@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DuiSysInfoDlg.h"
-
+#include "config.h"
+#include "vrmfc.h"
 
 DUI_BEGIN_MESSAGE_MAP(CDuiSysInfoDlg, CNotifyPump)
 DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
@@ -20,6 +21,17 @@ CDuiSysInfoDlg::~CDuiSysInfoDlg()
 void CDuiSysInfoDlg::InitWindow()
 {
 	CenterWindow();
+
+	auto cfg = config::get_instance();
+	auto version = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"version")); assert(version);
+	if (version) {
+		version->SetText((trw(IDS_STRING_SYSVER) + utf8::a2w(cfg->get_version())).c_str());
+	}
+
+	auto space = static_cast<CLabelUI*>(m_PaintManager.FindControl(L"space")); assert(space);
+	if (space) {
+		space->SetText((trw(IDS_STRING_AVSPACE) + utf8::a2w(cfg->get_remainder_space())).c_str());
+	}
 }
 
 void CDuiSysInfoDlg::Notify(DuiLib::TNotifyUI & msg)

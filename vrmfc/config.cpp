@@ -220,6 +220,36 @@ void config::init_root()
 	CreateDirectoryA(cpath.c_str(), nullptr);
 }
 
+std::string config::get_version() const
+{
+	return std::string("1.0.0.1");
+}
+
+std::string config::get_remainder_space() const
+{
+	namespace bfs = std::experimental::filesystem;
+	auto path = bfs::canonical(_root);
+	auto root = path.root_path();
+	bfs::space_info si = bfs::space(root);
+	si.available;
+
+	auto format_space = [](uintmax_t bytes) {
+		const int factor = 1024;
+		uintmax_t kb = bytes / factor;
+		uintmax_t mb = kb / factor;
+		uintmax_t gb = mb / factor;
+
+		std::string s;
+		if (gb > 0) {
+			return std::to_string(gb) + "G";
+		} else {
+			return std::to_string(mb) + "M";
+		}
+	};
+
+	return format_space(si.available) + "/" + format_space(si.capacity);
+}
+
 std::string config::get_video_path() const
 {
 	auto p = _root + "\\" + VR_VIDEO_FOLDER;

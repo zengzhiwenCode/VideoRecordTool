@@ -90,6 +90,9 @@ private:
 
 public:
 
+	std::string get_version() const;
+	std::string get_remainder_space() const;
+
 	void set_mi(mi mi) { _mi = mi; }
 	mi get_mi() const { return _mi; }
 
