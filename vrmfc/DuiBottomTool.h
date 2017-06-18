@@ -22,16 +22,18 @@ public:
 
 protected:
 	fv pics_ = {};
-	fviter piter_ = {};
+	//fviter piter_ = {};
 	fv videos_ = {};
-	fviter viter_ = {};
+	//fviter viter_ = {};
+	fviters piters_ = {};
+	fviters viters_ = {};
 
 	CRect rc_filedlg_ = {};
 	std::shared_ptr<CDuiFileManagerDlg> file_dlg_ = {};
 	SIZE sz_prevpic_ = {};
 	std::shared_ptr<CDuiPreviewCaptureDlg> pic_view_ = {};
 
-	
+	bool sel_all_ = false;
 
 public:
 	enum mode {
@@ -44,15 +46,15 @@ public:
 	void set_mode(mode m);
 	mode get_mode() const { return mode_; }
 	void enable_btns(bool able);
-	void view_pic(fv pics, fviter iter);
-	void play_video(fv videos, fviter iter);
+	void update_pic_sel(fv pics, fviters iters);
+	void update_video_sel(fv videos, fviters iters);
 	
 protected:
-	bool is_valid_pic_iter(fviter idx);
-	bool is_valid_video_iter(fviter idx);
-	void view_pic(fviter index);
-	void play_video(fviter index);
-	void del_pic(fviter index);
+	//bool is_valid_pic_iter(fviter idx);
+	//bool is_valid_video_iter(fviter idx);
+	void view_pic();
+	void play_video();
+	void del_pic();
 	void file_back_to_main();
 	void scroll_page(int down);
 };

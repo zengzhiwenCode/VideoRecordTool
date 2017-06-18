@@ -111,6 +111,12 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 		if (name == btn_names::back) {
 			file_back_to_main();
 			return;
+		} else if (name == btn_names::edit) {
+			/*if (is_valid_pic_iter(piter_)) {
+				view_pic(piter_);
+			}*/
+
+			view_pic();
 		} else if (name == btn_names::filter) {
 			assert(file_dlg_);
 			file_dlg_->update_filter();
@@ -118,6 +124,11 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			scroll_page(-1);
 		} else if (name == btn_names::page_dn) {
 			scroll_page(1);
+		} else if (name == btn_names::sel_all) {
+			sel_all_ = !sel_all_;
+			if (file_dlg_) {
+				file_dlg_->sel_all(sel_all_);
+			}
 		}
 		
 		break;
@@ -132,15 +143,24 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 
 			set_mode(filemgr);
 		} else if (name == btn_names::prev_pic) {
-			if (piter_ > 0) {
-				view_pic(--piter_);
+			if (piters_.size() == 1) {
+				if (piters_[0] > 0) {
+					piters_[0]--;
+					view_pic(/*--piters_[0]*/);
+				}
 			}
 		} else if (name == btn_names::next_pic) {
-			if (piter_ + 1 < pics_.size()) {
+			/*if (piter_ + 1 < pics_.size()) {
 				view_pic(++piter_);
+			}*/
+			if (piters_.size() == 1) {
+				if (piters_[0] + 1 < pics_.size()) {
+					piters_[0]++;
+					view_pic(/*--piters_[0]*/);
+				}
 			}
 		} else if (name == btn_names::del) {
-			del_pic(piter_);
+			del_pic(/*piter_*/);
 		} else if (name == btn_names::cp_to_usb) {
 
 		} else if (name == btn_names::detail) {
@@ -189,6 +209,11 @@ void CDuiBottomTool::set_mode(mode m)
 	if (!container) { return; }
 
 	container->RemoveAll();
+	pics_.clear();
+	piters_.clear();
+	videos_.clear();
+	viters_.clear();
+	sel_all_ = false;
 
 	int GAP_WIDHT = 50;
 	const int BTN_ROUND = 15;
@@ -267,6 +292,8 @@ void CDuiBottomTool::set_mode(mode m)
 			::MoveWindow(file_dlg_->GetHWND(), rc_filedlg_.left, rc_filedlg_.top, rc_filedlg_.Width(), rc_filedlg_.Height(), 0);
 		}
 		file_dlg_->ShowWindow();
+
+		m_PaintManager.FindControl(btn_names::edit)->SetEnabled(false);
 	}
 		break;
 
@@ -293,7 +320,7 @@ void CDuiBottomTool::set_mode(mode m)
 
 		file_dlg_->ShowWindow(false, false);
 
-		view_pic(piter_);
+		view_pic(/*piter_*/);
 	}
 		break;
 
@@ -371,38 +398,43 @@ void CDuiBottomTool::enable_btns(bool able)
 	container->NeedUpdate();
 }
 
-void CDuiBottomTool::view_pic(fv pics, fviter iter)
+void CDuiBottomTool::update_pic_sel(fv pics, fviters iters)
 {
 	pics_ = pics;
-	piter_ = iter;
+	piters_ = iters;
 
-	set_mode(pic_view);
+	m_PaintManager.FindControl(btn_names::edit)->SetEnabled(piters_.size() + viters_.size() == 1);
+
+	//set_mode(pic_view);
 }
 
-void CDuiBottomTool::play_video(fv videos, fviter iter)
+void CDuiBottomTool::update_video_sel(fv videos, fviters iters)
 {
 	videos_ = videos;
-	viter_ = iter;
+	viters_ = iters;
 
-	set_mode(video_view);
+	m_PaintManager.FindControl(btn_names::edit)->SetEnabled(piters_.size() + viters_.size() == 1);
+	//set_mode(video_view);
 
-	play_video(viter_);
+	//play_video(viter_);
 }
 
-bool CDuiBottomTool::is_valid_pic_iter(fviter idx)
-{
-	return (0 <= idx && idx < pics_.size());
-}
+//bool CDuiBottomTool::is_valid_pic_iter(fviter idx)
+//{
+//	return (0 <= idx && idx < pics_.size());
+//}
+//
+//bool CDuiBottomTool::is_valid_video_iter(fviter idx)
+//{
+//	return (0 <= idx && idx < videos_.size());
+//}
 
-bool CDuiBottomTool::is_valid_video_iter(fviter idx)
+void CDuiBottomTool::view_pic(/*fviter index*/)
 {
-	return (0 <= idx && idx < videos_.size());
-}
-
-void CDuiBottomTool::view_pic(fviter index)
-{
-	if (is_valid_pic_iter(index)) {
-		auto path = pics_[index];
+	//if (is_valid_pic_iter(index)) {
+	//	auto path = pics_[index];
+	if (piters_.size() != 1) { return; }
+	auto path = pics_[0];
 		cv::Mat mat = cv::imread(path.string());
 		if (!mat.empty()) {
 			if (sz_prevpic_.cx != mat.cols || sz_prevpic_.cy != mat.rows) {
@@ -426,17 +458,19 @@ void CDuiBottomTool::view_pic(fviter index)
 			sz_prevpic_.cx = mat.cols;
 			sz_prevpic_.cy = mat.rows;
 		}
-	}
+	//}
 }
 
-void CDuiBottomTool::play_video(fviter index)
+void CDuiBottomTool::play_video(/*fviter index*/)
 {
 }
 
-void CDuiBottomTool::del_pic(fviter index)
+void CDuiBottomTool::del_pic(/*fviter index*/)
 {
-	if (is_valid_pic_iter(index)) {
-		auto p = pics_[index];
+	//if (is_valid_pic_iter(index)) {
+	//	auto p = pics_[index];
+	if (piters_.size() != 1) { return; }
+	auto p = pics_[0];
 		std::error_code ec;
 		fs::remove(p, ec);
 		if (ec) {
@@ -448,14 +482,16 @@ void CDuiBottomTool::del_pic(fviter index)
 			pic_view_->ShowWindow(false, false);
 		}
 
-		pics_.erase(pics_.begin() + index);
-		piter_ = 0;
+		//pics_.erase(pics_.begin() + index);
+		//piter_ = 0;
+		pics_.clear();
+		piters_.clear();
 
 		assert(file_dlg_);
 		file_dlg_->SendMessageW(WM_CLOSE);
 		file_dlg_.reset();
 		set_mode(filemgr);
-	}
+	//}
 }
 
 void CDuiBottomTool::file_back_to_main()

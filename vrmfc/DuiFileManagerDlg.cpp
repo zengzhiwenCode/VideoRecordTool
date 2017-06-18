@@ -91,28 +91,50 @@ void CDuiFileManagerDlg::OnClick(TNotifyUI & msg)
 	case content_tag::pic:
 	{
 		auto path = cfg->get_capture_path() + "\\" + name + VR_CAPTRUE_EXT;
-		fviter index = 0;
-		for (const auto& p : pics_) {
-			if (p.string() == path) {
-				mainwnd->do_view_pic(pics_, index);
-				break;
+		//fviter index = 0;
+		//for (const auto& p : pics_) {
+		//	if (p.string() == path) {
+		//		//mainwnd->do_view_pic(pics_, index);
+		//		break;
+		//	}
+		//	index++;
+		//}
+
+		picbtns_[path].second = !(static_cast<pic_control_type*>(msg.pSender))->IsSelected();
+		fviters iters;
+		fviter iter = 0;
+		for (auto p : pics_) {
+			if (picbtns_[p].second) {
+				iters.push_back(iter);
 			}
-			index++;
+			iter++;
 		}
+
+		mainwnd->do_update_pic_sel(pics_, iters);
 	}
 		break;
 
 	case content_tag::video:
 	{
 		auto path = cfg->get_video_path() + "\\" + name + VR_VIDEO_EXT;
-		fviter index = 0;
-		for (const auto& v : videos_) {
-			if (v.string() == path) {
-				mainwnd->do_play_video(videos_, index);
-				break;
+		//fviter index = 0;
+		//for (const auto& v : videos_) {
+		//	if (v.string() == path) {
+		//		//mainwnd->do_play_video(videos_, index);
+		//		break;
+		//	}
+		//	index++;
+		//}
+		videobtns_[path].second = !(static_cast<pic_control_type*>(msg.pSender))->IsSelected();
+		fviters iters;
+		fviter iter = 0;
+		for (auto p : videos_) {
+			if (videobtns_[p].second) {
+				iters.push_back(iter);
 			}
-			index++;
+			iter++;
 		}
+		mainwnd->do_update_video_sel(videos_, iters);
 	}
 		break;
 
@@ -131,7 +153,7 @@ void CDuiFileManagerDlg::update_content(filter f)
 
 	auto cfg = config::get_instance();
 
-	typedef std::function<std::pair<std::string, content_tag>(const fs::path& file)> get_picture;
+	typedef std::function<std::pair<std::string, content_tag>(const fs::path& file, pic_control_type* opt)> get_picture;
 
 	auto create_content = [&container](fv& vv, const wchar_t* group, get_picture get) {
 		constexpr int window_width = 1000;
@@ -172,16 +194,16 @@ void CDuiFileManagerDlg::update_content(filter f)
 			auto content = new CVerticalLayoutUI();
 			content->SetFixedHeight(content_height);
 			content->SetFixedWidth(img_width);
-			auto pic = new COptionUI();
+			auto pic = new pic_control_type();
 			pic->SetName(file.stem().generic_wstring().c_str());
 			pic->SetFixedHeight(img_height);
 			pic->SetFixedWidth(img_width);
 			pic->SetBorderRound(img_round);
 
-			auto bkimg = get(file);
+			auto bkimg = get(file, pic);
 
 			pic->SetBkImage(utf8::a2w(bkimg.first).c_str());
-			pic->SetGroup(group);
+			//pic->SetGroup(group);
 			pic->SetTag(bkimg.second);
 
 			auto text = new CLabelUI();
@@ -204,13 +226,20 @@ void CDuiFileManagerDlg::update_content(filter f)
 		add_gap_for_row();
 	};
 
+	allbtns_.clear();
+	picbtns_.clear();
+	videobtns_.clear();
+
 	switch (f) {
 	case CDuiFileManagerDlg::all:
 	{
-		create_content(all_, L"all", [cfg](const fs::path& p) {
+		create_content(all_, L"all", [cfg, this](const fs::path& p, pic_control_type* opt) {
+			allbtns_[p] = std::make_pair(opt, false);
 			if (p.parent_path().string() == cfg->get_capture_path()) {
+				picbtns_[p] = std::make_pair(opt, false);
 				return std::make_pair(p.string(), content_tag::pic);
 			} else if (p.parent_path().string() == cfg->get_video_path()) {
+				videobtns_[p] = std::make_pair(opt, false);
 				return std::make_pair(cfg->get_thumb_of_video(p.string()), content_tag::video);
 			} else {
 				assert(0); return std::make_pair(std::string(), content_tag::pic);
@@ -221,13 +250,17 @@ void CDuiFileManagerDlg::update_content(filter f)
 
 	case CDuiFileManagerDlg::pic:
 	{
-		create_content(pics_, L"image", [](const fs::path& p) { return std::make_pair(p.string(), content_tag::pic); });
+		create_content(pics_, L"image", [this](const fs::path& p, pic_control_type* opt) {
+			picbtns_[p] = std::make_pair(opt, false);
+			return std::make_pair(p.string(), content_tag::pic); 
+		});
 	}
 		break;
 
 	case CDuiFileManagerDlg::video:
 	{
-		create_content(videos_, L"thumb", [cfg](const fs::path& p) {
+		create_content(videos_, L"thumb", [cfg, this](const fs::path& p, pic_control_type* opt) {
+			videobtns_[p] = std::make_pair(opt, false);
 			return std::make_pair(cfg->get_thumb_of_video(p.string()), content_tag::video);
 		});
 	}
@@ -236,6 +269,10 @@ void CDuiFileManagerDlg::update_content(filter f)
 	default:
 		break;
 	}
+
+	auto mainwnd = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(mainwnd);
+	mainwnd->do_update_pic_sel(pics_, fviters());
+	mainwnd->do_update_video_sel(videos_, fviters());
 }
 
 void CDuiFileManagerDlg::update_filter()
@@ -282,3 +319,45 @@ void CDuiFileManagerDlg::scroll_page(int step)
 
 	container->SetScrollPos(pos);
 }
+
+void CDuiFileManagerDlg::sel_all(bool all)
+{
+	auto mainwnd = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(mainwnd);
+	switch (filter_) {
+	case CDuiFileManagerDlg::all:
+	{
+		for (auto p : allbtns_) {
+			if (p.second.first) {
+				if (all) {
+					//p.second->SetBkColor(0xFFD7E4FC);
+
+				} else {
+					//p.second->SetBkColor(0xFF3275EE);
+				}
+
+				p.second.first->Selected(all);
+			}
+
+			p.second.second = all;
+		}
+
+		fviters piters; fviters viters;
+		if (all) {
+			for (fviter i = 0; i < pics_.size(); i++) { piters.push_back(i); }
+			for (fviter i = 0; i < videos_.size(); i++) { viters.push_back(i); }
+		}
+
+		mainwnd->do_update_pic_sel(pics_, piters);
+		mainwnd->do_update_video_sel(videos_, viters);
+		break;
+	}
+	case CDuiFileManagerDlg::pic:
+		break;
+	case CDuiFileManagerDlg::video:
+		break;
+	default:
+		break;
+	}
+}
+
+

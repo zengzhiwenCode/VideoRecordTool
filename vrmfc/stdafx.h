@@ -53,7 +53,7 @@ namespace fs = std::experimental::filesystem;
 using fv = std::vector<fs::path>;
 //using fviter = fv::iterator;
 using fviter = fv::size_type;
-
+using fviters = std::vector<fviter>;
 
 #ifdef _UNICODE
 #if defined _M_IX86

@@ -725,14 +725,14 @@ bool CvrmfcDlg::do_file_manager(CRect& rc)
 	return true;
 }
 
-void CvrmfcDlg::do_view_pic(fv pics, fviter iter)
+void CvrmfcDlg::do_update_pic_sel(fv pics, fviters iters)
 {
-	dui_bt_->view_pic(pics, iter);
+	dui_bt_->update_pic_sel(pics, iters);
 }
 
-void CvrmfcDlg::do_play_video(fv videos, fviter iter)
+void CvrmfcDlg::do_update_video_sel(fv videos, fviters iters)
 {
-	dui_bt_->play_video(videos, iter);
+	dui_bt_->update_video_sel(videos, iters);
 }
 
 void CvrmfcDlg::do_file_manager_over()

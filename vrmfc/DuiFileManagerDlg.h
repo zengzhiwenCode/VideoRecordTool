@@ -29,11 +29,19 @@ protected:
 	fv videos_ = {};
 	fv all_ = {};
 
+	using pic_control_type = COptionUI;
+	using btnmap = std::map<fs::path, std::pair<pic_control_type*, bool>>;
+	btnmap picbtns_ = {};
+	btnmap videobtns_ = {};
+	btnmap allbtns_ = {};
+
 	void update_content(filter f);
 
 
 public:
 	void update_filter();
 	void scroll_page(int step);
+	void sel_all(bool all = true);
+
 };
 

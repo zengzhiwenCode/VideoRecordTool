@@ -76,8 +76,8 @@ public:
 	void do_stop_record();
 	void do_capture();
 	bool do_file_manager(CRect& rc);
-	void do_view_pic(fv pics, fviter iter);
-	void do_play_video(fv videos, fviter iter);
+	void do_update_pic_sel(fv pics, fviters iters);
+	void do_update_video_sel(fv videos, fviters iters);
 	void do_file_manager_over();
 	void do_settings();
 	bool do_update_capmode(const std::string& mode);
