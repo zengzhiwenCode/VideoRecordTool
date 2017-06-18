@@ -395,12 +395,21 @@ void CDuiFileManagerDlg::del_pic(fviters piters)
 
 void CDuiFileManagerDlg::del_video(fviters viters)
 {
+	auto cfg = config::get_instance();
 	for (auto i : viters) {
 		auto p = videos_[i];
 		std::error_code ec;
 		fs::remove(p, ec);
 		if (ec) {
 			JLOG_ERRO(ec.message());
+		}
+
+		auto thumb = cfg->create_new_thumb_path(p.stem().string());
+		if (fs::is_regular_file(thumb)) {
+			fs::remove(thumb, ec);
+			if (ec) {
+				JLOG_ERRO(ec.message());
+			}
 		}
 	}
 
