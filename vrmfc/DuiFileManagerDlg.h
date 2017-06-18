@@ -42,6 +42,6 @@ public:
 	void update_filter();
 	void scroll_page(int step);
 	void sel_all(bool all = true);
-
+	void del_pic(fviters piters);
 };
 

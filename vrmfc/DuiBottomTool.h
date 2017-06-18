@@ -57,4 +57,5 @@ protected:
 	void del_pic();
 	void file_back_to_main();
 	void scroll_page(int down);
+	void update_file_mode_btns();
 };

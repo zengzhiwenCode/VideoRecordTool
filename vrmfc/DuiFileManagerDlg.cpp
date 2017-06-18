@@ -10,6 +10,17 @@ enum content_tag {
 	video,
 };
 
+auto list_files = [](const fs::path& path) {
+	fv v;
+	fs::directory_iterator end;
+	for (fs::directory_iterator iter(path); iter != end; iter++) {
+		if (fs::is_regular_file(iter->path())) {
+			v.push_back(iter->path());
+		}
+	}
+
+	return v;
+};
 
 
 }
@@ -34,28 +45,8 @@ void CDuiFileManagerDlg::InitWindow()
 {
 	auto cfg = config::get_instance();
 
-	auto list_files = [](const fs::path& path) {
-		fv v;
-		fs::directory_iterator end;
-		for (fs::directory_iterator iter(path); iter != end; iter++) {
-			if (fs::is_regular_file(iter->path())) {
-				v.push_back(iter->path());
-			}
-		}
-
-		return v;
-	};
-
-	auto get_all_pic = [&cfg, list_files]() {
-		return list_files(fs::canonical(cfg->get_capture_path()));
-	};
-
-	auto get_all_video = [&cfg, list_files] {
-		return list_files(fs::canonical(cfg->get_video_path()));
-	};
-
-	pics_ = get_all_pic();
-	videos_ = get_all_video();
+	pics_ = list_files(cfg->get_capture_path());
+	videos_ = list_files(cfg->get_video_path());
 
 	std::copy(pics_.begin(), pics_.end(), std::back_inserter(all_));
 	std::copy(videos_.begin(), videos_.end(), std::back_inserter(all_));
@@ -328,13 +319,6 @@ void CDuiFileManagerDlg::sel_all(bool all)
 	{
 		for (auto p : allbtns_) {
 			if (p.second.first) {
-				if (all) {
-					//p.second->SetBkColor(0xFFD7E4FC);
-
-				} else {
-					//p.second->SetBkColor(0xFF3275EE);
-				}
-
 				p.second.first->Selected(all);
 			}
 
@@ -352,12 +336,61 @@ void CDuiFileManagerDlg::sel_all(bool all)
 		break;
 	}
 	case CDuiFileManagerDlg::pic:
+	{
+		for (auto p : picbtns_) {
+			if (p.second.first) {
+				p.second.first->Selected(all);
+			}
+
+			p.second.second = all;
+		}
+		fviters piters;
+		if (all) {
+			for (fviter i = 0; i < pics_.size(); i++) { piters.push_back(i); }
+		}
+		mainwnd->do_update_pic_sel(pics_, piters);
+	}
 		break;
 	case CDuiFileManagerDlg::video:
+	{
+		for (auto p : videobtns_) {
+			if (p.second.first) {
+				p.second.first->Selected(all);
+			}
+
+			p.second.second = all;
+		}
+		fviters viters;
+		if (all) {
+			for (fviter i = 0; i < videos_.size(); i++) { viters.push_back(i); }
+		}
+		mainwnd->do_update_video_sel(videos_, viters);
+	}
 		break;
 	default:
 		break;
 	}
+}
+
+void CDuiFileManagerDlg::del_pic(fviters piters)
+{
+	for (auto i : piters) {
+		auto p = pics_[i];
+		std::error_code ec;
+		fs::remove(p, ec);
+		if (ec) {
+			JLOG_ERRO(ec.message());
+		}
+	}
+
+	pics_ = list_files(config::get_instance()->get_capture_path());
+	all_.clear();
+	std::copy(pics_.begin(), pics_.end(), std::back_inserter(all_));
+	std::copy(videos_.begin(), videos_.end(), std::back_inserter(all_));
+	std::sort(all_.begin(), all_.end(), [](const fs::path& p1, const fs::path& p2) {
+		return p1.filename() < p2.filename();
+	});
+	update_content(filter_);
 }
 
 

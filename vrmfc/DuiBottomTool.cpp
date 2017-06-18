@@ -129,6 +129,10 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			if (file_dlg_) {
 				file_dlg_->sel_all(sel_all_);
 			}
+		} else if (name == btn_names::del) {
+			del_pic();
+		} else if (name == btn_names::cp_to_usb) {
+
 		}
 		
 		break;
@@ -293,7 +297,7 @@ void CDuiBottomTool::set_mode(mode m)
 		}
 		file_dlg_->ShowWindow();
 
-		m_PaintManager.FindControl(btn_names::edit)->SetEnabled(false);
+		update_file_mode_btns();
 	}
 		break;
 
@@ -318,7 +322,9 @@ void CDuiBottomTool::set_mode(mode m)
 		};
 		do_create(vv);
 
-		file_dlg_->ShowWindow(false, false);
+		//file_dlg_->ShowWindow(false, false);
+		file_dlg_->SendMessageW(WM_CLOSE);
+		file_dlg_.reset();
 
 		view_pic(/*piter_*/);
 	}
@@ -403,9 +409,7 @@ void CDuiBottomTool::update_pic_sel(fv pics, fviters iters)
 	pics_ = pics;
 	piters_ = iters;
 
-	m_PaintManager.FindControl(btn_names::edit)->SetEnabled(piters_.size() + viters_.size() == 1);
-
-	//set_mode(pic_view);
+	update_file_mode_btns();
 }
 
 void CDuiBottomTool::update_video_sel(fv videos, fviters iters)
@@ -413,7 +417,7 @@ void CDuiBottomTool::update_video_sel(fv videos, fviters iters)
 	videos_ = videos;
 	viters_ = iters;
 
-	m_PaintManager.FindControl(btn_names::edit)->SetEnabled(piters_.size() + viters_.size() == 1);
+	update_file_mode_btns();
 	//set_mode(video_view);
 
 	//play_video(viter_);
@@ -457,6 +461,8 @@ void CDuiBottomTool::view_pic(/*fviter index*/)
 
 			sz_prevpic_.cx = mat.cols;
 			sz_prevpic_.cy = mat.rows;
+
+			set_mode(pic_view);
 		}
 	//}
 }
@@ -467,31 +473,8 @@ void CDuiBottomTool::play_video(/*fviter index*/)
 
 void CDuiBottomTool::del_pic(/*fviter index*/)
 {
-	//if (is_valid_pic_iter(index)) {
-	//	auto p = pics_[index];
-	if (piters_.size() != 1) { return; }
-	auto p = pics_[0];
-		std::error_code ec;
-		fs::remove(p, ec);
-		if (ec) {
-			JLOG_ERRO(ec.message());
-			return;
-		}
-
-		if (pic_view_) {
-			pic_view_->ShowWindow(false, false);
-		}
-
-		//pics_.erase(pics_.begin() + index);
-		//piter_ = 0;
-		pics_.clear();
-		piters_.clear();
-
-		assert(file_dlg_);
-		file_dlg_->SendMessageW(WM_CLOSE);
-		file_dlg_.reset();
-		set_mode(filemgr);
-	//}
+	if (piters_.empty()) { return; }
+	file_dlg_->del_pic(piters_);
 }
 
 void CDuiBottomTool::file_back_to_main()
@@ -510,5 +493,12 @@ void CDuiBottomTool::scroll_page(int down)
 	if (file_dlg_) {
 		file_dlg_->scroll_page(down);
 	}
+}
+
+void CDuiBottomTool::update_file_mode_btns()
+{
+	m_PaintManager.FindControl(btn_names::edit)->SetEnabled(piters_.size() + viters_.size() == 1);
+	m_PaintManager.FindControl(btn_names::del)->SetEnabled(piters_.size() + viters_.size() > 0);
+	m_PaintManager.FindControl(btn_names::cp_to_usb)->SetEnabled(piters_.size() + viters_.size() > 0);
 }
 
