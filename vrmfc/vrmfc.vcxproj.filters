@@ -81,6 +81,9 @@
     <ClInclude Include="CameraDS.h">
       <Filter>ds</Filter>
     </ClInclude>
+    <ClInclude Include="DuiSysInfoDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vrmfc.cpp">
@@ -127,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="CameraDS.cpp">
       <Filter>ds</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiSysInfoDlg.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,7 @@
 #include "DuiConfirmExitDlg.h"
 #include "DuiSettingsDlg.h"
 #include "DuiPreviewCaptureDlg.h"
+#include "DuiSysInfoDlg.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "serial/lib/Debug/serial.lib")
@@ -809,7 +810,10 @@ bool CvrmfcDlg::do_reset_camera()
 
 void CvrmfcDlg::do_system_info()
 {
-	AUTO_LOG_FUNCTION;
+	AUTO_LOG_FUNCTION; AUTO_LOCK_DLG;
+	CDuiSysInfoDlg dlg(L"sysinfo.xml");
+	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	dlg.ShowModal();
 }
 
 void CvrmfcDlg::do_adjust_brightness()

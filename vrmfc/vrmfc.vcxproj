@@ -205,6 +205,7 @@
     <ClInclude Include="duilib.h" />
     <ClInclude Include="DuiPreviewCaptureDlg.h" />
     <ClInclude Include="DuiSettingsDlg.h" />
+    <ClInclude Include="DuiSysInfoDlg.h" />
     <ClInclude Include="jsoncpp\json.h" />
     <ClInclude Include="mat2gdi.h" />
     <ClInclude Include="Resource.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="DuiFileManagerDlg.cpp" />
     <ClCompile Include="DuiPreviewCaptureDlg.cpp" />
     <ClCompile Include="DuiSettingsDlg.cpp" />
+    <ClCompile Include="DuiSysInfoDlg.cpp" />
     <ClCompile Include="jsoncpp\json_reader.cpp" />
     <ClCompile Include="jsoncpp\json_value.cpp" />
     <ClCompile Include="jsoncpp\json_writer.cpp" />
