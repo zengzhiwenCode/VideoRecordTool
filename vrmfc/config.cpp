@@ -2,10 +2,9 @@
 #include "config.h"
 #include <fstream>
 #include "jsoncpp/json.h"
-#include <filesystem>
+
 #include "duilib.h"
 
-namespace bfs = std::experimental::filesystem;
 
 
 namespace {
@@ -227,12 +226,13 @@ bool config::clear_root() const
 {
 	bool ok = true;
 	std::error_code ec1, ec2, ec3;
-	bfs::path capture(get_capture_path());
-	bfs::remove_all(capture, ec1);
-	bfs::path record(get_video_path());
-	bfs::remove_all(record, ec2);
-	bfs::path thumb(get_thumb_path());
-	bfs::remove_all(thumb, ec3);
+	fs::path capture(get_capture_path());
+	fs::remove_all(capture, ec1);
+	fs::path record(get_video_path());
+	fs::remove_all(record, ec2);
+	fs::path thumb(get_thumb_path());
+	fs::remove_all(thumb, ec3);
+
 	if (ec1) {
 		ok = false;
 		JLOG_ERRO(ec1.message());
@@ -256,9 +256,9 @@ std::string config::get_version() const
 
 std::string config::get_remainder_space() const
 {
-	auto path = bfs::canonical(_root);
+	auto path = fs::canonical(_root);
 	auto root = path.root_path();
-	bfs::space_info si = bfs::space(root);
+	fs::space_info si = fs::space(root);
 	si.available;
 
 	auto format_space = [](uintmax_t bytes) {

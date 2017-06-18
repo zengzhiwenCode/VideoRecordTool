@@ -34,5 +34,6 @@ protected:
 
 public:
 	void update_filter();
+	void scroll_page(int step);
 };
 

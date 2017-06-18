@@ -10,6 +10,7 @@ namespace {
 
 namespace btn_names {
 
+auto exit = L"exit";
 auto back = L"back";
 auto rec = L"rec";
 auto cap = L"cap";
@@ -108,16 +109,15 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 	{
 		//assert(dlg_);
 		if (name == btn_names::back) {
-			//dlg_->PostMessageW(WM_CLOSE);
-			assert(file_dlg_);
-			file_dlg_->SendMessageW(WM_CLOSE);
-			file_dlg_.reset();
-			maindlg->do_file_manager_over();
-			set_mode(mainwnd);
+			file_back_to_main();
 			return;
 		} else if (name == btn_names::filter) {
 			assert(file_dlg_);
 			file_dlg_->update_filter();
+		} else if (name == btn_names::page_up) {
+			scroll_page(-1);
+		} else if (name == btn_names::page_dn) {
+			scroll_page(1);
 		}
 		
 		break;
@@ -140,7 +140,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 				view_pic(++piter_);
 			}
 		} else if (name == btn_names::del) {
-
+			del_pic(piter_);
 		} else if (name == btn_names::cp_to_usb) {
 
 		} else if (name == btn_names::detail) {
@@ -227,13 +227,13 @@ void CDuiBottomTool::set_mode(mode m)
 	case CDuiBottomTool::mainwnd:
 	{
 		tv vv = { 
-			{ L"exit", trw(IDS_STRING_EXIT) },
-			{ L"rec", trw(IDS_STRING_REC) },
-			{ L"cap", trw(IDS_STRING_CAP) },
-			{ L"file", trw(IDS_STRING_FILE) },
-			{ L"set", trw(IDS_STRING_SET) },
-			{ L"sys", trw(IDS_STRING_SYSINFO) },
-			{ L"bright", trw(IDS_STRING_BRIGHTNESS) }
+			{ btn_names::exit, trw(IDS_STRING_EXIT) },
+			{ btn_names::rec, trw(IDS_STRING_REC) },
+			{ btn_names::cap, trw(IDS_STRING_CAP) },
+			{ btn_names::file, trw(IDS_STRING_FILE) },
+			{ btn_names::set, trw(IDS_STRING_SET) },
+			{ btn_names::sys, trw(IDS_STRING_SYSINFO) },
+			{ btn_names::bright, trw(IDS_STRING_BRIGHTNESS) }
 		};
 
 		GAP_WIDHT = 10;
@@ -244,20 +244,20 @@ void CDuiBottomTool::set_mode(mode m)
 	case CDuiBottomTool::filemgr:
 	{
 		tv vv = {
-			{ L"back", trw(IDS_STRING_BACK) },
-			{ L"edit", trw(IDS_STRING_EDIT) },
-			{ L"filter", trw(IDS_STRING_FILTER) },
-			{ L"page_up", trw(IDS_STRING_PAGE_UP) },
-			{ L"page_dn", trw(IDS_STRING_PAGE_DN) },
-			{ L"sel_all", trw(IDS_STRING_SEL_ALL) },
-			{ L"delete", trw(IDS_STRING_DELETE) },
+			{ btn_names::back, trw(IDS_STRING_BACK) },
+			{ btn_names::edit, trw(IDS_STRING_EDIT) },
+			{ btn_names::filter, trw(IDS_STRING_FILTER) },
+			{ btn_names::page_up, trw(IDS_STRING_PAGE_UP) },
+			{ btn_names::page_dn, trw(IDS_STRING_PAGE_DN) },
+			{ btn_names::sel_all, trw(IDS_STRING_SEL_ALL) },
+			{ btn_names::del, trw(IDS_STRING_DELETE) },
 			
 		};
 
 		GAP_WIDHT = 5;
 		do_create(vv);
 
-		tp p = { L"cp_to_usb", trw(IDS_STRING_CP_TO_USB) };
+		tp p = { btn_names::cp_to_usb, trw(IDS_STRING_CP_TO_USB) };
 		add_btn(p.first.c_str(), p.second.c_str(), 1);
 		add_gap();
 
@@ -273,21 +273,21 @@ void CDuiBottomTool::set_mode(mode m)
 	case CDuiBottomTool::pic_view:
 	{
 		tv vv = {
-			{ L"prev_pic", trw(IDS_STRING_PREV_PIC) },
-			{ L"back", trw(IDS_STRING_BACK) },
-			{ L"del", trw(IDS_STRING_DELETE) },
+			{ btn_names::prev_pic, trw(IDS_STRING_PREV_PIC) },
+			{ btn_names::back, trw(IDS_STRING_BACK) },
+			{ btn_names::del, trw(IDS_STRING_DELETE) },
 
 		};
 
 		GAP_WIDHT = 25;
 		do_create(vv);
 
-		tp p = { L"cp_to_usb", trw(IDS_STRING_CP_TO_USB) };
+		tp p = { btn_names::cp_to_usb, trw(IDS_STRING_CP_TO_USB) };
 		add_btn(p.first.c_str(), p.second.c_str(), 1);
 
 		vv = { 
-			{ L"detail", trw(IDS_STRING_DETAIL) },
-			{ L"next_pic", trw(IDS_STRING_NEXT_PIC) },
+			{ btn_names::detail, trw(IDS_STRING_DETAIL) },
+			{ btn_names::next_pic, trw(IDS_STRING_NEXT_PIC) },
 		};
 		do_create(vv);
 
@@ -300,23 +300,23 @@ void CDuiBottomTool::set_mode(mode m)
 	case CDuiBottomTool::video_view:
 	{
 		tv vv = {
-			{ L"prev_video", trw(IDS_STRING_PREV_VIDEO) },
-			{ L"stop", trw(IDS_STRING_STOP) },
-			{ L"pause", trw(IDS_STRING_PAUSE) },
-			{ L"back", trw(IDS_STRING_BACK) },
-			{ L"del", trw(IDS_STRING_DELETE) },
+			{ btn_names::prev_video, trw(IDS_STRING_PREV_VIDEO) },
+			{ btn_names::stop, trw(IDS_STRING_STOP) },
+			{ btn_names::pause, trw(IDS_STRING_PAUSE) },
+			{ btn_names::back, trw(IDS_STRING_BACK) },
+			{ btn_names::del, trw(IDS_STRING_DELETE) },
 
 		};
 
 		GAP_WIDHT = 5;
 		do_create(vv);
 
-		tp p = { L"cp_to_usb", trw(IDS_STRING_CP_TO_USB) };
+		tp p = { btn_names::cp_to_usb, trw(IDS_STRING_CP_TO_USB) };
 		add_btn(p.first.c_str(), p.second.c_str(), 1);
 
 		vv = {
-			{ L"detail", trw(IDS_STRING_DETAIL) },
-			{ L"next_video", trw(IDS_STRING_NEXT_VIDEO) },
+			{ btn_names::detail, trw(IDS_STRING_DETAIL) },
+			{ btn_names::next_video, trw(IDS_STRING_NEXT_VIDEO) },
 		};
 		do_create(vv);
 	}
@@ -389,9 +389,19 @@ void CDuiBottomTool::play_video(fv videos, fviter iter)
 	play_video(viter_);
 }
 
+bool CDuiBottomTool::is_valid_pic_iter(fviter idx)
+{
+	return (0 <= idx && idx < pics_.size());
+}
+
+bool CDuiBottomTool::is_valid_video_iter(fviter idx)
+{
+	return (0 <= idx && idx < videos_.size());
+}
+
 void CDuiBottomTool::view_pic(fviter index)
 {
-	if (0 <= index && index < pics_.size()) {
+	if (is_valid_pic_iter(index)) {
 		auto path = pics_[index];
 		cv::Mat mat = cv::imread(path.string());
 		if (!mat.empty()) {
@@ -421,5 +431,48 @@ void CDuiBottomTool::view_pic(fviter index)
 
 void CDuiBottomTool::play_video(fviter index)
 {
+}
+
+void CDuiBottomTool::del_pic(fviter index)
+{
+	if (is_valid_pic_iter(index)) {
+		auto p = pics_[index];
+		std::error_code ec;
+		fs::remove(p, ec);
+		if (ec) {
+			JLOG_ERRO(ec.message());
+			return;
+		}
+
+		if (pic_view_) {
+			pic_view_->ShowWindow(false, false);
+		}
+
+		pics_.erase(pics_.begin() + index);
+		piter_ = 0;
+
+		assert(file_dlg_);
+		file_dlg_->SendMessageW(WM_CLOSE);
+		file_dlg_.reset();
+		set_mode(filemgr);
+	}
+}
+
+void CDuiBottomTool::file_back_to_main()
+{
+	auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
+	if (!maindlg) { JLOG_CRTC("cannot find main dlg!"); return; }
+	assert(file_dlg_);
+	file_dlg_->SendMessageW(WM_CLOSE);
+	file_dlg_.reset();
+	maindlg->do_file_manager_over();
+	set_mode(mainwnd);
+}
+
+void CDuiBottomTool::scroll_page(int down)
+{
+	if (file_dlg_) {
+		file_dlg_->scroll_page(down);
+	}
 }
 

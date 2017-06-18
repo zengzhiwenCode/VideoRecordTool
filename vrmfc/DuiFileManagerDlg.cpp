@@ -257,3 +257,28 @@ void CDuiFileManagerDlg::update_filter()
 
 	update_content(filter_);
 }
+
+void CDuiFileManagerDlg::scroll_page(int step)
+{
+	auto container = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"container")); assert(container);
+	if (!container) { return; }
+	auto pos = container->GetScrollPos();
+	auto range = container->GetScrollRange();
+	auto height = container->GetFixedHeight();
+
+	if (step < 0) {
+		if (pos.cy - height < 0) {
+			pos.cy = 0;
+		} else {
+			pos.cy -= height;
+		}
+	} else {
+		if (pos.cy + height > range.cy) {
+			pos.cy = range.cy;
+		} else {
+			pos.cy += height;
+		}
+	}
+
+	container->SetScrollPos(pos);
+}

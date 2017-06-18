@@ -48,6 +48,11 @@ public:
 	void play_video(fv videos, fviter iter);
 	
 protected:
+	bool is_valid_pic_iter(fviter idx);
+	bool is_valid_video_iter(fviter idx);
 	void view_pic(fviter index);
 	void play_video(fviter index);
+	void del_pic(fviter index);
+	void file_back_to_main();
+	void scroll_page(int down);
 };
