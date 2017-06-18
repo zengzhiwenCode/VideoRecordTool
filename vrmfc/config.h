@@ -90,6 +90,8 @@ private:
 
 public:
 
+	bool clear_root() const;
+
 	std::string get_version() const;
 	std::string get_remainder_space() const;
 

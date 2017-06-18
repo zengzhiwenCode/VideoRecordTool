@@ -28,13 +28,6 @@ void CDuiSettingsDlg::InitWindow()
 	CenterWindow();
 	auto cfg = config::get_instance();
 	auto dst = std::to_wstring(cfg->get_video_w()) + L"*" + std::to_wstring(cfg->get_video_h());
-	/*auto names = { L"320*240", L"640*360", L"640*480", L"920*720", L"1280*720" };
-	for (auto rname : names) {
-		auto opt = static_cast<COptionUI*>(m_PaintManager.FindControl(rname));
-		if (opt) {
-			opt->Selected(dst == rname);
-		}
-	}*/
 
 	// 分辨率/格式
 	do {
@@ -136,8 +129,6 @@ void CDuiSettingsDlg::InitWindow()
 
 #undef adjust_video_btns
 	} while (false);
-
-
 
 	// 摄像机设置
 	do {
@@ -254,9 +245,6 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 			video_auto->Selected(vamp.vname.flags_ == VideoProcAmp_Flags_Auto); \
 		} 
 
-		// adjust_video_auto(vname); 
-
-
 #define case_video(vname, p) \
 		else if (name == #vname) { \
 			set_video_min_text(vname); \
@@ -267,7 +255,6 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 			adjust_video_slider(vname); \
 			pvideo_ = p; \
 		}
-
 
 		if (name == "resolution") {		// 分辨率/格式设置
 			options->SelectItem(0);
@@ -468,6 +455,16 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 		on_update_time(-1);
 	} else if (name == "apply_time") {
 		on_apply_time();
+	} else if (name == "reset_ok") {
+		bool ok = true;
+		if (!cfg->clear_root()) {
+			ok = false;
+		}
+
+		maindlg->do_reset_video();
+		maindlg->do_reset_camera();
+
+		PostMessage(WM_CLOSE);
 	}
 
 

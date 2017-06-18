@@ -5,6 +5,9 @@
 #include <filesystem>
 #include "duilib.h"
 
+namespace bfs = std::experimental::filesystem;
+
+
 namespace {
 
 auto keyVid = "vid";
@@ -220,6 +223,32 @@ void config::init_root()
 	CreateDirectoryA(cpath.c_str(), nullptr);
 }
 
+bool config::clear_root() const
+{
+	bool ok = true;
+	std::error_code ec1, ec2, ec3;
+	bfs::path capture(get_capture_path());
+	bfs::remove_all(capture, ec1);
+	bfs::path record(get_video_path());
+	bfs::remove_all(record, ec2);
+	bfs::path thumb(get_thumb_path());
+	bfs::remove_all(thumb, ec3);
+	if (ec1) {
+		ok = false;
+		JLOG_ERRO(ec1.message());
+	}
+	if (ec2) {
+		ok = false;
+		JLOG_ERRO(ec2.message());
+	}
+	if (ec3) {
+		ok = false;
+		JLOG_ERRO(ec3.message());
+	}
+
+	return ok;
+}
+
 std::string config::get_version() const
 {
 	return std::string("1.0.0.1");
@@ -227,7 +256,6 @@ std::string config::get_version() const
 
 std::string config::get_remainder_space() const
 {
-	namespace bfs = std::experimental::filesystem;
 	auto path = bfs::canonical(_root);
 	auto root = path.root_path();
 	bfs::space_info si = bfs::space(root);
