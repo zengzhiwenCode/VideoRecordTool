@@ -55,7 +55,7 @@ protected:
 	void view_pic();
 	void play_video();
 	void del_pic();
+	void del_video();
 	void file_back_to_main();
-	void scroll_page(int down);
 	void update_file_mode_btns();
 };

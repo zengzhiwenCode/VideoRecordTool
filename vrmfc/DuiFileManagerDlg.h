@@ -43,5 +43,6 @@ public:
 	void scroll_page(int step);
 	void sel_all(bool all = true);
 	void del_pic(fviters piters);
+	void del_video(fviters viters);
 };
 

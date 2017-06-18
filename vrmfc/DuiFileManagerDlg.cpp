@@ -393,4 +393,25 @@ void CDuiFileManagerDlg::del_pic(fviters piters)
 	update_content(filter_);
 }
 
+void CDuiFileManagerDlg::del_video(fviters viters)
+{
+	for (auto i : viters) {
+		auto p = videos_[i];
+		std::error_code ec;
+		fs::remove(p, ec);
+		if (ec) {
+			JLOG_ERRO(ec.message());
+		}
+	}
+
+	videos_ = list_files(config::get_instance()->get_video_path());
+	all_.clear();
+	std::copy(pics_.begin(), pics_.end(), std::back_inserter(all_));
+	std::copy(videos_.begin(), videos_.end(), std::back_inserter(all_));
+	std::sort(all_.begin(), all_.end(), [](const fs::path& p1, const fs::path& p2) {
+		return p1.filename() < p2.filename();
+	});
+	update_content(filter_);
+}
+
 
