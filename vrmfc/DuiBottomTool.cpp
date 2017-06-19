@@ -4,7 +4,7 @@
 #include "vrmfcDlg.h"
 #include "DuiFileManagerDlg.h"
 #include "DuiPreviewCaptureDlg.h"
-
+#include "DuiMenuWnd.h"
 
 namespace {
 
@@ -126,7 +126,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			del_pic();
 			del_video();
 		} else if (name == btn_names::cp_to_usb) {
-
+			copy_to_usb();
 		}
 		
 		break;
@@ -486,7 +486,7 @@ HRESULT CopyFiles(HWND hwnd, const std::vector<std::pair<std::wstring, std::wstr
 			// user during the operation. This includes error, confirmation,
 			// and progress dialogs.
 			//
-			hr = pfo->SetOperationFlags(FOF_MULTIDESTFILES | FOF_NOCONFIRMATION | FOF_NOCONFIRMMKDIR | FOF_NOERRORUI | FOF_RENAMEONCOLLISION | FOF_SIMPLEPROGRESS);
+			hr = pfo->SetOperationFlags(FOF_NOCONFIRMATION | FOF_NOCONFIRMMKDIR | FOF_SIMPLEPROGRESS);
 			if (SUCCEEDED(hr)) {
 
 				hr = pfo->SetOwnerWindow(hwnd);
@@ -548,9 +548,77 @@ HRESULT CopyFiles(HWND hwnd, const std::vector<std::pair<std::wstring, std::wstr
 
 void CDuiBottomTool::copy_to_usb()
 {
-	// todo: select a usb dist first
+	auto ul = config::list_removable_drives();
+	if (ul.empty()) { return; }
+	char u = 'U';
+	if (ul.size() > 1) {
+		CMenuWnd* pMenu = new CMenuWnd();
+		if (pMenu == NULL) { return; }
+		POINT pt = {};
+		GetCursorPos(&pt);
+		pMenu->Init(reinterpret_cast<CControlUI*>(this), pt);
+	} else {
+		copy_to_usb(ul[0]);
+	}
+}
+
+void CDuiBottomTool::copy_to_usb(char root)
+{
+	std::string sroot;
+	sroot.push_back(root);
+	sroot += ":/";
+	sroot += utf8::u16_to_mbcs(utf8::a2w(VR_ROOT_FOLDER));
+	std::error_code ec;
+	auto uroot = fs::path(sroot);
+	if (!fs::is_directory(uroot)) {
+		fs::create_directory(uroot, ec);
+		if (ec) {
+			JLOG_ERRO(ec.message());
+			return;
+		}
+	}
+
 	std::vector<std::pair<std::wstring, std::wstring>> v;
-	auto dst_pic_folder = "";
+	if (!piters_.empty()) {
+		
+		auto proot = uroot / utf8::u16_to_mbcs(utf8::a2w(VR_CAPTURE_FOLDER));
+		if (!fs::is_directory(proot)) {
+			fs::create_directory(proot, ec);
+			if (ec) {
+				JLOG_ERRO(ec.message());
+				return;
+			}
+		}
+
+		auto dst_pic_folder = utf8::mbcs_to_u16(proot.string());
+
+		for (auto i : piters_) {
+			v.push_back(std::make_pair(utf8::mbcs_to_u16(pics_[i].string()), dst_pic_folder));
+		}
+		CopyFiles(m_hWnd, v);
+	}
+
+	if (!viters_.empty()) {
+		//std::vector<std::pair<std::wstring, std::wstring>> v;
+		auto vroot = uroot / utf8::u16_to_mbcs(utf8::a2w(VR_VIDEO_FOLDER));
+		if (!fs::is_directory(vroot)) {
+			fs::create_directory(vroot, ec);
+			if (ec) {
+				JLOG_ERRO(ec.message());
+				return;
+			}
+		}
+
+		auto dst_video_folder = utf8::mbcs_to_u16(vroot.string());
+
+		for (auto i : viters_) {
+			v.push_back(std::make_pair(utf8::mbcs_to_u16(videos_[i].string()), dst_video_folder));
+		}
+		
+	}
+
+	CopyFiles(m_hWnd, v);
+	
 }
 
 void CDuiBottomTool::file_back_to_main()

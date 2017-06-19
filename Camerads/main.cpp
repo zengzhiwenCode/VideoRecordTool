@@ -59,7 +59,7 @@ int main()
 	//IplImage *pFrame = NULL;
 	cv::Mat frame;
 	while (m_iCamNum < m_iCamCount) {
-		if ((!m_CamDS.OpenCamera(m_iCamNum, false, 960, 720))) {
+		if ((!m_CamDS.OpenCamera(m_iCamNum, true,320, 240))) {
 			m_iCamNum++;
 		} else { // 找到合适的摄像头，退出循环。
 			break;

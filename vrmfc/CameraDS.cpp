@@ -23,12 +23,18 @@
 #include "stdafx.h"
 #include "CameraDS.h"
 #include <Streams.h>
+#include <comdef.h>
 
 #ifdef _DEBUG
 #pragma comment(lib, "strmbasd.lib")
 #else
 #pragma comment(lib, "strmbase.lib")
 #endif // _DEBUG
+
+std::string get_hr_msg(HRESULT hr) {
+	_com_error ce(hr);
+	return utf8::w2a(ce.ErrorMessage());
+}
 
 
 #pragma comment(lib,"Strmiids.lib") 
@@ -60,6 +66,7 @@ CCameraDS::~CCameraDS()
 
 bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 {
+	AUTO_LOG_FUNCTION;
 	HRESULT hr = S_OK;
 
 	CoInitialize(NULL);
@@ -119,6 +126,7 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 
 	AM_MEDIA_TYPE *pmt;
 	if (iconfig->GetFormat(&pmt) != S_OK) {
+		JLOG_ERRO("iconfig->GetFormat failed {}", get_hr_msg(hr));
 		return false;
 	}
 
@@ -126,9 +134,11 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 	VIDEOINFOHEADER* videoInfoHeader = NULL;
 	hr = m_pCameraOutput->EnumMediaTypes(&mediaTypesEnumerator);
 	if (hr != S_OK) {
+		JLOG_ERRO("m_pCameraOutput->EnumMediaTypes failed {}", get_hr_msg(hr));
 		return false;
 	}
 
+	JLOG_INFO("enumming media info");
 	while (S_OK == mediaTypesEnumerator->Next(1, &pmt, NULL)) {
 		if ((pmt->majortype == MEDIATYPE_Video) &&
 			(pmt->formattype == FORMAT_VideoInfo) &&
@@ -148,6 +158,8 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 				} else {
 					mi_[MT_YUY2].default_sz = sz;
 				}
+
+				JLOG_INFO("MEDIASUBTYPE_YUY2 {}*{}", sz.first, sz.second);
 			} else if (pmt->subtype == MEDIASUBTYPE_MJPG) {
 				mi_[MT_MJPG].type = MT_MJPG;
 				misz sz = { videoInfoHeader->bmiHeader.biWidth , videoInfoHeader->bmiHeader.biHeight };
@@ -157,9 +169,18 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 				} else {
 					mi_[MT_MJPG].default_sz = sz;
 				}
+				JLOG_INFO("MEDIASUBTYPE_MJPG {}*{}", sz.first, sz.second);
+			} else {
+				JLOG_INFO("unrecognized media type {} {}*{}", name, videoInfoHeader->bmiHeader.biWidth, videoInfoHeader->bmiHeader.biHeight);
 			}
 		}
 		MYFREEMEDIATYPE(*pmt);
+	}
+
+	for (auto& m : mi_) {
+		if (m.second.default_sz.first == 0 || m.second.default_sz.second == 0) {
+			m.second.default_sz = *m.second.sizes.begin();
+		}
 	}
 
 	iconfig->Release();
@@ -198,6 +219,8 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 		get_video_property(VideoProcAmp_Sharpness, sharpness);
 		get_video_property(VideoProcAmp_WhiteBalance, white_balance);
 		
+	} else {
+		JLOG_ERRO("m_pDeviceFilter->QueryInterface IID_IAMVideoProcAmp failed {}", get_hr_msg(hr));
 	}
 
 	//camera_set cam = {};
@@ -229,9 +252,27 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 		get_camera_property(CameraControl_Roll, roll);
 		get_camera_property(CameraControl_Tilt, tilt);
 		get_camera_property(CameraControl_Zoom, zoom);
+	} else {
+		JLOG_ERRO("m_pDeviceFilter->QueryInterface IID_IAMCameraControl failed {}", get_hr_msg(hr));
 	}
 
 	hr = m_pGraph->Connect(m_pCameraOutput, m_pGrabberInput);
+
+	if (FAILED(hr)) {
+		switch (hr) {
+		case VFW_S_NOPREVIEWPIN:
+			break;
+		case E_FAIL:
+			break;
+		case E_INVALIDARG:
+			break;
+		case E_POINTER:
+			break;
+		}
+
+		JLOG_ERRO("m_pGraph->Connect(m_pCameraOutput, m_pGrabberInput) failed {}", get_hr_msg(hr));
+	}
+
 	hr = m_pGraph->Connect(m_pGrabberOutput, m_pNullInputPin);
 
 	if (FAILED(hr)) {
@@ -245,6 +286,8 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 		case E_POINTER:
 			break;
 		}
+
+		JLOG_ERRO("m_pGraph->Connect(m_pGrabberOutput, m_pNullInputPin) failed {}", get_hr_msg(hr));
 	}
 
 	m_pSampleGrabber->SetBufferSamples(TRUE);
@@ -252,6 +295,7 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 
 	hr = m_pSampleGrabber->GetConnectedMediaType(&mt);
 	if (FAILED(hr)) {
+		JLOG_ERRO("m_pSampleGrabber->GetConnectedMediaType failed {}", get_hr_msg(hr));
 		return false;
 	}
 
@@ -416,6 +460,7 @@ void CCameraDS::CloseCamera()
 
 bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int nHeight, const char* mstype)
 {
+	AUTO_LOG_FUNCTION;
 	HRESULT hr = S_OK;
 
 	CoInitialize(NULL);
@@ -504,6 +549,7 @@ bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int 
 		AM_MEDIA_TYPE *pmt;
 		if (iconfig->GetFormat(&pmt) != S_OK) {
 			//printf("GetFormat Failed ! \n");
+			JLOG_ERRO("iconfig->GetFormat failed {}", get_hr_msg(hr));
 			return false;
 		}
 		
@@ -513,6 +559,8 @@ bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int 
 			phead->bmiHeader.biWidth = nWidth;
 			phead->bmiHeader.biHeight = nHeight;
 
+			JLOG_INFO("setting width={}, height={}", nWidth, nHeight);
+
 			if (mstype == MT_YUY2) {
 				pmt->subtype = MEDIASUBTYPE_YUY2;
 			} else if (mstype == MT_MJPG) {
@@ -520,6 +568,7 @@ bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int 
 			}
 			
 			if ((hr = iconfig->SetFormat(pmt)) != S_OK) {
+				JLOG_ERRO("iconfig->SetFormat failed {}", get_hr_msg(hr));
 				return false;
 			}
 		//}		
@@ -530,6 +579,20 @@ bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int 
 	}
 
 	hr = m_pGraph->Connect(m_pCameraOutput, m_pGrabberInput);
+	if (FAILED(hr)) {
+		switch (hr) {
+		case VFW_S_NOPREVIEWPIN:
+			break;
+		case E_FAIL:
+			break;
+		case E_INVALIDARG:
+			break;
+		case E_POINTER:
+			break;
+		}
+		JLOG_ERRO("m_pGraph->Connect(m_pCameraOutput, m_pGrabberInput) failed {}", get_hr_msg(hr));
+	}
+
 	hr = m_pGraph->Connect(m_pGrabberOutput, m_pNullInputPin);
 
 	if (FAILED(hr)) {
@@ -543,6 +606,7 @@ bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int 
 		case E_POINTER:
 			break;
 		}
+		JLOG_ERRO("m_pGraph->Connect(m_pGrabberOutput, m_pNullInputPin) failed {}", get_hr_msg(hr));
 	}
 
 	m_pSampleGrabber->SetBufferSamples(TRUE);
@@ -550,6 +614,7 @@ bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int 
 
 	hr = m_pSampleGrabber->GetConnectedMediaType(&mt);
 	if (FAILED(hr)) {
+		JLOG_ERRO("m_pSampleGrabber->GetConnectedMediaType failed {}", get_hr_msg(hr));
 		return false;
 	}
 

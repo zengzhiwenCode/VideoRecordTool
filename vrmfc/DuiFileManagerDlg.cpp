@@ -193,7 +193,7 @@ void CDuiFileManagerDlg::update_content(filter f)
 
 			auto bkimg = get(file, pic);
 
-			pic->SetBkImage(utf8::a2w(bkimg.first).c_str());
+			pic->SetBkImage(utf8::mbcs_to_u16(bkimg.first).c_str());
 			//pic->SetGroup(group);
 			pic->SetTag(bkimg.second);
 

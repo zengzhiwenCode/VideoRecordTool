@@ -48,6 +48,25 @@ typedef struct tagTIMERINFO
     bool bKilled;
 } TIMERINFO;
 
+tagTDrawInfo::tagTDrawInfo()
+{
+	Clear();
+}
+
+tagTDrawInfo::tagTDrawInfo(LPCTSTR lpsz)
+{
+	Clear();
+	sDrawString = lpsz;
+}
+
+void tagTDrawInfo::Clear()
+{
+	sDrawString.Empty();
+	::ZeroMemory(&bLoaded, sizeof(tagTDrawInfo) - offsetof(tagTDrawInfo, bLoaded));
+	uFade = 255;
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////
 
 HPEN m_hUpdateRectPen = NULL;

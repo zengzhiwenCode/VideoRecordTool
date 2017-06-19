@@ -3,10 +3,10 @@
 #include <set>
 
 
-#define VR_ROOT_FOLDER		"root"
-#define VR_VIDEO_FOLDER		"video" 
+#define VR_ROOT_FOLDER		"数据"
+#define VR_VIDEO_FOLDER		"视频" 
 #define VR_VIDEO_EXT		".avi"
-#define VR_CAPTURE_FOLDER	"capture"
+#define VR_CAPTURE_FOLDER	"照片"
 #define VR_CAPTRUE_EXT		".bmp"
 #define VR_THUMBNAIL_FOLDER "thumb"
 #define VR_THUMBNAIL_EXT	".png"
@@ -89,6 +89,18 @@ private:
 	std::string _lang = {};
 
 public:
+
+	static std::vector<char> list_removable_drives() {
+		std::vector<char> v;
+		for (char i = 'A'; i <= 'Z'; i++) {
+			char x[3] = { i, ':' };
+			UINT Type = GetDriveTypeA(x);
+			if (Type == DRIVE_REMOVABLE) {
+				v.push_back(i);
+			}
+		}
+		return v;
+	}
 
 	bool clear_root() const;
 

@@ -48,17 +48,7 @@ enum timer_id {
 	updatetip,
 };
 
-std::vector<char> list_removable_drives() {
-	std::vector<char> v;
-	for (char i = 'A'; i <= 'Z'; i++) {
-		char x[3] = { i, ':' };
-		UINT Type = GetDriveTypeA(x);
-		if (Type == DRIVE_REMOVABLE) {
-			v.push_back(i);
-		}
-	}
-	return v;
-}
+
 
 bool modual_dialog_opened_ = false;
 
@@ -148,6 +138,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		CreateDirectoryA(path.c_str(), nullptr);
 		path += "/vrmfc";
 		jlib::init_logger(path);
+		JLOG_INFO("vrmfc start running");
 	}
 
 	// init rc
@@ -188,7 +179,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		//ScreenToClient(rc);
 		tip_->SetWindowPos(&wndTopMost, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
 		CString txt;
-		usb_storage_plugin_ = !list_removable_drives().empty();
+		usb_storage_plugin_ = !config::list_removable_drives().empty();
 		txt.Format(L"%s %s%d %s", 
 				   now_to_wstring().c_str(), 
 				   tr(IDS_STRING_BRIGHTNESS), 
@@ -395,6 +386,8 @@ BOOL CvrmfcDlg::OnInitDialog()
 
 			fps_.begin = std::chrono::steady_clock::now();
 			fps_.frames = 0;
+		} else {
+			JLOG_ERRO("open camera failed");
 		}
 	}
 
@@ -453,9 +446,9 @@ void CvrmfcDlg::OnBnClickedOk()
 
 void CvrmfcDlg::OnBnClickedCancel()
 {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	CDialogEx::OnCancel();
-#endif // !_DEBUG
+//#endif // !_DEBUG
 }
 
 void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
@@ -543,11 +536,13 @@ void CvrmfcDlg::OnDestroy()
 	CDialogEx::OnDestroy();
 
 	serial_send("off");
+
+	JLOG_INFO("vrmfc stopped running");
 }
 
 afx_msg LRESULT CvrmfcDlg::OnDeviceChange(WPARAM wParam, LPARAM lParam)
 {
-	usb_storage_plugin_ = !list_removable_drives().empty();
+	usb_storage_plugin_ = !config::list_removable_drives().empty();
 	return LRESULT();
 }
 

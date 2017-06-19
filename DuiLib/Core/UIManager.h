@@ -103,6 +103,25 @@ typedef struct tagTImageInfo
     DWORD dwMask;
 } TImageInfo;
 
+typedef struct UILIB_API tagTDrawInfo
+{
+	tagTDrawInfo();
+	tagTDrawInfo(LPCTSTR lpsz);
+	void Clear();
+	CDuiString sDrawString;
+	bool bLoaded;
+	CDuiString sImageName;
+	const TImageInfo* pImageInfo;
+	RECT rcDestOffset;
+	RECT rcBmpPart;
+	RECT rcCorner;
+	BYTE uFade;
+	bool bHole;
+	bool bTiledX;
+	bool bTiledY;
+} TDrawInfo;
+
+
 // Structure for notifications from the system
 // to the control implementation.
 typedef struct tagTEventUI
@@ -240,7 +259,7 @@ public:
     TFontInfo* GetFontInfo(HFONT hFont);
 
     const TImageInfo* GetImage(LPCTSTR bitmap);
-    const TImageInfo* GetImageEx(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0);
+	const TImageInfo* GetImageEx(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0);
     const TImageInfo* AddImage(LPCTSTR bitmap, LPCTSTR type = NULL, DWORD mask = 0);
     const TImageInfo* AddImage(LPCTSTR bitmap, HBITMAP hBitmap, int iWidth, int iHeight, bool bAlpha);
     bool RemoveImage(LPCTSTR bitmap);

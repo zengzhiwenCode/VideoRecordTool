@@ -57,6 +57,7 @@ protected:
 	void del_pic();
 	void del_video();
 	void copy_to_usb();
+	void copy_to_usb(char root);
 	void file_back_to_main();
 	void update_file_mode_btns();
 };

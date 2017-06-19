@@ -18,6 +18,13 @@ using DuiLib::CTabLayoutUI;
 using DuiLib::COptionUI;
 using DuiLib::CSliderUI;
 using DuiLib::CLabelUI;
+using DuiLib::CWindowWnd;
+using DuiLib::TDrawInfo;
+using DuiLib::CRenderEngine;
+using DuiLib::INotifyUI;
+using DuiLib::CDuiRect;
+using DuiLib::CDialogBuilder;
+using DuiLib::CListUI;
 
 //#ifdef _DEBUG
 #   pragma comment(lib, "../Debug/DuiLib_Debug.lib")

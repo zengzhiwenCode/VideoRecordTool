@@ -82,7 +82,10 @@
       <Filter>ds</Filter>
     </ClInclude>
     <ClInclude Include="DuiSysInfoDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiMenuWnd.h">
+      <Filter>ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -132,7 +135,7 @@
       <Filter>ds</Filter>
     </ClCompile>
     <ClCompile Include="DuiSysInfoDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

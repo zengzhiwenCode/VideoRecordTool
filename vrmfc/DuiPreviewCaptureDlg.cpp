@@ -44,7 +44,7 @@ void CDuiPreviewCaptureDlg::InitWindow()
 	if (!img_.empty()) {
 		auto pic = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"pic")); assert(pic);
 		if (pic && !img_.empty()) {
-			pic->SetBkImage(utf8::a2w(img_).c_str());
+			pic->SetBkImage(utf8::mbcs_to_u16((img_)).c_str());
 		}
 	}
 
@@ -69,7 +69,7 @@ void CDuiPreviewCaptureDlg::set_image(const std::string & img)
 	if (m_hWnd) {
 		auto pic = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"pic")); assert(pic);
 		if (pic && !img_.empty()) {
-			pic->SetBkImage(utf8::a2w(img_).c_str());
+			pic->SetBkImage(utf8::mbcs_to_u16(img_).c_str());
 		}
 	} 
 }

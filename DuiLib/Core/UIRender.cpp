@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+#include "UIRender.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////
 DECLARE_HANDLE(HZIP);	// An HZIP identifies a zip file that has been opened
@@ -869,6 +870,129 @@ namespace DuiLib {
 
 		::SelectObject(hCloneDC, hOldBitmap);
 		::DeleteDC(hCloneDC);
+	}
+
+	bool CRenderEngine::DrawImage(HDC hDC, CPaintManagerUI * pManager, const RECT & rcItem, const RECT & rcPaint, TDrawInfo & drawInfo)
+	{
+		// 1¡¢aaa.jpg
+		// 2¡¢file='aaa.jpg' res='' restype='0' dest='0,0,0,0' source='0,0,0,0' corner='0,0,0,0' 
+		// mask='#FF0000' fade='255' hole='false' xtiled='false' ytiled='false' hsl='false'
+		if (pManager == NULL) return true;
+		if (drawInfo.pImageInfo == NULL) {
+			if (drawInfo.bLoaded) return false;
+			drawInfo.bLoaded = true;
+			if (drawInfo.sDrawString.IsEmpty()) return false;
+
+			bool bUseRes = false;
+			CDuiString sImageName = drawInfo.sDrawString;
+			CDuiString sImageResType;
+			DWORD dwMask = 0;
+			bool bUseHSL = false;
+
+			CDuiString sItem;
+			CDuiString sValue;
+			LPTSTR pstr = NULL;
+			LPCTSTR pstrImage = drawInfo.sDrawString.GetData();
+			while (*pstrImage != _T('\0')) {
+				sItem.Empty();
+				sValue.Empty();
+				while (*pstrImage > _T('\0') && *pstrImage <= _T(' ')) pstrImage = ::CharNext(pstrImage);
+				while (*pstrImage != _T('\0') && *pstrImage != _T('=') && *pstrImage > _T(' ')) {
+					LPTSTR pstrTemp = ::CharNext(pstrImage);
+					while (pstrImage < pstrTemp) {
+						sItem += *pstrImage++;
+					}
+				}
+				while (*pstrImage > _T('\0') && *pstrImage <= _T(' ')) pstrImage = ::CharNext(pstrImage);
+				if (*pstrImage++ != _T('=')) break;
+				while (*pstrImage > _T('\0') && *pstrImage <= _T(' ')) pstrImage = ::CharNext(pstrImage);
+				if (*pstrImage++ != _T('\'')) break;
+				while (*pstrImage != _T('\0') && *pstrImage != _T('\'')) {
+					LPTSTR pstrTemp = ::CharNext(pstrImage);
+					while (pstrImage < pstrTemp) {
+						sValue += *pstrImage++;
+					}
+				}
+				if (*pstrImage++ != _T('\'')) break;
+				if (!sValue.IsEmpty()) {
+					if (sItem == _T("file")) {
+						sImageName = sValue;
+					} else if (sItem == _T("res")) {
+						bUseRes = true;
+						sImageName = sValue;
+					} else if (sItem == _T("restype")) {
+						sImageResType = sValue;
+					} else if (sItem == _T("dest")) {
+						drawInfo.rcDestOffset.left = _tcstol(sValue.GetData(), &pstr, 10);  ASSERT(pstr);
+						drawInfo.rcDestOffset.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
+						drawInfo.rcDestOffset.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);
+						drawInfo.rcDestOffset.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
+					} else if (sItem == _T("source")) {
+						drawInfo.rcBmpPart.left = _tcstol(sValue.GetData(), &pstr, 10);  ASSERT(pstr);
+						drawInfo.rcBmpPart.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
+						drawInfo.rcBmpPart.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);
+						drawInfo.rcBmpPart.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
+					} else if (sItem == _T("corner")) {
+						drawInfo.rcCorner.left = _tcstol(sValue.GetData(), &pstr, 10);  ASSERT(pstr);
+						drawInfo.rcCorner.top = _tcstol(pstr + 1, &pstr, 10);    ASSERT(pstr);
+						drawInfo.rcCorner.right = _tcstol(pstr + 1, &pstr, 10);  ASSERT(pstr);
+						drawInfo.rcCorner.bottom = _tcstol(pstr + 1, &pstr, 10); ASSERT(pstr);
+					} else if (sItem == _T("mask")) {
+						if (sValue[0] == _T('#')) dwMask = _tcstoul(sValue.GetData() + 1, &pstr, 16);
+						else dwMask = _tcstoul(sValue.GetData(), &pstr, 16);
+					} else if (sItem == _T("fade")) {
+						drawInfo.uFade = (BYTE)_tcstoul(sValue.GetData(), &pstr, 10);
+					} else if (sItem == _T("hole")) {
+						drawInfo.bHole = (_tcscmp(sValue.GetData(), _T("true")) == 0);
+					} else if (sItem == _T("xtiled")) {
+						drawInfo.bTiledX = (_tcscmp(sValue.GetData(), _T("true")) == 0);
+					} else if (sItem == _T("ytiled")) {
+						drawInfo.bTiledY = (_tcscmp(sValue.GetData(), _T("true")) == 0);
+					} else if (sItem == _T("hsl")) {
+						bUseHSL = (_tcscmp(sValue.GetData(), _T("true")) == 0);
+					}
+				}
+				if (*pstrImage++ != _T(' ')) break;
+			}
+			drawInfo.sImageName = sImageName;
+
+			const TImageInfo* data = NULL;
+			if (bUseRes == false) {
+				data = pManager->GetImageEx((LPCTSTR)sImageName, NULL, dwMask/*, bUseHSL*/);
+			} else {
+				data = pManager->GetImageEx((LPCTSTR)sImageName, (LPCTSTR)sImageResType, dwMask/*, bUseHSL*/);
+			}
+			if (!data) return false;
+
+			drawInfo.pImageInfo = data;
+			if (drawInfo.rcBmpPart.left == 0 && drawInfo.rcBmpPart.right == 0 &&
+				drawInfo.rcBmpPart.top == 0 && drawInfo.rcBmpPart.bottom == 0) {
+				drawInfo.rcBmpPart.right = data->nX;
+				drawInfo.rcBmpPart.bottom = data->nY;
+			}
+		}
+		if (drawInfo.rcBmpPart.right > drawInfo.pImageInfo->nX) drawInfo.rcBmpPart.right = drawInfo.pImageInfo->nX;
+		if (drawInfo.rcBmpPart.bottom > drawInfo.pImageInfo->nY) drawInfo.rcBmpPart.bottom = drawInfo.pImageInfo->nY;
+
+		if (hDC == NULL) return true;
+
+		RECT rcDest = rcItem;
+		if (drawInfo.rcDestOffset.left != 0 || drawInfo.rcDestOffset.top != 0 ||
+			drawInfo.rcDestOffset.right != 0 || drawInfo.rcDestOffset.bottom != 0) {
+			rcDest.left = rcItem.left + drawInfo.rcDestOffset.left;
+			rcDest.top = rcItem.top + drawInfo.rcDestOffset.top;
+			rcDest.right = rcItem.left + drawInfo.rcDestOffset.right;
+			if (rcDest.right > rcItem.right) rcDest.right = rcItem.right;
+			rcDest.bottom = rcItem.top + drawInfo.rcDestOffset.bottom;
+			if (rcDest.bottom > rcItem.bottom) rcDest.bottom = rcItem.bottom;
+		}
+
+		RECT rcTemp;
+		if (!::IntersectRect(&rcTemp, &rcDest, &rcItem)) return true;
+		if (!::IntersectRect(&rcTemp, &rcDest, &rcPaint)) return true;
+		DrawImage(hDC, drawInfo.pImageInfo->hBitmap, rcDest, rcPaint, drawInfo.rcBmpPart, drawInfo.rcCorner,
+				  drawInfo.pImageInfo->alphaChannel, drawInfo.uFade, drawInfo.bHole, drawInfo.bTiledX, drawInfo.bTiledY);
+		return true;
 	}
 
 
