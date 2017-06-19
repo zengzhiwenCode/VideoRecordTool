@@ -5,7 +5,7 @@
 	<Font shared="true" id="1" name="幼圆" size="30" />
 
 
-        <VerticalLayout name="container" bkcolor="FFD77E44#" vscrollbar="true" bordersize="1" bordercolor="#FF707070" borderround="5,5"> <!--整个窗口-->
+        <VerticalLayout name="container" height="568" bkcolor="FFD77E44#" vscrollbar="true" bordersize="1" bordercolor="#FF707070" borderround="5,5"> <!--整个窗口-->
             
         </VerticalLayout>
 

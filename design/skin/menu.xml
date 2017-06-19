@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window bktrans="true" size="200,120">
+    <Font id="0" name="微软雅黑" size="32" bold="false"/>
+    <Font id="1" name="宋体" size="12"/>
+    <VerticalLayout bkimage="file='menu_bk.png' corner='40,8,8,8'" hole="false">
+<HorizontalLayout height="5" />
+<Option name="menu_H" text="H: UUI" font="0" height="50" align="left" valign="center" endellipsis="true" bkcolor="FF3275AA#" borderround="5,5" group="usb" />
+<HorizontalLayout height="5" />
+<Option name="menu_J" text="J: 小胖子" font="0" height="50" align="left" valign="center" endellipsis="true" bkcolor="FF3275AA#" borderround="5,5" group="usb" />
+<HorizontalLayout height="5" />
+</VerticalLayout>
+</Window>

@@ -257,7 +257,7 @@
                             <VerticalLayout width="80" />
                             <Button name="reset_ok" text="确定" font="0" bkcolor="FF3275EE#" borderround="5,5" />
                             <VerticalLayout width="50" />
-                            <Button name="reset_cancel" text="取消" font="0" bkcolor="FF3275EE#" borderround="5,5" />
+                            <Button name="closebtn" text="取消" font="0" bkcolor="FF3275EE#" borderround="5,5" />
                             <VerticalLayout width="80" />
                         </HorizontalLayout>
                         <HorizontalLayout height="120" />
