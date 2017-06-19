@@ -126,7 +126,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			del_pic();
 			del_video();
 		} else if (name == btn_names::cp_to_usb) {
-			copy_to_usb();
+			copy_to_usb(msg.pSender);
 		}
 		
 		break;
@@ -546,19 +546,45 @@ HRESULT CopyFiles(HWND hwnd, const std::vector<std::pair<std::wstring, std::wstr
 	return hr;
 }
 
-void CDuiBottomTool::copy_to_usb()
+void CDuiBottomTool::copy_to_usb(CControlUI* sender)
 {
 	auto ul = config::list_removable_drives();
 	if (ul.empty()) { return; }
-	char u = 'U';
 	if (ul.size() > 1) {
-		CMenuWnd* pMenu = new CMenuWnd();
-		if (pMenu == NULL) { return; }
+		CMenu menu;
+		menu.CreatePopupMenu();
+		//std::list<std::pair<std::wstring, std::wstring>> items;
+		size_t index = 1;
+		for (auto root : ul) {
+			//std::wstring name = L"menu_";
+			//name.push_back(root.first);
+			std::wstring text;
+			text.push_back(root.first);
+			text += L": ";
+			text += utf8::mbcs_to_u16(root.second);
+			//items.push_back(std::make_pair(name, text));
+			menu.AppendMenuW(MF_STRING, index++, text.c_str());
+		}
+		
 		POINT pt = {};
 		GetCursorPos(&pt);
-		pMenu->Init(reinterpret_cast<CControlUI*>(this), pt);
+
+		/*CMenuWnd::make_xml(items);
+		CMenuWnd* pMenu = new CMenuWnd();
+		if (pMenu == NULL) { return; }
+
+		
+		pMenu->Init(sender, pt);*/
+
+		auto ret = menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_VCENTERALIGN | TPM_RETURNCMD, pt.x, pt.y, CWnd::FromHandle(m_hWnd));
+		if (ret > 0 && ret <= ul.size()) {
+			ret--;
+			auto root = ul[ret].first;
+			copy_to_usb(root);
+		}
+		
 	} else {
-		copy_to_usb(ul[0]);
+		copy_to_usb(ul[0].first);
 	}
 }
 

@@ -137,6 +137,9 @@
     <ClCompile Include="DuiSysInfoDlg.cpp">
       <Filter>ui</Filter>
     </ClCompile>
+    <ClCompile Include="DuiMenuWnd.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="vrmfc.rc">

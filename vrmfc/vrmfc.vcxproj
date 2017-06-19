@@ -224,6 +224,7 @@
     <ClCompile Include="DuiBottomTool.cpp" />
     <ClCompile Include="DuiConfirmExitDlg.cpp" />
     <ClCompile Include="DuiFileManagerDlg.cpp" />
+    <ClCompile Include="DuiMenuWnd.cpp" />
     <ClCompile Include="DuiPreviewCaptureDlg.cpp" />
     <ClCompile Include="DuiSettingsDlg.cpp" />
     <ClCompile Include="DuiSysInfoDlg.cpp" />

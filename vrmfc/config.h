@@ -90,13 +90,17 @@ private:
 
 public:
 
-	static std::vector<char> list_removable_drives() {
-		std::vector<char> v;
+	static std::vector<std::pair<char, std::string>> list_removable_drives() {
+		std::vector<std::pair<char, std::string>> v;
 		for (char i = 'A'; i <= 'Z'; i++) {
-			char x[3] = { i, ':' };
+			char x[4] = { i, ':' };
 			UINT Type = GetDriveTypeA(x);
 			if (Type == DRIVE_REMOVABLE) {
-				v.push_back(i);
+				x[2] = '\\';
+				char lable[MAX_PATH] = {};
+				if (GetVolumeInformationA(x, lable, sizeof(lable), nullptr, nullptr, nullptr, nullptr, 0)) {
+					v.push_back(std::make_pair(i, std::string(lable)));
+				}
 			}
 		}
 		return v;
