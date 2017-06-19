@@ -4,7 +4,7 @@
 #include "vrmfcDlg.h"
 #include "DuiFileManagerDlg.h"
 #include "DuiPreviewCaptureDlg.h"
-#include "DuiMenuWnd.h"
+#include "DuiMenu.h"
 
 namespace {
 
@@ -551,19 +551,19 @@ void CDuiBottomTool::copy_to_usb(CControlUI* sender)
 	auto ul = config::list_removable_drives();
 	if (ul.empty()) { return; }
 	if (ul.size() > 1) {
-		CMenu menu;
-		menu.CreatePopupMenu();
-		//std::list<std::pair<std::wstring, std::wstring>> items;
+		//CMenu menu;
+		//menu.CreatePopupMenu();
+		std::list<std::pair<std::wstring, std::wstring>> items;
 		size_t index = 1;
 		for (auto root : ul) {
-			//std::wstring name = L"menu_";
-			//name.push_back(root.first);
+			std::wstring name = L"menu_";
+			name.push_back(root.first);
 			std::wstring text;
 			text.push_back(root.first);
 			text += L": ";
 			text += utf8::mbcs_to_u16(root.second);
-			//items.push_back(std::make_pair(name, text));
-			menu.AppendMenuW(MF_STRING, index++, text.c_str());
+			items.push_back(std::make_pair(name, text));
+			//menu.AppendMenuW(MF_STRING, index++, text.c_str());
 		}
 		
 		POINT pt = {};
@@ -576,13 +576,34 @@ void CDuiBottomTool::copy_to_usb(CControlUI* sender)
 		
 		pMenu->Init(sender, pt);*/
 
-		auto ret = menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_VCENTERALIGN | TPM_RETURNCMD, pt.x, pt.y, CWnd::FromHandle(m_hWnd));
-		if (ret > 0 && ret <= ul.size()) {
-			ret--;
-			auto root = ul[ret].first;
-			copy_to_usb(root);
+		//auto ret = menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_VCENTERALIGN | TPM_RETURNCMD, pt.x, pt.y, CWnd::FromHandle(m_hWnd));
+		//if (ret > 0 && ret <= ul.size()) {
+		//	ret--;
+		////	auto root = ul[ret].first;
+		//	copy_to_usb(root);
+		//}
+
+		::EnableWindow(file_dlg_->GetHWND(), false);
+
+		CDuiMenu::make_xml(items);
+		CDuiMenu menu(L"menu.xml");
+		menu.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+		CRect rc;
+		::GetWindowRect(menu.GetHWND(), &rc);
+		::MoveWindow(menu.GetHWND(), pt.x - rc.Width(), pt.y - rc.Height() - 50, rc.Width(), rc.Height(), TRUE);
+		menu.ShowModal();
+
+		::EnableWindow(file_dlg_->GetHWND(), true);
+
+		auto pos = menu.selected_.find(L"menu_");
+		if (pos != std::wstring::npos) {
+			auto root = menu.selected_.substr(pos + 5);
+			if (root.size() == 1) {
+				auto r = utf8::w2a(root);
+				copy_to_usb(r[0]);
+			}
 		}
-		
+
 	} else {
 		copy_to_usb(ul[0].first);
 	}
