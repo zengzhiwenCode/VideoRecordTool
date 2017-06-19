@@ -157,7 +157,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		cy = h;
 		SetWindowPos(&wndTop, x, y, cx, cy, SWP_SHOWWINDOW);
 #else
-		SetWindowPos(&wndTopMost, x, y, cx, cy, SWP_SHOWWINDOW);
+		SetWindowPos(&wndTop, x, y, cx, cy, SWP_SHOWWINDOW);
 #endif	
 	}
 	
