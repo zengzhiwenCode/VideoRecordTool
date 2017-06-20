@@ -184,7 +184,6 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 	if (type == "selectchanged") {
 #define sel_elif(val) else if (name == val) 
 
-#define get_ctrl(type, name) auto name = static_cast<type*>(m_PaintManager.FindControl(utf8::a2w(#name).c_str())); assert(name);
 
 		get_ctrl(CLabelUI, video_min);
 		get_ctrl(CLabelUI, video_val);

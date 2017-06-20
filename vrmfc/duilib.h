@@ -26,6 +26,9 @@ using DuiLib::CDuiRect;
 using DuiLib::CDialogBuilder;
 using DuiLib::CListUI;
 
+#define get_ctrl(type, name) auto name = static_cast<type*>(m_PaintManager.FindControl(utf8::a2w(#name).c_str())); assert(name);
+
+
 //#ifdef _DEBUG
 #   pragma comment(lib, "../Debug/DuiLib_Debug.lib")
 //#else

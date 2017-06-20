@@ -87,6 +87,9 @@
     <ClInclude Include="DuiMenu.h">
       <Filter>ui</Filter>
     </ClInclude>
+    <ClInclude Include="DuiPicDetailDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vrmfc.cpp">
@@ -139,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="DuiMenu.cpp">
       <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiPicDetailDlg.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

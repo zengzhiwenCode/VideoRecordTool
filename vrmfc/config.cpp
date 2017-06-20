@@ -261,21 +261,46 @@ std::string config::get_remainder_space() const
 	fs::space_info si = fs::space(root);
 	si.available;
 
-	auto format_space = [](uintmax_t bytes) {
-		const int factor = 1024;
-		uintmax_t kb = bytes / factor;
-		uintmax_t mb = kb / factor;
-		uintmax_t gb = mb / factor;
-
-		std::string s;
-		if (gb > 0) {
-			return std::to_string(gb) + "G";
-		} else {
-			return std::to_string(mb) + "M";
-		}
-	};
-
 	return format_space(si.available) + "/" + format_space(si.capacity);
+}
+
+std::string config::format_space(uintmax_t bytes)
+{
+	const int factor = 1024;
+	uintmax_t KB = factor;
+	uintmax_t MB = KB * factor;
+	uintmax_t GB = MB * factor;
+	uintmax_t TB = GB * factor;
+
+	uintmax_t kb = bytes / factor;
+	uintmax_t mb = kb / factor;
+	uintmax_t gb = mb / factor;
+	uintmax_t tb = gb / factor;
+
+	std::string s;
+	if (tb > 0) {
+		gb -= tb * factor;
+		gb = gb * 1000 / factor;
+		gb /= 10;
+		return std::to_string(tb) + "." + std::to_string(gb) + "T";
+	} else if (gb > 0) {
+		mb -= gb * factor;
+		mb = mb * 1000 / factor;
+		mb /= 10;
+		return std::to_string(gb) + "." + std::to_string(mb) + "G";
+	} else if (mb > 0) {
+		kb -= mb * factor;
+		kb = kb * 1000 / factor;
+		kb /= 10;
+		return std::to_string(mb) + "." + std::to_string(kb) + "M";
+	} else if (kb > 0) {
+		bytes -= kb * factor;
+		bytes = bytes * 1000 / factor;
+		bytes /= 10;
+		return std::to_string(kb) + "." + std::to_string(bytes) + "K";
+	} else {
+		return std::to_string(bytes) + "B";
+	}
 }
 
 std::string config::get_video_path() const

@@ -6,6 +6,7 @@
 #include "DuiPreviewCaptureDlg.h"
 #include "DuiMenu.h"
 #include "AlarmTextDlg.h"
+#include "DuiPicDetailDlg.h"
 
 namespace {
 
@@ -165,7 +166,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 		} else if (name == btn_names::cp_to_usb) {
 			copy_to_usb();
 		} else if (name == btn_names::detail) {
-
+			pic_view_pic_detail();
 		}
 		
 		break;
@@ -511,6 +512,44 @@ void CDuiBottomTool::pic_view_dec_pic()
 	}
 
 	set_mode(filemgr);
+}
+
+void CDuiBottomTool::pic_view_pic_detail()
+{
+	if (piters_.size() != 1) { return; }
+	auto path = pics_[piters_[0]];
+	CDuiPicDetailDlg picdetail(L"picdetail.xml");
+	picdetail.picinfo_.name = utf8::mbcs_to_u16(path.filename().string());
+	picdetail.picinfo_.filesize = utf8::a2w(config::format_space(fs::file_size(path)));
+	cv::Mat mat = cv::imread(utf8::u16_to_mbcs(path.wstring()));
+	if (mat.data) {
+		picdetail.picinfo_.resolution = std::to_wstring(mat.cols) + L"*" + std::to_wstring(mat.rows);
+	}
+	picdetail.picinfo_.ext = utf8::a2w(VR_CAPTRUE_EXT).substr(1);
+	picdetail.picinfo_.create_time = [](const std::wstring& file) {
+		//std::wstringstream ss;
+		WIN32_FILE_ATTRIBUTE_DATA wfad = {};
+		SYSTEMTIME st = {};
+		GetFileAttributesEx(file.c_str(), GetFileExInfoStandard, &wfad);
+		FileTimeToSystemTime(&wfad.ftCreationTime, &st);
+		/*ss << st.wYear << L"-";
+		ss << setw(2) << setfill(L'0') << st.wMonth << L"-";
+		ss << setw(2) << setfill(L'0') << st.wDay << L" ";
+		ss << setw(2) << setfill(L'0') << st.wHour + 8 << L':';
+		ss << setw(2) << setfill(L'0') << st.wMinute << L':';
+		ss << setw(2) << setfill(L'0') << st.wSecond;
+		return ss.str();*/
+		COleDateTime dt(st);
+		dt += COleDateTimeSpan(0, 8, 0, 0);
+		std::wstring s = dt.Format(L"%Y-%m-%d %H:%M:%S").GetBuffer();
+		return s;
+	}(path.wstring());
+	picdetail.Create(pic_view_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	::EnableWindow(pic_view_->GetHWND(), false);
+	::EnableWindow(GetHWND(), false);
+	picdetail.ShowModal();
+	::EnableWindow(pic_view_->GetHWND(), true);
+	::EnableWindow(GetHWND(), true);
 }
 
 void CDuiBottomTool::del_video()
