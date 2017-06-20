@@ -527,18 +527,10 @@ void CDuiBottomTool::pic_view_pic_detail()
 	}
 	picdetail.picinfo_.ext = utf8::a2w(VR_CAPTRUE_EXT).substr(1);
 	picdetail.picinfo_.create_time = [](const std::wstring& file) {
-		//std::wstringstream ss;
 		WIN32_FILE_ATTRIBUTE_DATA wfad = {};
 		SYSTEMTIME st = {};
 		GetFileAttributesEx(file.c_str(), GetFileExInfoStandard, &wfad);
 		FileTimeToSystemTime(&wfad.ftCreationTime, &st);
-		/*ss << st.wYear << L"-";
-		ss << setw(2) << setfill(L'0') << st.wMonth << L"-";
-		ss << setw(2) << setfill(L'0') << st.wDay << L" ";
-		ss << setw(2) << setfill(L'0') << st.wHour + 8 << L':';
-		ss << setw(2) << setfill(L'0') << st.wMinute << L':';
-		ss << setw(2) << setfill(L'0') << st.wSecond;
-		return ss.str();*/
 		COleDateTime dt(st);
 		dt += COleDateTimeSpan(0, 8, 0, 0);
 		std::wstring s = dt.Format(L"%Y-%m-%d %H:%M:%S").GetBuffer();
