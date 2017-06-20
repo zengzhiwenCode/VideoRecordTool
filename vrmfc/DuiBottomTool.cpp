@@ -158,7 +158,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 				}
 			}
 		} else if (name == btn_names::del) {
-			del_pic(/*piter_*/);
+			pic_view_dec_pic();
 		} else if (name == btn_names::cp_to_usb) {
 
 		} else if (name == btn_names::detail) {
@@ -207,10 +207,6 @@ void CDuiBottomTool::set_mode(mode m)
 	if (!container) { return; }
 
 	container->RemoveAll();
-	/*pics_.clear();
-	piters_.clear();
-	videos_.clear();
-	viters_.clear();*/
 	sel_all_ = false;
 
 	int GAP_WIDHT = 50;
@@ -291,6 +287,10 @@ void CDuiBottomTool::set_mode(mode m)
 		}
 		file_dlg_->ShowWindow();
 
+		pics_.clear();
+		piters_.clear();
+		videos_.clear();
+		viters_.clear();
 		update_file_mode_btns();
 	}
 		break;
@@ -457,6 +457,25 @@ void CDuiBottomTool::del_pic()
 {
 	if (piters_.empty()) { return; }
 	file_dlg_->del_pic(piters_);
+}
+
+void CDuiBottomTool::pic_view_dec_pic()
+{
+	if (piters_.size() != 1)return;
+	if (piters_.size() != 1) { return; }
+	auto p = pics_[piters_[0]];
+	std::error_code ec;
+	fs::remove(p, ec);
+	if (ec) {
+		JLOG_ERRO(ec.message());
+		return;
+	}
+
+	if (pic_view_) {
+		pic_view_->ShowWindow(false, false);
+	}
+
+	set_mode(filemgr);
 }
 
 void CDuiBottomTool::del_video()

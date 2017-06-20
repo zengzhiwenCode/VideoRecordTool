@@ -55,6 +55,7 @@ protected:
 	void view_pic();
 	void play_video();
 	void del_pic();
+	void pic_view_dec_pic();
 	void del_video();
 	void copy_to_usb(CControlUI* sender);
 	void copy_to_usb(char root);
