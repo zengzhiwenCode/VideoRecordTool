@@ -421,6 +421,18 @@ void CDuiBottomTool::update_video_sel(fv videos, fviters iters)
 	//play_video(viter_);
 }
 
+bool CDuiBottomTool::show_tip(bool show)
+{
+	if (mode_ == pic_view) {
+		ShowWindow(show, show);
+		if (pic_view_tip_) {
+			show ? pic_view_tip_->Show() : pic_view_tip_->Hide();
+		}
+		return true;
+	}
+	return false;
+}
+
 void CDuiBottomTool::view_pic()
 {
 	if (piters_.size() != 1) { return; }
@@ -463,6 +475,8 @@ void CDuiBottomTool::view_pic()
 		sz_prevpic_.cy = mat.rows;
 
 		set_mode(pic_view);
+
+		show_tip(false);
 	}
 }
 

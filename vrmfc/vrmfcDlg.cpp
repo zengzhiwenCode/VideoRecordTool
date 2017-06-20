@@ -730,6 +730,12 @@ void CvrmfcDlg::do_update_video_sel(fv videos, fviters iters)
 	dui_bt_->update_video_sel(videos, iters);
 }
 
+bool CvrmfcDlg::do_picview_mode_show_or_hide_tools(bool show)
+{
+	//dui_bt_->ShowWindow(show, show);
+	return dui_bt_->show_tip(show);
+}
+
 void CvrmfcDlg::do_file_manager_over()
 {
 	UNLOCK_DLG;

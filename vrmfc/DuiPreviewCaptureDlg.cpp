@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DuiPreviewCaptureDlg.h"
 #include <fstream>
+#include "vrmfcDlg.h"
 
 DUI_BEGIN_MESSAGE_MAP(CDuiPreviewCaptureDlg, CNotifyPump)
 DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
@@ -53,6 +54,11 @@ void CDuiPreviewCaptureDlg::InitWindow()
 	}
 }
 
+void CDuiPreviewCaptureDlg::Notify(DuiLib::TNotifyUI & msg)
+{
+	__super::Notify(msg);
+}
+
 LRESULT CDuiPreviewCaptureDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_TIMER && wParam == 1) {
@@ -60,6 +66,21 @@ LRESULT CDuiPreviewCaptureDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 	}
 
 	return __super::HandleMessage(uMsg, wParam, lParam);
+}
+
+void CDuiPreviewCaptureDlg::OnClick(TNotifyUI & msg)
+{
+	if (msg.pSender->GetName() == L"pic") {
+		
+		auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
+		if (maindlg) {
+			if (maindlg->do_picview_mode_show_or_hide_tools(show_tip_)) {
+				show_tip_ = !show_tip_;
+			}
+		}
+	}
+
+	__super::OnClick(msg);
 }
 
 void CDuiPreviewCaptureDlg::set_image(const std::string & img)

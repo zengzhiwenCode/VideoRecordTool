@@ -50,6 +50,7 @@ public:
 	void enable_btns(bool able);
 	void update_pic_sel(fv pics, fviters iters);
 	void update_video_sel(fv videos, fviters iters);
+	bool show_tip(bool show);
 	
 protected:
 	//bool is_valid_pic_iter(fviter idx);
