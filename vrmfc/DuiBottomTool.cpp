@@ -126,7 +126,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			del_pic();
 			del_video();
 		} else if (name == btn_names::cp_to_usb) {
-			copy_to_usb(msg.pSender);
+			copy_to_usb();
 		}
 		
 		break;
@@ -160,7 +160,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 		} else if (name == btn_names::del) {
 			pic_view_dec_pic();
 		} else if (name == btn_names::cp_to_usb) {
-
+			copy_to_usb();
 		} else if (name == btn_names::detail) {
 
 		}
@@ -566,7 +566,7 @@ HRESULT CopyFiles(HWND hwnd, const std::vector<std::pair<std::wstring, std::wstr
 	return hr;
 }
 
-void CDuiBottomTool::copy_to_usb(CControlUI* sender)
+void CDuiBottomTool::copy_to_usb()
 {
 	auto ul = config::list_removable_drives();
 	if (ul.empty()) { return; }
@@ -585,7 +585,9 @@ void CDuiBottomTool::copy_to_usb(CControlUI* sender)
 		POINT pt = {};
 		GetCursorPos(&pt);
 
-		::EnableWindow(file_dlg_->GetHWND(), false);
+		if (file_dlg_) {
+			::EnableWindow(file_dlg_->GetHWND(), false);
+		}
 
 		CDuiMenu::make_xml(items);
 		CDuiMenu menu(L"menu.xml");
@@ -595,7 +597,9 @@ void CDuiBottomTool::copy_to_usb(CControlUI* sender)
 		::MoveWindow(menu.GetHWND(), pt.x - rc.Width(), pt.y - rc.Height() - 50, rc.Width(), rc.Height(), TRUE);
 		menu.ShowModal();
 
-		::EnableWindow(file_dlg_->GetHWND(), true);
+		if (file_dlg_) {
+			::EnableWindow(file_dlg_->GetHWND(), true);
+		}
 
 		auto pos = menu.selected_.find(L"menu_");
 		if (pos != std::wstring::npos) {
