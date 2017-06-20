@@ -207,10 +207,10 @@ void CDuiBottomTool::set_mode(mode m)
 	if (!container) { return; }
 
 	container->RemoveAll();
-	pics_.clear();
+	/*pics_.clear();
 	piters_.clear();
 	videos_.clear();
-	viters_.clear();
+	viters_.clear();*/
 	sel_all_ = false;
 
 	int GAP_WIDHT = 50;
@@ -317,10 +317,11 @@ void CDuiBottomTool::set_mode(mode m)
 		do_create(vv);
 
 		//file_dlg_->ShowWindow(false, false);
-		file_dlg_->SendMessageW(WM_CLOSE);
-		file_dlg_.reset();
-
-		view_pic(/*piter_*/);
+		if (file_dlg_) {
+			file_dlg_->SendMessageW(WM_CLOSE);
+			file_dlg_.reset();
+		}
+		//view_pic(/*piter_*/);
 	}
 		break;
 
@@ -420,7 +421,7 @@ void CDuiBottomTool::update_video_sel(fv videos, fviters iters)
 void CDuiBottomTool::view_pic()
 {
 	if (piters_.size() != 1) { return; }
-	auto path = pics_[0];
+	auto path = pics_[piters_[0]];
 	cv::Mat mat = cv::imread(path.string());
 	if (!mat.empty()) {
 		if (sz_prevpic_.cx != mat.cols || sz_prevpic_.cy != mat.rows) {
