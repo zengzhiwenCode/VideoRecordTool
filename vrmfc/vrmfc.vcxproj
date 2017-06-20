@@ -206,7 +206,6 @@
     <ClInclude Include="DuiFileManagerDlg.h" />
     <ClInclude Include="duilib.h" />
     <ClInclude Include="DuiMenu.h" />
-    <ClInclude Include="DuiMenuWnd.h" />
     <ClInclude Include="DuiPreviewCaptureDlg.h" />
     <ClInclude Include="DuiSettingsDlg.h" />
     <ClInclude Include="DuiSysInfoDlg.h" />
@@ -226,7 +225,6 @@
     <ClCompile Include="DuiConfirmExitDlg.cpp" />
     <ClCompile Include="DuiFileManagerDlg.cpp" />
     <ClCompile Include="DuiMenu.cpp" />
-    <ClCompile Include="DuiMenuWnd.cpp" />
     <ClCompile Include="DuiPreviewCaptureDlg.cpp" />
     <ClCompile Include="DuiSettingsDlg.cpp" />
     <ClCompile Include="DuiSysInfoDlg.cpp" />

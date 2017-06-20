@@ -551,10 +551,7 @@ void CDuiBottomTool::copy_to_usb(CControlUI* sender)
 	auto ul = config::list_removable_drives();
 	if (ul.empty()) { return; }
 	if (ul.size() > 1) {
-		//CMenu menu;
-		//menu.CreatePopupMenu();
 		std::list<std::pair<std::wstring, std::wstring>> items;
-		size_t index = 1;
 		for (auto root : ul) {
 			std::wstring name = L"menu_";
 			name.push_back(root.first);
@@ -563,25 +560,10 @@ void CDuiBottomTool::copy_to_usb(CControlUI* sender)
 			text += L": ";
 			text += utf8::mbcs_to_u16(root.second);
 			items.push_back(std::make_pair(name, text));
-			//menu.AppendMenuW(MF_STRING, index++, text.c_str());
 		}
 		
 		POINT pt = {};
 		GetCursorPos(&pt);
-
-		/*CMenuWnd::make_xml(items);
-		CMenuWnd* pMenu = new CMenuWnd();
-		if (pMenu == NULL) { return; }
-
-		
-		pMenu->Init(sender, pt);*/
-
-		//auto ret = menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_VCENTERALIGN | TPM_RETURNCMD, pt.x, pt.y, CWnd::FromHandle(m_hWnd));
-		//if (ret > 0 && ret <= ul.size()) {
-		//	ret--;
-		////	auto root = ul[ret].first;
-		//	copy_to_usb(root);
-		//}
 
 		::EnableWindow(file_dlg_->GetHWND(), false);
 

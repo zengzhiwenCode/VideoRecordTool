@@ -84,9 +84,6 @@
     <ClInclude Include="DuiSysInfoDlg.h">
       <Filter>ui</Filter>
     </ClInclude>
-    <ClInclude Include="DuiMenuWnd.h">
-      <Filter>ui</Filter>
-    </ClInclude>
     <ClInclude Include="DuiMenu.h">
       <Filter>ui</Filter>
     </ClInclude>
@@ -138,9 +135,6 @@
       <Filter>ds</Filter>
     </ClCompile>
     <ClCompile Include="DuiSysInfoDlg.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="DuiMenuWnd.cpp">
       <Filter>ui</Filter>
     </ClCompile>
     <ClCompile Include="DuiMenu.cpp">
