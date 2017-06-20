@@ -4,6 +4,7 @@
 
 class CDuiPreviewCaptureDlg;
 class CDuiFileManagerDlg;
+class CAlarmTextDlg;
 
 class CDuiBottomTool : public CXMLWnd
 {
@@ -32,6 +33,7 @@ protected:
 	std::shared_ptr<CDuiFileManagerDlg> file_dlg_ = {};
 	SIZE sz_prevpic_ = {};
 	std::shared_ptr<CDuiPreviewCaptureDlg> pic_view_ = {};
+	std::shared_ptr<CAlarmTextDlg> pic_view_tip_ = {};
 
 	bool sel_all_ = false;
 

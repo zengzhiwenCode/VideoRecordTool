@@ -5,6 +5,7 @@
 #include "DuiFileManagerDlg.h"
 #include "DuiPreviewCaptureDlg.h"
 #include "DuiMenu.h"
+#include "AlarmTextDlg.h"
 
 namespace {
 
@@ -135,9 +136,11 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 	case CDuiBottomTool::pic_view:
 	{
 		if (name == btn_names::back) {
-			assert(pic_view_);
+			assert(pic_view_); assert(pic_view_tip_);
 			pic_view_->SendMessageW(WM_CLOSE);
 			pic_view_.reset();
+			pic_view_tip_->SendMessage(WM_CLOSE);
+			pic_view_tip_.reset();
 
 			set_mode(filemgr);
 		} else if (name == btn_names::prev_pic) {
@@ -442,6 +445,20 @@ void CDuiBottomTool::view_pic()
 			pic_view_->ShowWindow();
 		}
 
+		if (!pic_view_tip_) {
+			pic_view_tip_ = std::make_shared<CAlarmTextDlg>();
+			pic_view_tip_->Create(IDD_DIALOG_ALARM_TEXT, CWnd::FromHandle(m_hWnd));
+			CRect rc(rc_filedlg_);
+			rc.left = rc.right - 200;
+			rc.bottom = rc.top + 22;
+			pic_view_tip_->SetWindowPos(CWnd::FromHandle(HWND_TOPMOST), rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+		}
+
+		if (pic_view_tip_) {
+			pic_view_tip_->SetText(path.filename().wstring().c_str());
+			pic_view_tip_->Show();
+		}
+
 		sz_prevpic_.cx = mat.cols;
 		sz_prevpic_.cy = mat.rows;
 
@@ -473,6 +490,10 @@ void CDuiBottomTool::pic_view_dec_pic()
 
 	if (pic_view_) {
 		pic_view_->ShowWindow(false, false);
+	}
+
+	if (pic_view_tip_) {
+		pic_view_tip_->Hide();
 	}
 
 	set_mode(filemgr);
