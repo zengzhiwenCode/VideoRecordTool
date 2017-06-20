@@ -92,3 +92,4 @@ protected:
 }
 
 using DuiLib::CXMLWnd;
+using DuiLib::CWndUI;

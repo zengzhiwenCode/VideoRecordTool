@@ -7,6 +7,7 @@
 #include "DuiMenu.h"
 #include "AlarmTextDlg.h"
 #include "DuiPicDetailDlg.h"
+#include "DuiVideoPlayer.h"
 
 namespace {
 
@@ -114,7 +115,11 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			file_back_to_main();
 			return;
 		} else if (name == btn_names::edit) {
-			view_pic();
+			if (piters_.size() == 1) {
+				view_pic();
+			} else if (viters_.size() == 1) {
+				view_video();
+			}
 		} else if (name == btn_names::filter) {
 			file_dlg_->update_filter();
 		} else if (name == btn_names::page_up) {
@@ -137,9 +142,9 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 	case CDuiBottomTool::pic_view:
 	{
 		if (name == btn_names::back) {
-			assert(pic_view_); assert(pic_view_tip_);
-			pic_view_->SendMessageW(WM_CLOSE);
-			pic_view_.reset();
+			assert(pic_viewer_); assert(pic_view_tip_);
+			pic_viewer_->SendMessageW(WM_CLOSE);
+			pic_viewer_.reset();
 			pic_view_tip_->SendMessage(WM_CLOSE);
 			pic_view_tip_.reset();
 
@@ -148,17 +153,14 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			if (piters_.size() == 1) {
 				if (piters_[0] > 0) {
 					piters_[0]--;
-					view_pic(/*--piters_[0]*/);
+					view_pic();
 				}
 			}
 		} else if (name == btn_names::next_pic) {
-			/*if (piter_ + 1 < pics_.size()) {
-				view_pic(++piter_);
-			}*/
 			if (piters_.size() == 1) {
 				if (piters_[0] + 1 < pics_.size()) {
 					piters_[0]++;
-					view_pic(/*--piters_[0]*/);
+					view_pic();
 				}
 			}
 		} else if (name == btn_names::del) {
@@ -441,21 +443,21 @@ void CDuiBottomTool::view_pic()
 	cv::Mat mat = cv::imread(path.string());
 	if (!mat.empty()) {
 		if (sz_prevpic_.cx != mat.cols || sz_prevpic_.cy != mat.rows) {
-			if (pic_view_) {
-				pic_view_->SendMessageW(WM_CLOSE);
-				pic_view_.reset();
+			if (pic_viewer_) {
+				pic_viewer_->SendMessageW(WM_CLOSE);
+				pic_viewer_.reset();
 			}
 		}
 
-		if (!pic_view_ && CDuiPreviewCaptureDlg::make_xml(mat.cols, mat.rows)) {
-			pic_view_ = std::make_shared<CDuiPreviewCaptureDlg>(L"capture.xml");
-			pic_view_->set_auto_close(false);
-			pic_view_->Create(AfxGetMainWnd()->GetSafeHwnd(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+		if (!pic_viewer_ && CDuiPreviewCaptureDlg::make_xml(mat.cols, mat.rows)) {
+			pic_viewer_ = std::make_shared<CDuiPreviewCaptureDlg>(L"capture.xml");
+			pic_viewer_->set_auto_close(false);
+			pic_viewer_->Create(AfxGetMainWnd()->GetSafeHwnd(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 		}
 			
-		if (pic_view_) {
-			pic_view_->set_image(path.string());
-			pic_view_->ShowWindow();
+		if (pic_viewer_) {
+			pic_viewer_->set_image(path.string());
+			pic_viewer_->ShowWindow();
 		}
 
 		if (!pic_view_tip_) {
@@ -481,8 +483,19 @@ void CDuiBottomTool::view_pic()
 	}
 }
 
-void CDuiBottomTool::play_video()
+void CDuiBottomTool::view_video()
 {
+	if (viters_.size() != 1) { return; }
+	auto path = videos_[viters_[0]];
+
+	if (!video_player_) {
+		video_player_ = std::make_shared<CDuiVideoPlayer>(L"videoplayer.xml");
+		video_player_->Create(AfxGetMainWnd()->GetSafeHwnd(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	}
+
+	video_player_->video_path_ = utf8::w2a(path.wstring());
+	video_player_->ShowWindow();
+	video_player_->play();
 }
 
 void CDuiBottomTool::del_pic()
@@ -503,8 +516,8 @@ void CDuiBottomTool::pic_view_dec_pic()
 		return;
 	}
 
-	if (pic_view_) {
-		pic_view_->ShowWindow(false, false);
+	if (pic_viewer_) {
+		pic_viewer_->ShowWindow(false, false);
 	}
 
 	if (pic_view_tip_) {
@@ -536,11 +549,11 @@ void CDuiBottomTool::pic_view_pic_detail()
 		std::wstring s = dt.Format(L"%Y-%m-%d %H:%M:%S").GetBuffer();
 		return s;
 	}(path.wstring());
-	picdetail.Create(pic_view_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
-	::EnableWindow(pic_view_->GetHWND(), false);
+	picdetail.Create(pic_viewer_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	::EnableWindow(pic_viewer_->GetHWND(), false);
 	::EnableWindow(GetHWND(), false);
 	picdetail.ShowModal();
-	::EnableWindow(pic_view_->GetHWND(), true);
+	::EnableWindow(pic_viewer_->GetHWND(), true);
 	::EnableWindow(GetHWND(), true);
 }
 

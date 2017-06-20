@@ -5,14 +5,13 @@
 class CDuiPreviewCaptureDlg;
 class CDuiFileManagerDlg;
 class CAlarmTextDlg;
+class CDuiVideoPlayer;
 
 class CDuiBottomTool : public CXMLWnd
 {
 public:
 	explicit CDuiBottomTool(const wchar_t* xmlpath);
 	virtual ~CDuiBottomTool();
-
-	
 
 	//DUI_DECLARE_MESSAGE_MAP();
 	virtual void InitWindow() override;
@@ -23,17 +22,16 @@ public:
 
 protected:
 	fv pics_ = {};
-	//fviter piter_ = {};
 	fv videos_ = {};
-	//fviter viter_ = {};
 	fviters piters_ = {};
 	fviters viters_ = {};
 
 	CRect rc_filedlg_ = {};
 	std::shared_ptr<CDuiFileManagerDlg> file_dlg_ = {};
 	SIZE sz_prevpic_ = {};
-	std::shared_ptr<CDuiPreviewCaptureDlg> pic_view_ = {};
+	std::shared_ptr<CDuiPreviewCaptureDlg> pic_viewer_ = {};
 	std::shared_ptr<CAlarmTextDlg> pic_view_tip_ = {};
+	std::shared_ptr<CDuiVideoPlayer> video_player_ = {};
 
 	bool sel_all_ = false;
 
@@ -53,10 +51,8 @@ public:
 	bool show_tip(bool show);
 	
 protected:
-	//bool is_valid_pic_iter(fviter idx);
-	//bool is_valid_video_iter(fviter idx);
 	void view_pic();
-	void play_video();
+	void view_video();
 	void del_pic();
 	void pic_view_dec_pic();
 	void pic_view_pic_detail();

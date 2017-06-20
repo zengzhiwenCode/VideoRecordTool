@@ -199,6 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlarmTextDlg.h" />
+    <ClInclude Include="AVPlayer.h" />
     <ClInclude Include="CameraDS.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="DuiBottomTool.h" />
@@ -210,6 +211,7 @@
     <ClInclude Include="DuiPreviewCaptureDlg.h" />
     <ClInclude Include="DuiSettingsDlg.h" />
     <ClInclude Include="DuiSysInfoDlg.h" />
+    <ClInclude Include="DuiVideoPlayer.h" />
     <ClInclude Include="jsoncpp\json.h" />
     <ClInclude Include="mat2gdi.h" />
     <ClInclude Include="Resource.h" />
@@ -220,6 +222,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlarmTextDlg.cpp" />
+    <ClCompile Include="AVPlayer.cpp" />
     <ClCompile Include="CameraDS.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="DuiBottomTool.cpp" />
@@ -230,6 +233,7 @@
     <ClCompile Include="DuiPreviewCaptureDlg.cpp" />
     <ClCompile Include="DuiSettingsDlg.cpp" />
     <ClCompile Include="DuiSysInfoDlg.cpp" />
+    <ClCompile Include="DuiVideoPlayer.cpp" />
     <ClCompile Include="jsoncpp\json_reader.cpp" />
     <ClCompile Include="jsoncpp\json_value.cpp" />
     <ClCompile Include="jsoncpp\json_writer.cpp" />

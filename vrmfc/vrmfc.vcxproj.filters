@@ -88,7 +88,13 @@
       <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="DuiPicDetailDlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="DuiVideoPlayer.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="AVPlayer.h">
+      <Filter>tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -144,7 +150,13 @@
       <Filter>ui</Filter>
     </ClCompile>
     <ClCompile Include="DuiPicDetailDlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiVideoPlayer.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="AVPlayer.cpp">
+      <Filter>tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
