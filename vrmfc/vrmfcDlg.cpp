@@ -218,6 +218,8 @@ BOOL CvrmfcDlg::OnInitDialog()
 		dui_bt_ = std::make_shared<CDuiBottomTool>(L"bottomtool.xml");
 		dui_bt_->Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 		::SetWindowPos(dui_bt_->GetHWND(), HWND_TOPMOST, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+		GetWindowRect(rc);
+		dui_bt_->set_rc_maindlg(rc);
 		dui_bt_->set_mode(CDuiBottomTool::mode::mainwnd);
 		dui_bt_->ShowWindow(false, false);
 	}
@@ -738,6 +740,11 @@ bool CvrmfcDlg::do_picview_mode_show_or_hide_tools(bool show)
 bool CvrmfcDlg::do_video_view_mode_show_or_hide_tools(bool show)
 {
 	return dui_bt_->show_video_tips(show);
+}
+
+bool CvrmfcDlg::do_video_view_mode_pos_changed(const std::wstring & cur, const std::wstring & total)
+{
+	return dui_bt_->on_video_pos_changed(cur, total);
 }
 
 void CvrmfcDlg::do_file_manager_over()

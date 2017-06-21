@@ -177,12 +177,19 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 	case CDuiBottomTool::video_view:
 	{
 		if (name == btn_names::back) {
-			assert(video_player_); assert(video_view_tip_);
+			assert(video_player_); assert(video_view_tip_); assert(video_cur_time_); assert(video_total_time_);
+
 			video_player_->SendMessageW(WM_CLOSE);
 			video_player_.reset();
 
 			video_view_tip_->SendMessage(WM_CLOSE);
 			video_view_tip_.reset();
+
+			video_cur_time_->SendMessage(WM_CLOSE);
+			video_cur_time_.reset();
+
+			video_total_time_->SendMessage(WM_CLOSE);
+			video_total_time_.reset();
 
 			set_mode(filemgr);
 		} else if (name == btn_names::prev_video) {
@@ -453,6 +460,32 @@ bool CDuiBottomTool::show_video_tips(bool show)
 			show ? video_view_tip_->Show() : video_view_tip_->Hide();
 		}
 
+		if (video_cur_time_) {
+			show ? video_cur_time_->Show() : video_cur_time_->Hide();
+		}
+
+		if (video_total_time_) {
+			show ? video_total_time_->Show() : video_total_time_->Hide();
+		}
+
+		return true;
+	}
+	return false;
+}
+
+bool CDuiBottomTool::on_video_pos_changed(const std::wstring & cur, const std::wstring & total)
+{
+	if (mode_ == video_view) {
+		if (video_cur_time_) {
+			video_cur_time_->SetText(cur.c_str());
+			video_cur_time_->Invalidate();
+		}
+
+		if (video_total_time_) {
+			video_total_time_->SetText(total.c_str());
+			video_total_time_->Invalidate();
+		}
+
 		return true;
 	}
 	return false;
@@ -509,15 +542,6 @@ void CDuiBottomTool::view_video()
 {
 	if (viters_.size() != 1) { return; }
 	auto path = videos_[viters_[0]];
-
-	if (!video_player_) {
-		video_player_ = std::make_shared<CDuiVideoPlayer>(L"videoplayer.xml");
-		video_player_->Create(AfxGetMainWnd()->GetSafeHwnd(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
-	}
-
-	video_player_->video_path_ = utf8::w2a(path.wstring());
-	video_player_->ShowWindow();
-	video_player_->play();
 	
 	if (!video_view_tip_) {
 		video_view_tip_ = std::make_shared<CAlarmTextDlg>();
@@ -532,6 +556,45 @@ void CDuiBottomTool::view_video()
 		video_view_tip_->SetText(path.filename().wstring().c_str());
 		video_view_tip_->Show();
 	}
+
+	if (!video_cur_time_) {
+		video_cur_time_ = std::make_shared<CAlarmTextDlg>();
+		video_cur_time_->Create(IDD_DIALOG_ALARM_TEXT, CWnd::FromHandle(m_hWnd));
+		CRect rc(rc_maindlg_);
+		rc.bottom -= 25;
+		rc.top = rc.bottom - 22;
+		rc.left += 15;
+		rc.right = rc.left + 100;
+		video_cur_time_->SetWindowPos(CWnd::FromHandle(HWND_TOPMOST), rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+	}
+
+	if (video_cur_time_) {
+		video_cur_time_->Show();
+	}
+
+	if (!video_total_time_) {
+		video_total_time_ = std::make_shared<CAlarmTextDlg>();
+		video_total_time_->Create(IDD_DIALOG_ALARM_TEXT, CWnd::FromHandle(m_hWnd));
+		CRect rc(rc_maindlg_);
+		rc.bottom -= 25;
+		rc.top = rc.bottom - 22;
+		rc.right -= 15;
+		rc.left = rc.right - 100;
+		video_total_time_->SetWindowPos(CWnd::FromHandle(HWND_TOPMOST), rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+	}
+
+	if (video_total_time_) {
+		video_total_time_->Show();
+	}
+
+	if (!video_player_) {
+		video_player_ = std::make_shared<CDuiVideoPlayer>(L"videoplayer.xml");
+		video_player_->Create(AfxGetMainWnd()->GetSafeHwnd(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	}
+
+	video_player_->video_path_ = utf8::w2a(path.wstring());
+	video_player_->ShowWindow();
+	video_player_->play();
 
 	set_mode(video_view);
 

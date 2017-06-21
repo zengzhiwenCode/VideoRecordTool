@@ -26,6 +26,7 @@ protected:
 	fviters piters_ = {};
 	fviters viters_ = {};
 
+	CRect rc_maindlg_ = {};
 	CRect rc_filedlg_ = {};
 	std::shared_ptr<CDuiFileManagerDlg> file_dlg_ = {};
 
@@ -35,7 +36,8 @@ protected:
 
 	std::shared_ptr<CDuiVideoPlayer> video_player_ = {};
 	std::shared_ptr<CAlarmTextDlg> video_view_tip_ = {};
-
+	std::shared_ptr<CAlarmTextDlg> video_cur_time_ = {};
+	std::shared_ptr<CAlarmTextDlg> video_total_time_ = {};
 
 	bool sel_all_ = false;
 
@@ -47,6 +49,7 @@ public:
 		video_view,
 	}mode_ = mainwnd;
 
+	void set_rc_maindlg(const CRect& rc) { rc_maindlg_ = rc; }
 	void set_mode(mode m);
 	mode get_mode() const { return mode_; }
 	void enable_btns(bool able);
@@ -54,6 +57,7 @@ public:
 	void update_video_sel(fv videos, fviters iters);
 	bool show_pic_tip(bool show);
 	bool show_video_tips(bool show);
+	bool on_video_pos_changed(const std::wstring& cur, const std::wstring& total);
 
 protected:
 	void view_pic();

@@ -62,8 +62,8 @@ void CDuiVideoPlayer::InitWindow()
 	CWndUI *pWnd = static_cast<CWndUI*>(m_PaintManager.FindControl(_T("wndMedia")));
 	if (pWnd) {
 		player_.SetHWND(pWnd->GetHWND());
-		//player_.SetCallbackPlaying(CallbackPlaying);
-		//player_.SetCallbackPosChanged(CallbackPosChanged);
+		player_.SetCallbackPlaying(CallbackPlaying);
+		player_.SetCallbackPosChanged(CallbackPosChanged);
 		player_.SetCallbackEndReached(CallbackEndReached);
 	} else {
 		JLOG_ERRO("CDuiVideoPlayer::InitWindow() cannot find wndMedia!");
@@ -77,11 +77,11 @@ void CDuiVideoPlayer::Notify(DuiLib::TNotifyUI & msg)
 
 LRESULT CDuiVideoPlayer::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	//JLOG_INFO("CDuiVideoPlayer::HandleMessage 0x{:X} {:d} {:d}", uMsg, wParam, lParam);
 	if (uMsg == WM_TIMER && wParam == 1) {
 		
-	}else if (uMsg == WM_USER_END_REACHED) {
+	} else if (uMsg == WM_USER_END_REACHED) {
 		OnEndReached(reinterpret_cast<void*>(wParam));
+
 	} else if (uMsg == WM_LBUTTONUP ) {
 		
 	} else if (uMsg == WM_PARENTNOTIFY) {
@@ -92,6 +92,26 @@ LRESULT CDuiVideoPlayer::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					show_tip_ = !show_tip_;
 				}
 			}
+		}
+	} else if (uMsg == WM_USER_PLAYING) {
+		JLOG_INFO("CDuiVideoPlayer::HandleMessage WM_USER_PLAYING {:d} {:d}", wParam, lParam);
+
+	} else if (uMsg == WM_USER_POS_CHANGED) {
+		//JLOG_INFO("CDuiVideoPlayer::HandleMessage WM_USER_POS_CHANGED {:d} {:d}", wParam, lParam);
+		struct tm   tmTotal, tmCurrent;
+		time_t      timeTotal = player_.GetTotalTime() / 1000;
+		time_t      timeCurrent = player_.GetTime() / 1000;
+		TCHAR       szTotal[MAX_PATH], szCurrent[MAX_PATH];
+		gmtime_s(&tmTotal, &timeTotal);
+		gmtime_s(&tmCurrent, &timeCurrent);
+		_tcsftime(szTotal, MAX_PATH, _T("%X"), &tmTotal);
+		_tcsftime(szCurrent, MAX_PATH, _T("%X"), &tmCurrent);
+		std::wstring cur(szCurrent);
+		std::wstring total(szTotal);
+
+		auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
+		if (maindlg) {
+			maindlg->do_video_view_mode_pos_changed(cur, total);
 		}
 	}
 
@@ -130,6 +150,8 @@ void CDuiVideoPlayer::OnEndReached(void *)
 	if (pWnd) {
 		pWnd->SetBkColor(0xFFABCDDC);
 	}
+
+
 }
 
 bool CDuiVideoPlayer::play()
