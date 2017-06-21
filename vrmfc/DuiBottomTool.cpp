@@ -223,7 +223,9 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 		} else if (name == btn_names::del) {
 			video_view_del();
 		} else if (name == btn_names::cp_to_usb) {
-
+			video_player_->stop();
+			on_video_pos_changed(L"", L"", -1);
+			copy_to_usb();
 		} else if (name == btn_names::detail) {
 
 		}
