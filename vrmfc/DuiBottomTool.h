@@ -70,8 +70,9 @@ protected:
 	void del_pic();
 	void del_video();
 	void pic_view_dec();
-	void pic_view_pic_detail();
+	void pic_view_detail();
 	void video_view_del();
+	void video_view_detail();
 	void copy_to_usb();
 	void copy_to_usb(char root);
 	void file_back_to_main();

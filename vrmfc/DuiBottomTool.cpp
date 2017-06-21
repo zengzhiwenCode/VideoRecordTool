@@ -9,6 +9,7 @@
 #include "DuiPicDetailDlg.h"
 #include "DuiVideoPlayer.h"
 #include "DuiVideoPos.h"
+#include "DuiVideoDetailDlg.h"
 
 namespace {
 
@@ -40,6 +41,8 @@ auto pause = L"pause";
 
 
 }
+
+CDuiVideoDetailDlg::videoinfo g_video_info = {};
 
 }
 
@@ -169,7 +172,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 		} else if (name == btn_names::cp_to_usb) {
 			copy_to_usb();
 		} else if (name == btn_names::detail) {
-			pic_view_pic_detail();
+			pic_view_detail();
 		}
 		
 		break;
@@ -227,7 +230,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			on_video_pos_changed(L"", L"", -1);
 			copy_to_usb();
 		} else if (name == btn_names::detail) {
-
+			video_view_detail();
 		}
 		
 		break;
@@ -506,8 +509,6 @@ bool CDuiBottomTool::show_video_tips(bool show)
 bool CDuiBottomTool::on_video_pos_changed(const std::wstring & cur, const std::wstring & total, int pos)
 {
 	if (mode_ == video_view) {
-		
-
 		if (pos == -1) {
 			auto pause = m_PaintManager.FindControl(btn_names::pause);
 			if (pause) {
@@ -533,6 +534,8 @@ bool CDuiBottomTool::on_video_pos_changed(const std::wstring & cur, const std::w
 				video_total_time_->SetText(total.c_str());
 				video_total_time_->Invalidate();
 			}
+
+			g_video_info.video_length = total;
 
 			if (video_slider_) {
 				video_slider_->SetPos(pos);
@@ -606,6 +609,29 @@ void CDuiBottomTool::view_video()
 {
 	if (viters_.size() != 1) { return; }
 	auto path = videos_[viters_[0]];
+
+	// get video info by opencv
+	{
+		cv::VideoCapture cap(utf8::u16_to_mbcs(path.wstring()));
+		if (cap.isOpened()) {
+			g_video_info.name = utf8::mbcs_to_u16(path.filename().string());
+			g_video_info.filesize = utf8::a2w(config::format_space(fs::file_size(path)));
+			g_video_info.resolution = std::to_wstring(static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH))) 
+				+ L"*" + std::to_wstring(static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT)));
+			g_video_info.ext = utf8::a2w(VR_VIDEO_EXT).substr(1);
+			g_video_info.fps = std::to_wstring(static_cast<int>(cap.get(cv::CAP_PROP_FPS)));
+			g_video_info.create_time = [](const std::wstring& file) {
+				WIN32_FILE_ATTRIBUTE_DATA wfad = {};
+				SYSTEMTIME st = {};
+				GetFileAttributesEx(file.c_str(), GetFileExInfoStandard, &wfad);
+				FileTimeToSystemTime(&wfad.ftCreationTime, &st);
+				COleDateTime dt(st);
+				dt += COleDateTimeSpan(0, 8, 0, 0);
+				std::wstring s = dt.Format(L"%Y-%m-%d %H:%M:%S").GetBuffer();
+				return s;
+			}(path.wstring());
+		}
+	}
 	
 	if (!video_view_tip_) {
 		video_view_tip_ = std::make_shared<CAlarmTextDlg>();
@@ -728,7 +754,7 @@ void CDuiBottomTool::pic_view_dec()
 	set_mode(filemgr);
 }
 
-void CDuiBottomTool::pic_view_pic_detail()
+void CDuiBottomTool::pic_view_detail()
 {
 	if (piters_.size() != 1) { return; }
 	auto path = pics_[piters_[0]];
@@ -781,6 +807,20 @@ void CDuiBottomTool::video_view_del()
 	}
 
 	set_mode(filemgr);
+}
+
+void CDuiBottomTool::video_view_detail()
+{
+	if (viters_.size() != 1) { return; }
+	auto path = videos_[viters_[0]];
+	CDuiVideoDetailDlg videodetail(L"videodetail.xml");
+	videodetail.videoinfo_ = g_video_info;
+	videodetail.Create(video_player_->GetHWND(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	::EnableWindow(video_player_->GetHWND(), false);
+	::EnableWindow(GetHWND(), false);
+	videodetail.ShowModal();
+	::EnableWindow(video_player_->GetHWND(), true);
+	::EnableWindow(GetHWND(), true);
 }
 
 HRESULT CopyFiles(HWND hwnd, const std::vector<std::pair<std::wstring, std::wstring>>& param)

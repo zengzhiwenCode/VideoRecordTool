@@ -2,7 +2,7 @@
 #include "resource.h"
 
 namespace detail {
-	const int ALARM_TEXT_HEIGHT = 20;
+const int ALARM_TEXT_HEIGHT = 20;
 };
 
 // CAlarmTextDlg 对话框
@@ -15,7 +15,7 @@ public:
 	CAlarmTextDlg(CWnd* pParent = nullptr);   // 标准构造函数
 	virtual ~CAlarmTextDlg();
 
-// 对话框数据
+	// 对话框数据
 	enum { IDD = IDD_DIALOG_ALARM_TEXT };
 
 protected:
@@ -44,6 +44,11 @@ public:
 	inline void SetText(const CString& text)
 	{
 		m_text = text;
+	}
+
+	CString GetText() const 
+	{
+		return m_text;
 	}
 
 	inline void Show()

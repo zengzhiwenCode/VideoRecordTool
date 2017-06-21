@@ -212,6 +212,7 @@
     <ClInclude Include="DuiPreviewCaptureDlg.h" />
     <ClInclude Include="DuiSettingsDlg.h" />
     <ClInclude Include="DuiSysInfoDlg.h" />
+    <ClInclude Include="DuiVideoDetailDlg.h" />
     <ClInclude Include="DuiVideoPlayer.h" />
     <ClInclude Include="DuiVideoPos.h" />
     <ClInclude Include="jsoncpp\json.h" />
@@ -235,6 +236,7 @@
     <ClCompile Include="DuiPreviewCaptureDlg.cpp" />
     <ClCompile Include="DuiSettingsDlg.cpp" />
     <ClCompile Include="DuiSysInfoDlg.cpp" />
+    <ClCompile Include="DuiVideoDetailDlg.cpp" />
     <ClCompile Include="DuiVideoPlayer.cpp" />
     <ClCompile Include="DuiVideoPos.cpp" />
     <ClCompile Include="jsoncpp\json_reader.cpp" />

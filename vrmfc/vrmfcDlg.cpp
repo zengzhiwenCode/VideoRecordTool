@@ -654,19 +654,13 @@ void CvrmfcDlg::do_record()
 	if (record_.recording) { do_stop_record(); return; }
 	if (!dscap_.isOpened()) { return; }
 	record_.file = config::get_instance()->create_new_video_path();
-	//auto width = static_cast<int>(capture_.get(CAP_PROP_FRAME_WIDTH));
-	//auto height = static_cast<int>(capture_.get(CAP_PROP_FRAME_HEIGHT));
 	auto width = dscap_.GetWidth();
 	auto height = dscap_.GetHeight();
-	//int ex = static_cast<int>(capture_.get(CV_CAP_PROP_FOURCC));
-	//char ext[] = { (char)(ex & 0XFF) , (char)((ex & 0XFF00) >> 8),(char)((ex & 0XFF0000) >> 16),(char)((ex & 0XFF000000) >> 24), 0 };
-	//auto fourcc = CV_FOURCC(ext[0], ext[1], ext[2], ext[3]);
-	// auto fourcc = CV_FOURCC('P', 'I', 'M', '1');
 	auto fourcc = CV_FOURCC('M', 'J', 'P', 'G'); // todo
 	record_.writer = std::make_shared<cv::VideoWriter>();
 	record_.recording = record_.writer->open(record_.file,
-											 fourcc /*ex*/ /*CV_FOURCC('P', 'I', 'M', '1')*/, // pim1 for avi
-											 /*fps_*/ fps_.get(),
+											 fourcc , 
+											 fps_.get(),
 											 cv::Size(width, height),
 											 true);
 	
