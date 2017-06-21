@@ -55,7 +55,7 @@ struct camera_set {
 	vq zoom;
 };
 
-class config : public dp::singleton<config>
+class config : public dp::singleton<config>, public dp::observable<int>
 {
 protected:
 	config();

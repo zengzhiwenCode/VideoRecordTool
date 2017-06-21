@@ -267,10 +267,14 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 			options->SelectItem(4);
 		} else if (name == "chinese") {
 			cfg->set_lang("zh_CN"); SetThreadUILanguage(MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED));
+			cfg->notify_observers(0);
 		} else if (name == "english") {
 			cfg->set_lang("en"); SetThreadUILanguage(MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
+			cfg->notify_observers(1);
 		} else if (name == "time") {	// Ê±¼ä
 			options->SelectItem(5);
+			time_ = COleDateTime::GetCurrentTime();
+			update_time(time_);
 		} else if (name == "recover") {	// »Ö¸´
 			options->SelectItem(6);
 		} 
@@ -464,11 +468,66 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 		maindlg->do_reset_camera();
 
 		PostMessage(WM_CLOSE);
+	} else if (name == "reset_cancel") {
+		PostMessage(WM_CLOSE);
 	}
 
 
 
 	__super::OnClick(msg);
+}
+
+void CDuiSettingsDlg::on_update(const int & lang)
+{
+	tv vv = {
+		{ L"resolution", trw(IDS_STRING_RESOLUTION) }, 
+		{ L"record", trw(IDS_STRING_RECSET) },
+		{ L"video", trw(IDS_STRING_VIDEOSET) },
+		{ L"camera", trw(IDS_STRING_CAMSET) },
+		{ L"language", trw(IDS_STRING_LANGSET) },
+		{ L"time", trw(IDS_STRING_TIMESET) },
+		{ L"recover", trw(IDS_STRING_RESET) },
+		{ L"tab_resolution", trw(IDS_STRING_RESSET) },
+		{ L"tab_record", trw(IDS_STRING_RECSET) },
+			{ L"lable_rec_time", trw(IDS_STRING_RECTIME) },
+		{ L"tab_video", trw(IDS_STRING_VIDEOSET) },
+			{ L"brightness", trw(IDS_STRING_BRIGHTNESS) },
+			{ L"contrast", trw(IDS_STRING_CONTRAST) },
+			{ L"hue", trw(IDS_STRING_HUE) },
+			{ L"saturation", trw(IDS_STRING_SATURATION) },
+			{ L"sharpness", trw(IDS_STRING_SHARPNESS) },
+			{ L"gamma", trw(IDS_STRING_GAMMA) },
+			{ L"white_balance", trw(IDS_STRING_WB) },
+			{ L"backlight", trw(IDS_STRING_BL) },
+			{ L"gain", trw(IDS_STRING_GAIN) },
+			{ L"reset_video", trw(IDS_STRING_RESET_TO_DEF) },
+			{ L"video_auto", trw(IDS_STRING_AUTO) },
+		{ L"tab_camera", trw(IDS_STRING_CAMSET) },
+			{ L"zoom", trw(IDS_STRING_ZOOM) },
+			{ L"focus", trw(IDS_STRING_FOCUS) },
+			{ L"exposure", trw(IDS_STRING_EXPOSURE) },
+			{ L"iris", trw(IDS_STRING_IRIS) },
+			{ L"pan", trw(IDS_STRING_PAN) },
+			{ L"tilt", trw(IDS_STRING_TILT) },
+			{ L"roll", trw(IDS_STRING_ROLL) },
+			{ L"reset_camera", trw(IDS_STRING_RESET_TO_DEF) },
+			{ L"camera_auto", trw(IDS_STRING_AUTO) },
+		{ L"tab_language", trw(IDS_STRING_LANGSET) },
+		{ L"tab_time", trw(IDS_STRING_TIMESET) },
+		{ L"apply_time", trw(IDS_STRING_APPLY) },
+		{ L"tab_reset", trw(IDS_STRING_RESET) },
+		{ L"reset_confirm", trw(IDS_STRING_RESET_CONFIRM) },
+		{ L"reset_ok", trw(IDS_STRING_OK) },
+		{ L"reset_cancel", trw(IDS_STRING_CANCEL) },
+		{ L"closebtn", trw(IDS_STRING_CLOSE) },
+	};
+
+	for (auto v : vv) {
+		auto ctrl = m_PaintManager.FindControl(v.first.c_str());
+		if (ctrl) {
+			ctrl->SetText(v.second.c_str());
+		}
+	}
 }
 
 void CDuiSettingsDlg::on_fps()

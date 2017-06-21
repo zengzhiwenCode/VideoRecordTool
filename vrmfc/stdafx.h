@@ -55,6 +55,11 @@ using fv = std::vector<fs::path>;
 using fviter = fv::size_type;
 using fviters = std::vector<fviter>;
 
+// type of pair
+using tp = std::pair<std::wstring, std::wstring>;
+// type of vector
+using tv = std::vector<tp>;
+
 #ifdef _UNICODE
 #if defined _M_IX86
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")

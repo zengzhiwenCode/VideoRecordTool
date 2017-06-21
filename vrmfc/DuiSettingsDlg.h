@@ -3,7 +3,7 @@
 #include "duilib.h"
 #include <strmif.h>
 
-class CDuiSettingsDlg : public CXMLWnd
+class CDuiSettingsDlg : public CXMLWnd, public dp::observer<int>
 {
 public:
 	explicit CDuiSettingsDlg(const wchar_t* xmlpath);
@@ -15,7 +15,7 @@ public:
 	virtual void Notify(DuiLib::TNotifyUI& msg) override;
 	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 	virtual void OnClick(TNotifyUI& msg) override;
-
+	virtual void on_update(const int& lang);
 
 private:
 	VideoProcAmpProperty pvideo_ = VideoProcAmp_Brightness;

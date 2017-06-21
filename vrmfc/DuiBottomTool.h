@@ -8,7 +8,7 @@ class CAlarmTextDlg;
 class CDuiVideoPlayer;
 class CDuiVideoPos;
 
-class CDuiBottomTool : public CXMLWnd
+class CDuiBottomTool : public CXMLWnd, public dp::observer<int>
 {
 public:
 	explicit CDuiBottomTool(const wchar_t* xmlpath);
@@ -20,6 +20,7 @@ public:
 	virtual void Notify(DuiLib::TNotifyUI& msg) override;
 	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 	virtual void OnClick(TNotifyUI& msg) override;
+	virtual void on_update(const int& lang);
 
 protected:
 	fv pics_ = {};

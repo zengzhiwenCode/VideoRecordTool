@@ -244,6 +244,38 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 	//__super::OnClick(msg);
 }
 
+void CDuiBottomTool::on_update(const int & lang)
+{
+	auto update_lang = [this](tv& vv) {
+		for (auto v : vv) {
+			auto btn = m_PaintManager.FindControl(v.first.c_str());
+			if (btn) {
+				btn->SetText(v.second.c_str());
+			}
+		}
+	};
+
+	switch (mode_) {
+	case CDuiBottomTool::mainwnd:
+	{
+		tv vv = {
+			{ btn_names::exit, trw(IDS_STRING_EXIT) },
+			{ btn_names::rec, trw(IDS_STRING_REC) },
+			{ btn_names::cap, trw(IDS_STRING_CAP) },
+			{ btn_names::file, trw(IDS_STRING_FILE) },
+			{ btn_names::set, trw(IDS_STRING_SET) },
+			{ btn_names::sys, trw(IDS_STRING_SYSINFO) },
+			{ btn_names::bright, trw(IDS_STRING_BRIGHTNESS) }
+		};
+
+		update_lang(vv);
+	}
+		break;
+	default:
+		break;
+	}
+}
+
 void CDuiBottomTool::set_mode(mode m)
 {
 	auto container = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"container")); assert(container);
@@ -271,11 +303,6 @@ void CDuiBottomTool::set_mode(mode m)
 		btn->SetBorderRound(BORDER_RND);
 		container->Add(btn);
 	};
-
-	// type of pair
-	using tp = std::pair<std::wstring, std::wstring>;
-	// type of vector
-	using tv = std::vector<tp>;
 
 	auto do_create = [add_gap, add_btn](const tv& vv) {
 		add_gap();

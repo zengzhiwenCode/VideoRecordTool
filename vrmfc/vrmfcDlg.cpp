@@ -216,6 +216,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		CPaintManagerUI::SetInstance(AfxGetInstanceHandle());                    // 指定duilib的实例
 		CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + L"\\skin");    // 指定duilib资源的路径，这里指定为和exe同目录
 		dui_bt_ = std::make_shared<CDuiBottomTool>(L"bottomtool.xml");
+		cfg->register_observer(dui_bt_);
 		dui_bt_->Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 		::SetWindowPos(dui_bt_->GetHWND(), HWND_TOPMOST, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
 		GetWindowRect(rc);
@@ -756,9 +757,10 @@ void CvrmfcDlg::do_file_manager_over()
 void CvrmfcDlg::do_settings()
 {
 	AUTO_LOG_FUNCTION; AUTO_LOCK_DLG;
-	CDuiSettingsDlg dlg(L"settings.xml");
-	dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
-	dlg.ShowModal();
+	auto dlg = std::make_shared<CDuiSettingsDlg>(L"settings.xml");
+	config::get_instance()->register_observer(dlg);
+	dlg->Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	dlg->ShowModal();
 }
 
 bool CvrmfcDlg::do_update_capmode(const std::string & mode)
