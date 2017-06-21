@@ -40,6 +40,11 @@ void CDuiPicDetailDlg::InitWindow()
 	resolution_val->SetText(picinfo_.resolution.c_str());
 	file_format_val->SetText(picinfo_.ext.c_str());
 	create_time_val->SetText(picinfo_.create_time.c_str());
+
+	get_ctrl(CLabelUI, title);
+	get_ctrl(CButtonUI, closebtn);
+	title->SetText(trw(IDS_STRING_PICINFO).c_str());
+	closebtn->SetText(trw(IDS_STRING_CLOSE).c_str());
 }
 
 void CDuiPicDetailDlg::Notify(DuiLib::TNotifyUI & msg)

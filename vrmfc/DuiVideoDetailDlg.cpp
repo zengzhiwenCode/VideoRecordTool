@@ -48,6 +48,11 @@ void CDuiVideoDetailDlg::InitWindow()
 	video_length_val->SetText(videoinfo_.video_length.c_str());
 	fps_val->SetText(videoinfo_.fps.c_str());
 	create_time_val->SetText(videoinfo_.create_time.c_str());
+
+	get_ctrl(CLabelUI, title);
+	get_ctrl(CButtonUI, closebtn);
+	title->SetText(trw(IDS_STRING_VIDEOINFO).c_str());
+	closebtn->SetText(trw(IDS_STRING_CLOSE).c_str());
 }
 
 void CDuiVideoDetailDlg::Notify(DuiLib::TNotifyUI & msg)

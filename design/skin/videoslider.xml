@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="1014,20" mininfo="1014,20" maxinfo="1014,20" caption="0,0,0,-1" sizebox="0,0,0,0">
+    <HorizontalLayout height="20"> <!-- 进度条 -->
+        <VerticalLayout width="5" />
+        <VerticalLayout >
+            <Slider name="sliderPlay"  height="20" bkimage="slider\SliderBack.png" foreimage="slider\SliderFore.png" min="0" max="1000" value="0" hor="true"  thumbhotimage="file=&apos;slider\SliderBar.png&apos; source=&apos;21,0,41,20&apos;" thumbpushedimage="file=&apos;slider\SliderBar.png&apos; source=&apos;42,0,62,20&apos;" thumbsize="20,20" />
+        </VerticalLayout>
+        <VerticalLayout width="5" />
+    </HorizontalLayout>
+</Window>

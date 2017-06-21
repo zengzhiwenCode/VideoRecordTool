@@ -32,6 +32,11 @@ void CDuiSysInfoDlg::InitWindow()
 	if (space) {
 		space->SetText((trw(IDS_STRING_AVSPACE) + utf8::a2w(cfg->get_remainder_space())).c_str());
 	}
+
+	get_ctrl(CLabelUI, title);
+	get_ctrl(CButtonUI, closebtn);
+	title->SetText(trw(IDS_STRING_SYSTEM_INFO).c_str());
+	closebtn->SetText(trw(IDS_STRING_CLOSE).c_str());
 }
 
 void CDuiSysInfoDlg::Notify(DuiLib::TNotifyUI & msg)

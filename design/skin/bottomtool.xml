@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<Window size="975,80" mininfo="975,80" maxinfo="975,80" caption="0,0,0,1" sizebox="0,0,0,0">
-    <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
-    <Font shared="true" id="1" name="微软雅黑" size="20" bold="false" />
+<Window size="750,60" mininfo="750,60" maxinfo="750,60" caption="0,0,0,1" sizebox="0,0,0,0">
+    <Font shared="true" id="0" name="微软雅黑" size="20" bold="false" />
+    <Font shared="true" id="1" name="微软雅黑" size="14" bold="false" />
 	<Font shared="true" id="2" name="幼圆" size="30" />
 	<HorizontalLayout bkcolor="FFD77E44#" bordersize="1" bordercolor="#FF707070"> <!--整个窗口-->
         <VerticalLayout>
-            <HorizontalLayout height="15" />
+            <HorizontalLayout height="5" />
             <HorizontalLayout name="container" >
                 
             </HorizontalLayout>
-            <HorizontalLayout height="15" />
+            <HorizontalLayout height="5" />
         </VerticalLayout>
 	</HorizontalLayout>
 </Window>

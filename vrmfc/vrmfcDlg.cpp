@@ -170,7 +170,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		if (cfg->get_lang() == "en") {
 			rc.left = rc.right - 325;
 		} else {
-			rc.left = rc.right - 255;
+			rc.left = rc.right - 325;
 		}
 		rc.bottom = rc.top + 22;
 

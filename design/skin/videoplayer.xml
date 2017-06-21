@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="1024,768" mininfo="1024,768" maxinfo="1024,768" caption="0,0,0,-1" sizebox="0,0,0,0">
+    <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
+	<Font shared="true" id="1" name="宋体" size="20" />
+    <VerticalLayout bkcolor="FFD77E44#" bordersize="1" bordercolor="#FFFFFFBF" > <!--整个窗口-->
+        <HorizontalLayout name="client" bordercolor="#FFABCDDC" border="true" bordersize="1">           
+			<WndMediaDisplay name="wndMedia" visible="true" bkcolor="#FFABCDDC"/>		
+        </HorizontalLayout>
+    </VerticalLayout>
+</Window>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
