@@ -77,20 +77,22 @@ void CDuiVideoPlayer::Notify(DuiLib::TNotifyUI & msg)
 
 LRESULT CDuiVideoPlayer::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	JLOG_INFO("CDuiVideoPlayer::HandleMessage 0x{:X} {:d} {:d}", uMsg, wParam, lParam);
+	//JLOG_INFO("CDuiVideoPlayer::HandleMessage 0x{:X} {:d} {:d}", uMsg, wParam, lParam);
 	if (uMsg == WM_TIMER && wParam == 1) {
 		
 	}else if (uMsg == WM_USER_END_REACHED) {
 		OnEndReached(reinterpret_cast<void*>(wParam));
 	} else if (uMsg == WM_LBUTTONUP ) {
-		auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
-		if (maindlg) {
-			if (maindlg->do_video_view_mode_show_or_hide_tools(show_tip_)) {
-				show_tip_ = !show_tip_;
+		
+	} else if (uMsg == WM_PARENTNOTIFY) {
+		if (wParam == WM_LBUTTONDOWN) {
+			auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
+			if (maindlg) {
+				if (maindlg->do_video_view_mode_show_or_hide_tools(show_tip_)) {
+					show_tip_ = !show_tip_;
+				}
 			}
 		}
-	} else if (uMsg == WM_PARENTNOTIFY) {
-
 	}
 
 	return __super::HandleMessage(uMsg, wParam, lParam);

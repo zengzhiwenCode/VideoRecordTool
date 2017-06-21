@@ -217,7 +217,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + L"\\skin");    // 指定duilib资源的路径，这里指定为和exe同目录
 		dui_bt_ = std::make_shared<CDuiBottomTool>(L"bottomtool.xml");
 		dui_bt_->Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
-		::MoveWindow(dui_bt_->GetHWND(), rc.left, rc.top, rc.Width(), rc.Height(), 0);
+		::SetWindowPos(dui_bt_->GetHWND(), HWND_TOPMOST, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
 		dui_bt_->set_mode(CDuiBottomTool::mode::mainwnd);
 		dui_bt_->ShowWindow(false, false);
 	}
