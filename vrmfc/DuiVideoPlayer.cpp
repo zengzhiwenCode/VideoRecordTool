@@ -154,15 +154,31 @@ void CDuiVideoPlayer::OnEndReached(void *)
 
 }
 
-bool CDuiVideoPlayer::play()
+bool CDuiVideoPlayer::play(const std::string& path)
 {
+	if (player_.IsPlaying()) {
+		player_.Stop();
+	}
+	video_path_ = path;
 	return player_.Play(video_path_);
 }
 
 bool CDuiVideoPlayer::pause()
 {
-	player_.Pause();
-	return true;
+	if (player_.IsPlaying()) {
+		player_.Pause();
+		return true;
+	}
+	return false;
+}
+
+bool CDuiVideoPlayer::resume()
+{
+	if (player_.IsOpen()) {
+		player_.Play();
+		return true;
+	}
+	return false;
 }
 
 bool CDuiVideoPlayer::stop()

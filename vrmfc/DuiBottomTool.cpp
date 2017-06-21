@@ -649,9 +649,8 @@ void CDuiBottomTool::view_video()
 		video_player_->Create(AfxGetMainWnd()->GetSafeHwnd(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 	}
 
-	video_player_->video_path_ = utf8::w2a(path.wstring());
 	video_player_->ShowWindow();
-	video_player_->play();
+	video_player_->play(utf8::w2a(path.wstring()));
 
 	set_mode(video_view);
 

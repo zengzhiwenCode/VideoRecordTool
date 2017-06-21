@@ -16,20 +16,21 @@ public:
 	virtual void OnClick(TNotifyUI& msg) override;
 	virtual CControlUI* CreateControl(LPCTSTR pstrClassName) override;
 
-	std::string video_path_ = {};
+	
 
 protected:
 	//bool play_ = false;
 	//cv::VideoCapture cap_ = {};
 	CAVPlayer player_ = {};
-
+	std::string video_path_ = {};
 	bool show_tip_ = true;
 
 	void OnEndReached(void*);
 
 public:
-	bool play();
+	bool play(const std::string& path);
 	bool pause();
+	bool resume();
 	bool stop();
 	bool set_pos(int pos);
 
