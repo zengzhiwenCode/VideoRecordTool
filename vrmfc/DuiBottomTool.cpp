@@ -194,15 +194,32 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 
 			set_mode(filemgr);
 		} else if (name == btn_names::prev_video) {
-
+			if (viters_.size() == 1) {
+				if (viters_[0] > 0) {
+					viters_[0]--;
+					view_video();
+				}
+			}
 		} else if (name == btn_names::next_video) {
-		
+			if (viters_.size() == 1) {
+				if (viters_[0] + 1 < videos_.size()) {
+					viters_[0]++;
+					view_video();
+				}
+			}
 		} else if (name == btn_names::stop) {
-		
+			video_player_->stop();
+			on_video_pos_changed(L"", L"", -1);
 		} else if (name == btn_names::play) {
-
+			if (video_player_->resume() || video_player_->play()) {
+				msg.pSender->SetName(btn_names::pause);
+				msg.pSender->SetText(trw(IDS_STRING_PAUSE).c_str());
+			}
 		} else if (name == btn_names::pause) {
-
+			if (video_player_->pause()) {
+				msg.pSender->SetName(btn_names::play);
+				msg.pSender->SetText(trw(IDS_STRING_PLAY).c_str());
+			}
 		} else if (name == btn_names::del) {
 
 		} else if (name == btn_names::cp_to_usb) {
@@ -488,18 +505,37 @@ bool CDuiBottomTool::show_video_tips(bool show)
 bool CDuiBottomTool::on_video_pos_changed(const std::wstring & cur, const std::wstring & total, int pos)
 {
 	if (mode_ == video_view) {
-		if (video_cur_time_) {
-			video_cur_time_->SetText(cur.c_str());
-			video_cur_time_->Invalidate();
-		}
+		
 
-		if (video_total_time_) {
-			video_total_time_->SetText(total.c_str());
-			video_total_time_->Invalidate();
-		}
+		if (pos == -1) {
+			auto pause = m_PaintManager.FindControl(btn_names::pause);
+			if (pause) {
+				pause->SetName(btn_names::play);
+				pause->SetText(trw(IDS_STRING_PLAY).c_str());
+			}
 
-		if (video_slider_) {
-			video_slider_->SetPos(pos);
+			if (video_cur_time_) {
+				video_cur_time_->SetText(L"00:00:00");
+				video_cur_time_->Invalidate();
+			}
+
+			if (video_slider_) {
+				video_slider_->SetPos(0);
+			}
+		} else {
+			if (video_cur_time_) {
+				video_cur_time_->SetText(cur.c_str());
+				video_cur_time_->Invalidate();
+			}
+
+			if (video_total_time_) {
+				video_total_time_->SetText(total.c_str());
+				video_total_time_->Invalidate();
+			}
+
+			if (video_slider_) {
+				video_slider_->SetPos(pos);
+			}
 		}
 
 		return true;

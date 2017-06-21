@@ -151,7 +151,10 @@ void CDuiVideoPlayer::OnEndReached(void *)
 		pWnd->SetBkColor(0xFFABCDDC);
 	}
 
-
+	auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
+	if (maindlg) {
+		maindlg->do_video_view_mode_pos_changed(L"", L"", -1);
+	}
 }
 
 bool CDuiVideoPlayer::play(const std::string& path)
@@ -159,7 +162,11 @@ bool CDuiVideoPlayer::play(const std::string& path)
 	if (player_.IsPlaying()) {
 		player_.Stop();
 	}
-	video_path_ = path;
+	if (!path.empty()) {
+		video_path_ = path;
+		show_tip_ = true;
+	}
+	
 	return player_.Play(video_path_);
 }
 

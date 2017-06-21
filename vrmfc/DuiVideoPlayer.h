@@ -28,7 +28,7 @@ protected:
 	void OnEndReached(void*);
 
 public:
-	bool play(const std::string& path);
+	bool play(const std::string& path = {});
 	bool pause();
 	bool resume();
 	bool stop();
