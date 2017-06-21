@@ -68,9 +68,10 @@ protected:
 	void view_pic();
 	void view_video();
 	void del_pic();
-	void pic_view_dec_pic();
-	void pic_view_pic_detail();
 	void del_video();
+	void pic_view_dec();
+	void pic_view_pic_detail();
+	void video_view_del();
 	void copy_to_usb();
 	void copy_to_usb(char root);
 	void file_back_to_main();

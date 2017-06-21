@@ -165,7 +165,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 				}
 			}
 		} else if (name == btn_names::del) {
-			pic_view_dec_pic();
+			pic_view_dec();
 		} else if (name == btn_names::cp_to_usb) {
 			copy_to_usb();
 		} else if (name == btn_names::detail) {
@@ -221,7 +221,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 				msg.pSender->SetText(trw(IDS_STRING_PLAY).c_str());
 			}
 		} else if (name == btn_names::del) {
-
+			video_view_del();
 		} else if (name == btn_names::cp_to_usb) {
 
 		} else if (name == btn_names::detail) {
@@ -330,6 +330,8 @@ void CDuiBottomTool::set_mode(mode m)
 		videos_.clear();
 		viters_.clear();
 		update_file_mode_btns();
+
+		ShowWindow();
 	}
 		break;
 
@@ -452,9 +454,6 @@ void CDuiBottomTool::update_video_sel(fv videos, fviters iters)
 	viters_ = iters;
 
 	update_file_mode_btns();
-	//set_mode(video_view);
-
-	//play_video(viter_);
 }
 
 bool CDuiBottomTool::show_pic_tip(bool show)
@@ -699,9 +698,14 @@ void CDuiBottomTool::del_pic()
 	file_dlg_->del_pic(piters_);
 }
 
-void CDuiBottomTool::pic_view_dec_pic()
+void CDuiBottomTool::del_video()
 {
-	if (piters_.size() != 1)return;
+	if (viters_.empty()) { return; }
+	file_dlg_->del_video(viters_);
+}
+
+void CDuiBottomTool::pic_view_dec()
+{
 	if (piters_.size() != 1) { return; }
 	auto p = pics_[piters_[0]];
 	std::error_code ec;
@@ -752,10 +756,29 @@ void CDuiBottomTool::pic_view_pic_detail()
 	::EnableWindow(GetHWND(), true);
 }
 
-void CDuiBottomTool::del_video()
+void CDuiBottomTool::video_view_del()
 {
-	if (viters_.empty()) { return; }
-	file_dlg_->del_video(viters_);
+	if (video_player_) {
+		video_player_->stop();
+		video_player_->ShowWindow(false, false);
+	}
+
+	show_video_tips(false);
+
+	if (video_slider_) {
+		video_slider_->ShowWindow(false, false);
+	}
+
+	if (viters_.size() != 1) { return; }
+	auto p = videos_[viters_[0]];
+	std::error_code ec;
+	fs::remove(p, ec);
+	if (ec) {
+		JLOG_ERRO(ec.message());
+		return;
+	}
+
+	set_mode(filemgr);
 }
 
 HRESULT CopyFiles(HWND hwnd, const std::vector<std::pair<std::wstring, std::wstring>>& param)
