@@ -28,10 +28,14 @@ protected:
 
 	CRect rc_filedlg_ = {};
 	std::shared_ptr<CDuiFileManagerDlg> file_dlg_ = {};
+
 	SIZE sz_prevpic_ = {};
 	std::shared_ptr<CDuiPreviewCaptureDlg> pic_viewer_ = {};
 	std::shared_ptr<CAlarmTextDlg> pic_view_tip_ = {};
+
 	std::shared_ptr<CDuiVideoPlayer> video_player_ = {};
+	std::shared_ptr<CAlarmTextDlg> video_view_tip_ = {};
+
 
 	bool sel_all_ = false;
 
@@ -48,8 +52,9 @@ public:
 	void enable_btns(bool able);
 	void update_pic_sel(fv pics, fviters iters);
 	void update_video_sel(fv videos, fviters iters);
-	bool show_tip(bool show);
-	
+	bool show_pic_tip(bool show);
+	bool show_video_tips(bool show);
+
 protected:
 	void view_pic();
 	void view_video();

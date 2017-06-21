@@ -208,10 +208,10 @@ BOOL CvrmfcDlg::OnInitDialog()
 	{
 		CRect rc;
 		GetWindowRect(rc);
-		rc.top = rc.bottom - 85;
+		rc.top = rc.bottom - 65;
 		rc.bottom -= 5;
-		rc.left += 5;
-		rc.right -= 5;
+		rc.left += 125;
+		rc.right -= 125;
 
 		CPaintManagerUI::SetInstance(AfxGetInstanceHandle());                    // 指定duilib的实例
 		CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + L"\\skin");    // 指定duilib资源的路径，这里指定为和exe同目录
@@ -732,8 +732,12 @@ void CvrmfcDlg::do_update_video_sel(fv videos, fviters iters)
 
 bool CvrmfcDlg::do_picview_mode_show_or_hide_tools(bool show)
 {
-	//dui_bt_->ShowWindow(show, show);
-	return dui_bt_->show_tip(show);
+	return dui_bt_->show_pic_tip(show);
+}
+
+bool CvrmfcDlg::do_video_view_mode_show_or_hide_tools(bool show)
+{
+	return dui_bt_->show_video_tips(show);
 }
 
 void CvrmfcDlg::do_file_manager_over()

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DuiVideoPlayer.h"
+#include "vrmfcDlg.h"
 
 using namespace cv;
 
@@ -61,8 +62,8 @@ void CDuiVideoPlayer::InitWindow()
 	CWndUI *pWnd = static_cast<CWndUI*>(m_PaintManager.FindControl(_T("wndMedia")));
 	if (pWnd) {
 		player_.SetHWND(pWnd->GetHWND());
-		player_.SetCallbackPlaying(CallbackPlaying);
-		player_.SetCallbackPosChanged(CallbackPosChanged);
+		//player_.SetCallbackPlaying(CallbackPlaying);
+		//player_.SetCallbackPosChanged(CallbackPosChanged);
 		player_.SetCallbackEndReached(CallbackEndReached);
 	} else {
 		JLOG_ERRO("CDuiVideoPlayer::InitWindow() cannot find wndMedia!");
@@ -76,11 +77,22 @@ void CDuiVideoPlayer::Notify(DuiLib::TNotifyUI & msg)
 
 LRESULT CDuiVideoPlayer::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	JLOG_INFO("CDuiVideoPlayer::HandleMessage 0x{:X} {:d} {:d}", uMsg, wParam, lParam);
 	if (uMsg == WM_TIMER && wParam == 1) {
 		
 	}else if (uMsg == WM_USER_END_REACHED) {
 		OnEndReached(reinterpret_cast<void*>(wParam));
+	} else if (uMsg == WM_LBUTTONUP ) {
+		auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
+		if (maindlg) {
+			if (maindlg->do_video_view_mode_show_or_hide_tools(show_tip_)) {
+				show_tip_ = !show_tip_;
+			}
+		}
+	} else if (uMsg == WM_PARENTNOTIFY) {
+
 	}
+
 	return __super::HandleMessage(uMsg, wParam, lParam);
 }
 
@@ -96,7 +108,7 @@ CControlUI * CDuiVideoPlayer::CreateControl(LPCTSTR pstrClassName)
 
 	if (_tcsicmp(pstrClassName, _T("WndMediaDisplay")) == 0) {
 		CWndUI *pUI = new CWndUI();
-		HWND hWnd = CreateWindow(_T("#32770"), _T("WndMediaDisplay"), WS_VISIBLE | WS_CHILD, 0, 0, 0, 0, m_PaintManager.GetPaintWindow(), (HMENU)0, NULL, NULL);
+		HWND hWnd = CreateWindowW(_T("#32770"), _T("WndMediaDisplay"), WS_VISIBLE | WS_CHILD, 0, 0, 0, 0, m_PaintManager.GetPaintWindow(), (HMENU)0, NULL, NULL);
 		pUI->Attach(hWnd);
 		return pUI;
 	}

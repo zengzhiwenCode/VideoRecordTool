@@ -23,6 +23,8 @@ protected:
 	//cv::VideoCapture cap_ = {};
 	CAVPlayer player_ = {};
 
+	bool show_tip_ = true;
+
 	void OnEndReached(void*);
 
 public:

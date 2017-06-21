@@ -79,6 +79,7 @@ public:
 	void do_update_pic_sel(fv pics, fviters iters);
 	void do_update_video_sel(fv videos, fviters iters);
 	bool do_picview_mode_show_or_hide_tools(bool show);
+	bool do_video_view_mode_show_or_hide_tools(bool show);
 	void do_file_manager_over();
 	void do_settings();
 	bool do_update_capmode(const std::string& mode);

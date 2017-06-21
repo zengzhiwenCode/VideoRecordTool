@@ -177,6 +177,13 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 	case CDuiBottomTool::video_view:
 	{
 		if (name == btn_names::back) {
+			assert(video_player_); assert(video_view_tip_);
+			video_player_->SendMessageW(WM_CLOSE);
+			video_player_.reset();
+
+			video_view_tip_->SendMessage(WM_CLOSE);
+			video_view_tip_.reset();
+
 			set_mode(filemgr);
 		} else if (name == btn_names::prev_video) {
 
@@ -307,7 +314,6 @@ void CDuiBottomTool::set_mode(mode m)
 			{ btn_names::prev_pic, trw(IDS_STRING_PREV_PIC) },
 			{ btn_names::back, trw(IDS_STRING_BACK) },
 			{ btn_names::del, trw(IDS_STRING_DELETE) },
-
 		};
 
 		GAP_WIDHT = 25;
@@ -322,12 +328,10 @@ void CDuiBottomTool::set_mode(mode m)
 		};
 		do_create(vv);
 
-		//file_dlg_->ShowWindow(false, false);
 		if (file_dlg_) {
 			file_dlg_->SendMessageW(WM_CLOSE);
 			file_dlg_.reset();
 		}
-		//view_pic(/*piter_*/);
 	}
 		break;
 
@@ -339,7 +343,6 @@ void CDuiBottomTool::set_mode(mode m)
 			{ btn_names::pause, trw(IDS_STRING_PAUSE) },
 			{ btn_names::back, trw(IDS_STRING_BACK) },
 			{ btn_names::del, trw(IDS_STRING_DELETE) },
-
 		};
 
 		GAP_WIDHT = 5;
@@ -353,6 +356,11 @@ void CDuiBottomTool::set_mode(mode m)
 			{ btn_names::next_video, trw(IDS_STRING_NEXT_VIDEO) },
 		};
 		do_create(vv);
+
+		if (file_dlg_) {
+			file_dlg_->SendMessageW(WM_CLOSE);
+			file_dlg_.reset();
+		}
 	}
 		break;
 
@@ -424,13 +432,27 @@ void CDuiBottomTool::update_video_sel(fv videos, fviters iters)
 	//play_video(viter_);
 }
 
-bool CDuiBottomTool::show_tip(bool show)
+bool CDuiBottomTool::show_pic_tip(bool show)
 {
 	if (mode_ == pic_view) {
 		ShowWindow(show, show);
 		if (pic_view_tip_) {
 			show ? pic_view_tip_->Show() : pic_view_tip_->Hide();
 		}
+		return true;
+	}
+	return false;
+}
+
+bool CDuiBottomTool::show_video_tips(bool show)
+{
+	if (mode_ == video_view) {
+		ShowWindow(show, show);
+		
+		if (video_view_tip_) {
+			show ? video_view_tip_->Show() : video_view_tip_->Hide();
+		}
+
 		return true;
 	}
 	return false;
@@ -479,7 +501,7 @@ void CDuiBottomTool::view_pic()
 
 		set_mode(pic_view);
 
-		show_tip(false);
+		show_pic_tip(false);
 	}
 }
 
@@ -496,6 +518,24 @@ void CDuiBottomTool::view_video()
 	video_player_->video_path_ = utf8::w2a(path.wstring());
 	video_player_->ShowWindow();
 	video_player_->play();
+	
+	if (!video_view_tip_) {
+		video_view_tip_ = std::make_shared<CAlarmTextDlg>();
+		video_view_tip_->Create(IDD_DIALOG_ALARM_TEXT, CWnd::FromHandle(m_hWnd));
+		CRect rc(rc_filedlg_);
+		rc.left = rc.right - 200;
+		rc.bottom = rc.top + 22;
+		video_view_tip_->SetWindowPos(CWnd::FromHandle(HWND_TOPMOST), rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+	}
+
+	if (video_view_tip_) {
+		video_view_tip_->SetText(path.filename().wstring().c_str());
+		video_view_tip_->Show();
+	}
+
+	set_mode(video_view);
+
+	show_video_tips(false);
 }
 
 void CDuiBottomTool::del_pic()
