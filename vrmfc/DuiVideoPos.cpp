@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DuiVideoPos.h"
-
+#include "vrmfcDlg.h"
 
 CDuiVideoPos::CDuiVideoPos(const wchar_t* xml)
 	: CXMLWnd(xml)
@@ -19,6 +19,13 @@ void CDuiVideoPos::InitWindow()
 
 void CDuiVideoPos::Notify(DuiLib::TNotifyUI & msg)
 {
+	if (msg.sType == L"valuechanged" && msg.pSender->GetName() == L"sliderPlay") {
+		int pos = slider_->GetValue();
+		auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
+		if (maindlg) {
+			maindlg->do_video_view_mode_user_change_pos(pos);
+		}
+	}
 	__super::Notify(msg);
 }
 

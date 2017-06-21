@@ -507,6 +507,17 @@ bool CDuiBottomTool::on_video_pos_changed(const std::wstring & cur, const std::w
 	return false;
 }
 
+bool CDuiBottomTool::on_user_change_video_pos(int pos)
+{
+	if (mode_ == video_view) {
+		if (video_player_) {
+			video_player_->set_pos(pos);
+		}
+		return true;
+	}
+	return false;
+}
+
 void CDuiBottomTool::view_pic()
 {
 	if (piters_.size() != 1) { return; }

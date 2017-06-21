@@ -63,7 +63,7 @@ public:
 	bool show_pic_tip(bool show);
 	bool show_video_tips(bool show);
 	bool on_video_pos_changed(const std::wstring& cur, const std::wstring& total, int pos);
-
+	bool on_user_change_video_pos(int pos);
 protected:
 	void view_pic();
 	void view_video();

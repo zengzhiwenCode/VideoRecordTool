@@ -81,6 +81,7 @@ public:
 	bool do_picview_mode_show_or_hide_tools(bool show);
 	bool do_video_view_mode_show_or_hide_tools(bool show);
 	bool do_video_view_mode_pos_changed(const std::wstring& cur, const std::wstring& total, int pos);
+	bool do_video_view_mode_user_change_pos(int pos);
 	void do_file_manager_over();
 	void do_settings();
 	bool do_update_capmode(const std::string& mode);

@@ -171,6 +171,15 @@ bool CDuiVideoPlayer::stop()
 	return true;
 }
 
+bool CDuiVideoPlayer::set_pos(int pos)
+{
+	if (player_.IsPlaying()) {
+		player_.SeekTo(pos);
+		return true;
+	}
+	return false;
+}
+
 
 
 

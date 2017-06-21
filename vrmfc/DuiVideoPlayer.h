@@ -31,6 +31,7 @@ public:
 	bool play();
 	bool pause();
 	bool stop();
+	bool set_pos(int pos);
 
 
 	DUI_DECLARE_MESSAGE_MAP();

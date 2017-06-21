@@ -747,6 +747,11 @@ bool CvrmfcDlg::do_video_view_mode_pos_changed(const std::wstring & cur, const s
 	return dui_bt_->on_video_pos_changed(cur, total, pos);
 }
 
+bool CvrmfcDlg::do_video_view_mode_user_change_pos(int pos)
+{
+	return dui_bt_->on_user_change_video_pos(pos);
+}
+
 void CvrmfcDlg::do_file_manager_over()
 {
 	UNLOCK_DLG;
