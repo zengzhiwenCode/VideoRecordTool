@@ -111,7 +111,7 @@ LRESULT CDuiVideoPlayer::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 		auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
 		if (maindlg) {
-			maindlg->do_video_view_mode_pos_changed(cur, total);
+			maindlg->do_video_view_mode_pos_changed(cur, total, player_.GetPos());
 		}
 	}
 

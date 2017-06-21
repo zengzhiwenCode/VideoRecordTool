@@ -8,6 +8,7 @@
 #include "AlarmTextDlg.h"
 #include "DuiPicDetailDlg.h"
 #include "DuiVideoPlayer.h"
+#include "DuiVideoPos.h"
 
 namespace {
 
@@ -468,12 +469,23 @@ bool CDuiBottomTool::show_video_tips(bool show)
 			show ? video_total_time_->Show() : video_total_time_->Hide();
 		}
 
+		if (video_slider_) {
+			CRect rc = show ? rc_video_slider_up_ : rc_video_slider_down_;
+			::SetWindowPos(video_slider_->GetHWND(),
+						   HWND_TOPMOST,
+						   rc.left,
+						   rc.top,
+						   rc.Width(),
+						   rc.Height(),
+						   SWP_SHOWWINDOW);
+		}
+
 		return true;
 	}
 	return false;
 }
 
-bool CDuiBottomTool::on_video_pos_changed(const std::wstring & cur, const std::wstring & total)
+bool CDuiBottomTool::on_video_pos_changed(const std::wstring & cur, const std::wstring & total, int pos)
 {
 	if (mode_ == video_view) {
 		if (video_cur_time_) {
@@ -484,6 +496,10 @@ bool CDuiBottomTool::on_video_pos_changed(const std::wstring & cur, const std::w
 		if (video_total_time_) {
 			video_total_time_->SetText(total.c_str());
 			video_total_time_->Invalidate();
+		}
+
+		if (video_slider_) {
+			video_slider_->SetPos(pos);
 		}
 
 		return true;
@@ -585,6 +601,36 @@ void CDuiBottomTool::view_video()
 
 	if (video_total_time_) {
 		video_total_time_->Show();
+	}
+
+	if (!video_slider_) {
+		CRect rc(rc_maindlg_);
+		rc.bottom -= 5;
+		rc.top = rc.bottom - 20;
+		rc.left += 5;
+		rc.right -= 5;
+		
+		rc_video_slider_down_ = rc;
+
+		CRect rc_bt;
+		GetWindowRect(m_hWnd, rc_bt);
+		rc.bottom = rc_bt.top - 5;
+		rc.top = rc.bottom - 20;
+		rc_video_slider_up_ = rc;
+
+		video_slider_ = std::make_shared<CDuiVideoPos>(L"videoslider.xml");
+		video_slider_->Create(AfxGetMainWnd()->GetSafeHwnd(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+		::SetWindowPos(video_slider_->GetHWND(), 
+					   HWND_TOPMOST, 
+					   rc_video_slider_down_.left, 
+					   rc_video_slider_down_.top, 
+					   rc_video_slider_down_.Width(), 
+					   rc_video_slider_down_.Height(), 
+					   SWP_SHOWWINDOW);
+	}
+
+	if (video_slider_) {
+		video_slider_->ShowWindow();
 	}
 
 	if (!video_player_) {

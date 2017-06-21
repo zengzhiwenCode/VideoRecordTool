@@ -10,7 +10,7 @@ public:
 	virtual ~CDuiVideoPlayer();
 
 	virtual void InitWindow() override;
-	virtual LPCTSTR GetWindowClassName() const override { return L"CDuiPicDetailDlg"; }
+	virtual LPCTSTR GetWindowClassName() const override { return L"CDuiVideoPlayer"; }
 	virtual void Notify(DuiLib::TNotifyUI& msg) override;
 	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 	virtual void OnClick(TNotifyUI& msg) override;

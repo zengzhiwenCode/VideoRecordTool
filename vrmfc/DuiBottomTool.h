@@ -6,6 +6,7 @@ class CDuiPreviewCaptureDlg;
 class CDuiFileManagerDlg;
 class CAlarmTextDlg;
 class CDuiVideoPlayer;
+class CDuiVideoPos;
 
 class CDuiBottomTool : public CXMLWnd
 {
@@ -38,6 +39,10 @@ protected:
 	std::shared_ptr<CAlarmTextDlg> video_view_tip_ = {};
 	std::shared_ptr<CAlarmTextDlg> video_cur_time_ = {};
 	std::shared_ptr<CAlarmTextDlg> video_total_time_ = {};
+	std::shared_ptr<CDuiVideoPos> video_slider_ = {};
+	CRect rc_video_slider_up_ = {};
+	CRect rc_video_slider_down_ = {};
+
 
 	bool sel_all_ = false;
 
@@ -57,7 +62,7 @@ public:
 	void update_video_sel(fv videos, fviters iters);
 	bool show_pic_tip(bool show);
 	bool show_video_tips(bool show);
-	bool on_video_pos_changed(const std::wstring& cur, const std::wstring& total);
+	bool on_video_pos_changed(const std::wstring& cur, const std::wstring& total, int pos);
 
 protected:
 	void view_pic();

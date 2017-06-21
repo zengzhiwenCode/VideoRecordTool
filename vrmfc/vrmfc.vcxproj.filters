@@ -96,6 +96,9 @@
     <ClInclude Include="AVPlayer.h">
       <Filter>tools</Filter>
     </ClInclude>
+    <ClInclude Include="DuiVideoPos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vrmfc.cpp">
@@ -157,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="AVPlayer.cpp">
       <Filter>tools</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiVideoPos.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
