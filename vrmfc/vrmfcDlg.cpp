@@ -884,6 +884,14 @@ void CvrmfcDlg::do_system_info()
 void CvrmfcDlg::do_adjust_brightness()
 {
 	AUTO_LOG_FUNCTION;
+	static const char* cmd[] = { "lt0", "lt1", "lt2", "lt3", "lt4","lt5", "lt6" };
+	static auto idx = 0;
+	serial_send(cmd[idx++]);
+	if (idx == 7) {
+		idx = 0;
+	}
+
+	brightness_level_ = idx;
 }
 
 std::string CvrmfcDlg::_record::get_time()

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <Window size="800,500" mininfo="800,500" maxinfo="800,500" caption="0,0,0,1" sizebox="0,0,0,0">
     <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
-	<Font shared="true" id="1" name="幼圆" size="30" />
+	<Font shared="true" id="1" name="宋体" size="20" />
     <Default shared="true" name="Slider" value="thumbsize=&quot;30,12&quot; bkimage=&quot;file='image\slider\bg.bmp' corner='6,0,6,0' mask='#FFFF00FF'&quot; foreimage=&quot;file='image\slider\bg.bmp' corner='6,0,6,0' mask='#FFFF00FF'&quot; thumbimage=&quot;file='image\slider\thumb.bmp' source='0,0,66,103' mask='#FFFFD966'&quot; thumbhotimage=&quot;file='image\slider\thumb.bmp' source='0,0,66,100' mask='#FFFFD966'&quot; " />
 	<HorizontalLayout bkcolor="FFD77E44#" bordersize="1" bordercolor="#FF707070"> <!--整个窗口-->
         <VerticalLayout width="180" bkcolor="FFFFD966#" bordersize="1" bordercolor="#FF707070"> <!--左侧列表-->
-            
             <HorizontalLayout height="25" />
             <HorizontalLayout>
                 <VerticalLayout width="5" />
                 <VerticalLayout>
+                    <HorizontalLayout height="5" />
                     <Option name="resolution" text="分辨率" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab" selected="true"/> <HorizontalLayout height="5" />
                     <Option name="record" text="录像选项" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="5" />
                     <Option name="video" text="视频设置" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="5" />
@@ -24,12 +24,15 @@
         </VerticalLayout>
         
         <VerticalLayout> <!--内容-->
-            <HorizontalLayout height="15" />
             <HorizontalLayout name="container" >
-                <VerticalLayout width="20" />
                 <TabLayout name="options">
                     <VerticalLayout> <!--分辨率-->
+                        <HorizontalLayout height="50" bkcolor="#FFFFFFB0" bkcolor2="#FFAAAAAA" borderround="1,1"><!--标题栏-->
+                        <VerticalLayout width="60" />
                         <Label name="tab_resolution" text="分辨率格式yuv/mpeg" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                        <Button name="closebtn" text="关闭" font="1" width="60" />
+                        </HorizontalLayout>
+                        
                         <HorizontalLayout height="15" />
                         <HorizontalLayout>
                             <VerticalLayout width="15" />
@@ -43,7 +46,11 @@
                         <HorizontalLayout height="15" />
                     </VerticalLayout>
                     <VerticalLayout> <!--录像选项-->
+                        <HorizontalLayout height="50" bkcolor="#FFFFFFB0" bkcolor2="#FFAAAAAA" borderround="1,1"><!--标题栏-->
+                        <VerticalLayout width="60" />
                         <Label name="tab_record" text="录像选项" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                        <Button name="closebtn" text="关闭" font="1" width="60" />
+                        </HorizontalLayout>
                         <HorizontalLayout height="25" />
                         <VerticalLayout bkcolor="FFFFD966#" bordersize="1" bordercolor="#FF707070">
                             <Label name="lable_rec_time" text="时长（值）" font="0" align="center" valign="center" textcolor="#FF000000"  />
@@ -76,7 +83,12 @@
                         <HorizontalLayout height="15" />
                     </VerticalLayout>
                     <VerticalLayout> <!--视频设置-->
+                        <HorizontalLayout height="50" bkcolor="#FFFFFFB0" bkcolor2="#FFAAAAAA" borderround="1,1"><!--标题栏-->
+                        <VerticalLayout width="60" />
                         <Label name="tab_video" text="视频设置" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                        <Button name="closebtn" text="关闭" font="1" width="60" />
+                        </HorizontalLayout>
+                        
                         <HorizontalLayout height="15" />
                         <HorizontalLayout>
                             <VerticalLayout width="5" />
@@ -142,7 +154,12 @@
                         <HorizontalLayout height="15" />
                     </VerticalLayout>
                     <VerticalLayout> <!--摄像机设置-->
+                        <HorizontalLayout height="50" bkcolor="#FFFFFFB0" bkcolor2="#FFAAAAAA" borderround="1,1"><!--标题栏-->
+                        <VerticalLayout width="60" />
                         <Label name="tab_camera" text="摄像机设置" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                        <Button name="closebtn" text="关闭" font="1" width="60" />
+                        </HorizontalLayout>
+                        
                         <HorizontalLayout height="15" />
                         <HorizontalLayout>
                             <VerticalLayout width="5" />
@@ -206,7 +223,12 @@
                         <HorizontalLayout height="15" />
                     </VerticalLayout>
                     <VerticalLayout> <!--语言设置-->
+                        <HorizontalLayout height="50" bkcolor="#FFFFFFB0" bkcolor2="#FFAAAAAA" borderround="1,1"><!--标题栏-->
+                        <VerticalLayout width="60" />
                         <Label name="tab_language" text="语言设置" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                        <Button name="closebtn" text="关闭" font="1" width="60" />
+                        </HorizontalLayout>
+                        
                         <HorizontalLayout height="100" />
                         <HorizontalLayout>
                             <VerticalLayout width="180" />
@@ -219,7 +241,12 @@
                         </HorizontalLayout>
                     </VerticalLayout>
                     <VerticalLayout> <!--时间设置-->
+                        <HorizontalLayout height="50" bkcolor="#FFFFFFB0" bkcolor2="#FFAAAAAA" borderround="1,1"><!--标题栏-->
+                        <VerticalLayout width="60" />
                         <Label name="tab_time" text="时间设置" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                        <Button name="closebtn" text="关闭" font="1" width="60" />
+                        </HorizontalLayout>
+                        
                         <HorizontalLayout height="80" />
                         <HorizontalLayout>
                             <VerticalLayout width="50" />
@@ -253,7 +280,12 @@
                         <HorizontalLayout height="80" />
                     </VerticalLayout>
                     <VerticalLayout> <!--恢复设置-->
+                        <HorizontalLayout height="50" bkcolor="#FFFFFFB0" bkcolor2="#FFAAAAAA" borderround="1,1"><!--标题栏-->
+                        <VerticalLayout width="60" />
                         <Label name="tab_reset" text="恢复设置" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                        <Button name="closebtn" text="关闭" font="1" width="60" />
+                        </HorizontalLayout>
+                        
                         <HorizontalLayout height="150" />
                         <Label name="reset_confirm" text="是否恢复设置？" font="0" align="center" valign="center" textcolor="#FF000000"  />
                         <HorizontalLayout height="50" />
@@ -267,12 +299,6 @@
                         <HorizontalLayout height="120" />
                     </VerticalLayout>
                 </TabLayout>
-                <VerticalLayout width="20" />
-            </HorizontalLayout>
-            <HorizontalLayout height="35">
-                <VerticalLayout />
-                <Button name="closebtn" text="关闭" font="0" width="100" bkcolor="FF3275EE#" borderround="5,5" />
-                <VerticalLayout width="5"/>
             </HorizontalLayout>
             <HorizontalLayout height="5" />
         </VerticalLayout>
