@@ -46,6 +46,7 @@ protected:
 
 
 	bool sel_all_ = false;
+	bool showing_ = true;
 
 public:
 	enum mode {

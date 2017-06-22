@@ -93,4 +93,6 @@ void CDuiPreviewCaptureDlg::set_image(const std::string & img)
 			pic->SetBkImage(utf8::mbcs_to_u16(img_).c_str());
 		}
 	} 
+
+	show_tip_ = true;
 }

@@ -714,6 +714,11 @@ bool CvrmfcDlg::do_file_manager(CRect& rc)
 	GetWindowRect(rc);
 	rc.bottom -= 100;
 
+	KillTimer(timer_id::preview);
+	
+	auto cfg = config::get_instance();
+	cv::Mat mat = cv::Mat::zeros(cfg->get_video_w(), cfg->get_video_h(), CV_8UC3);
+	drawer_->DrawImg(mat);
 	return true;
 }
 
@@ -752,6 +757,7 @@ void CvrmfcDlg::do_file_manager_over()
 	UNLOCK_DLG;
 	tip_->Show();
 	rec_tip_->Show();
+	SetTimer(timer_id::preview, 30, nullptr);
 }
 
 void CvrmfcDlg::do_settings()

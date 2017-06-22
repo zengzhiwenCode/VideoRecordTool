@@ -91,7 +91,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 	switch (mode_) {
 	case CDuiBottomTool::mainwnd:
 	{
-		if (name == btn_names::back) {
+		if (name == btn_names::exit) {
 			maindlg->do_exit_windows();
 		} else if (name == btn_names::rec) {
 			maindlg->do_record();
@@ -285,7 +285,7 @@ void CDuiBottomTool::set_mode(mode m)
 	sel_all_ = false;
 
 	int GAP_WIDHT = 50;
-	const int BTN_ROUND = 15;
+	const int BTN_ROUND = 60;
 	const SIZE BORDER_RND = { BTN_ROUND, BTN_ROUND };
 
 	auto add_gap = [&container, &GAP_WIDHT]() {
@@ -602,6 +602,32 @@ void CDuiBottomTool::view_pic()
 			pic_viewer_ = std::make_shared<CDuiPreviewCaptureDlg>(L"capture.xml");
 			pic_viewer_->set_auto_close(false);
 			pic_viewer_->Create(AfxGetMainWnd()->GetSafeHwnd(), L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+
+			int w = mat.cols;
+			int h = mat.rows;
+
+			CRect rcpic;
+			rcpic = rc_maindlg_;
+			double r = rc_maindlg_.Width() * 1.0 / rc_maindlg_.Height();
+			double rr = w * 1.0 / h;
+
+			if (r <= rr) {
+				int hh = h * rc_maindlg_.Width() / w;
+				int gap = (rc_maindlg_.Height() - hh) / 2;
+				rcpic.top += gap;
+				rcpic.bottom -= gap;
+			} else {
+				int ww = w * rc_maindlg_.Height() / h;
+				int gap = (rc_maindlg_.Width() - ww) / 2;
+				rcpic.left += gap;
+				rcpic.right -= gap;
+			}
+
+			pic_viewer_->ResizeClient(rcpic.Width(), rcpic.Height());
+			pic_viewer_->CenterWindow();
+
+			//ScreenToClient(rcplayer);
+			//m_player.MoveWindow(rcplayer);
 		}
 			
 		if (pic_viewer_) {
