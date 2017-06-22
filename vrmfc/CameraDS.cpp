@@ -458,7 +458,7 @@ void CCameraDS::CloseCamera()
 	m_nBufferSize = 0;
 }
 
-bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int nHeight, const char* mstype)
+bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int nHeight, const std::string& mstype)
 {
 	AUTO_LOG_FUNCTION;
 	HRESULT hr = S_OK;

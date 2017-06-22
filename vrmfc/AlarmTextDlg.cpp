@@ -123,7 +123,7 @@ void CAlarmTextDlg::OnPaint()
 	CBrush brush;
 	brush.CreateSolidBrush(RGB(237, 125, 49));
 	dc.FillRect(rc, &brush);
-	dc.DrawText(m_text, rc, DT_CENTER);
+	dc.DrawTextW(m_text, rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 	CSize sz = dc.GetTextExtent(m_text);
 	if (sz.cx >= rc.Width()) {
 		auto_timer timer(m_hWnd, 1, 3500);
@@ -138,6 +138,26 @@ void CAlarmTextDlg::OnPaint()
 	}
 
 	dc.SelectObject(pOldFont);
+
+	//CFont *pOldFont = dc.SelectObject(&m_font);
+	//dc.SetTextColor(m_clr);
+	//dc.SetBkMode(TRANSPARENT);
+	////dc.TextOutW(0, 0, m_text);
+	//dc.DrawText(m_text, rc, DT_LEFT);
+	//CSize sz = dc.GetTextExtent(m_text);
+	//if (sz.cx >= rc.Width()) {
+	//	auto_timer timer(m_hWnd, 1, 3500);
+	//	if (!m_bAlreadyAddBlank) {
+	//		m_text += _T("    ");
+	//		m_bAlreadyAddBlank = TRUE;
+	//	}
+	//	CString text = _T("");
+	//	text = m_text.Right(m_text.GetLength() - 1);
+	//	text += m_text.GetAt(0);
+	//	m_text = text;
+	//}
+
+	//dc.SelectObject(pOldFont);
 }
 
 

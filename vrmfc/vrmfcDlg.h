@@ -25,6 +25,16 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
+	class lang_obs : public dp::observer<int>
+	{
+	public:
+		virtual void on_update(const int& lang);
+		CvrmfcDlg* dlg;
+	};
+
+	std::shared_ptr<lang_obs> obs_ = {};
+	
+	void on_update(const int & lang);
 
 // Implementation
 protected:

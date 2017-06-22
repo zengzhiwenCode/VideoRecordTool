@@ -86,6 +86,27 @@ void CvrmfcDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_PLAYER, m_player);
 }
 
+void CvrmfcDlg::lang_obs::on_update(const int & lang)
+{
+	if (dlg) {
+		dlg->on_update(lang);
+	}
+}
+
+void CvrmfcDlg::on_update(const int & lang)
+{
+	CRect rc;
+	GetWindowRect(rc);
+	if (lang == 1) {
+		rc.left = rc.right - 325;
+	} else {
+		rc.left = rc.right - 286;
+	}
+	rc.bottom = rc.top + 22;
+
+	tip_->SetWindowPos(&wndTopMost, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+}
+
 BEGIN_MESSAGE_MAP(CvrmfcDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
@@ -168,9 +189,9 @@ BOOL CvrmfcDlg::OnInitDialog()
 		CRect rc;
 		GetWindowRect(rc);
 		if (cfg->get_lang() == "en") {
-			rc.left = rc.right - 325;
+			rc.left = rc.right - 335;
 		} else {
-			rc.left = rc.right - 325;
+			rc.left = rc.right - 286;
 		}
 		rc.bottom = rc.top + 22;
 
@@ -187,6 +208,10 @@ BOOL CvrmfcDlg::OnInitDialog()
 				   usb_storage_plugin_ ? tr(IDS_STRING_U_IN) : tr(IDS_STRING_U_OUT));
 		tip_->SetText(txt);
 		tip_->Show();
+
+		obs_ = std::make_shared<lang_obs>();
+		obs_->dlg = this;
+		cfg->register_observer(obs_);
 	}
 
 	// init second tip
@@ -488,7 +513,7 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 		//range_log rl("timer_id::updatetip");
 		handle_com();
 		CString txt;
-		txt.Format(L"%s %s%d %s",
+		txt.Format(L"%s     %s:%d     %s",
 				   now_to_wstring().c_str(),
 				   tr(IDS_STRING_BRIGHTNESS),
 				   brightness_level_,
@@ -907,3 +932,5 @@ std::string CvrmfcDlg::_fps::get_string()
 
 	return prev_fps;
 }
+
+

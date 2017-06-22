@@ -57,11 +57,15 @@
                             <HorizontalLayout height="15" />
                             <HorizontalLayout>
                                 <VerticalLayout width="5" />
-                                <Button name="rec_time_dec" width="45" height="25" normalimage="file='image\slider\left.bmp'" />
+                                <Button name="rec_time_dec" width="85" height="45" normalimage="file='image\slider\left.bmp'" />
                                 <VerticalLayout width="5" />
-                                <Slider name="rec_time" min="0" max="60" step="1" height="20" valign="center"/>
+                                <VerticalLayout>
+                                    <HorizontalLayout height="10" />
+                                    <Slider name="rec_time" min="0" max="60" step="1" height="25" valign="center"/>
+                                    <HorizontalLayout height="10" />
+                                </VerticalLayout>
                                 <VerticalLayout width="5" />
-                                <Button name="rec_time_inc" width="45" height="25" normalimage="file='image\slider\right.bmp'" />
+                                <Button name="rec_time_inc" width="85" height="45" normalimage="file='image\slider\right.bmp'" />
                                 <VerticalLayout width="5" />
                             </HorizontalLayout>
                             <HorizontalLayout height="25" >

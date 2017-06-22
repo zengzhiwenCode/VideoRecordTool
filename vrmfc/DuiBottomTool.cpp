@@ -285,8 +285,8 @@ void CDuiBottomTool::set_mode(mode m)
 	sel_all_ = false;
 
 	int GAP_WIDHT = 50;
-	const int BTN_ROUND = 60;
-	const SIZE BORDER_RND = { BTN_ROUND, BTN_ROUND };
+	//const int BTN_ROUND = 60;
+	//const SIZE BORDER_RND = { BTN_ROUND, BTN_ROUND };
 
 	auto add_gap = [&container, &GAP_WIDHT]() {
 		auto vert = new CVerticalLayoutUI();
@@ -294,13 +294,14 @@ void CDuiBottomTool::set_mode(mode m)
 		container->Add(vert);
 	};
 
-	auto add_btn = [&container, BORDER_RND](const wchar_t* name, const wchar_t* text, int font_idx = 0) {
+	auto add_btn = [&container](const wchar_t* name, const wchar_t* text, int font_idx = 0) {
 		auto btn = new CButtonUI();
 		btn->SetName(name);
 		btn->SetText(text);
 		btn->SetFont(font_idx);
 		btn->SetBkColor(0xFF3275EE);
-		btn->SetBorderRound(BORDER_RND);
+		//btn->SetBorderRound(BORDER_RND);
+		btn->SetBkImage(L"image/btnbk.png");
 		container->Add(btn);
 	};
 
