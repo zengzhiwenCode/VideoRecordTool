@@ -119,11 +119,18 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			file_back_to_main();
 			return;
 		} else if (name == btn_names::edit) {
-			if (piters_.size() == 1) {
-				view_pic();
-			} else if (viters_.size() == 1) {
-				view_video();
+			if ((static_cast<COptionUI*>(msg.pSender))->IsSelected()) {
+				file_dlg_->sel_all(false);
+			} else {
+				/*if (piters_.size() == 1) {
+					view_pic();
+				} else if (viters_.size() == 1) {
+					view_video();
+				}*/
+
+				
 			}
+			
 		} else if (name == btn_names::filter) {
 			file_dlg_->update_filter();
 		} else if (name == btn_names::page_up) {
@@ -194,6 +201,9 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 
 			video_total_time_->SendMessage(WM_CLOSE);
 			video_total_time_.reset();
+
+			video_slider_->SendMessageW(WM_CLOSE);
+			video_slider_.reset();
 
 			set_mode(filemgr);
 		} else if (name == btn_names::prev_video) {
@@ -335,21 +345,40 @@ void CDuiBottomTool::set_mode(mode m)
 	{
 		tv vv = {
 			{ btn_names::back, trw(IDS_STRING_BACK) },
-			{ btn_names::edit, trw(IDS_STRING_EDIT) },
-			{ btn_names::filter, trw(IDS_STRING_FILTER) },
-			{ btn_names::page_up, trw(IDS_STRING_PAGE_UP) },
-			{ btn_names::page_dn, trw(IDS_STRING_PAGE_DN) },
-			{ btn_names::sel_all, trw(IDS_STRING_SEL_ALL) },
-			{ btn_names::del, trw(IDS_STRING_DELETE) },
-			
 		};
 
 		GAP_WIDHT = 5;
 		do_create(vv);
 
+		{
+			auto btn = new COptionUI();
+			btn->SetName(btn_names::edit);
+			btn->SetText(trw(IDS_STRING_EDIT).c_str());
+			btn->SetFont(0);
+			btn->SetBkColor(0xFF3275EE);
+			//btn->SetBorderRound(BORDER_RND);
+			btn->SetBkImage(L"image/btnbk.png");
+			container->Add(btn);
+		}
+
+		vv = { 
+			{ btn_names::filter, trw(IDS_STRING_FILTER) },
+			{ btn_names::page_up, trw(IDS_STRING_PAGE_UP) },
+			{ btn_names::page_dn, trw(IDS_STRING_PAGE_DN) },
+			{ btn_names::sel_all, trw(IDS_STRING_SEL_ALL) },
+			{ btn_names::del, trw(IDS_STRING_DELETE) },
+		};
+
+		do_create(vv);
+
 		tp p = { btn_names::cp_to_usb, trw(IDS_STRING_CP_TO_USB) };
 		add_btn(p.first.c_str(), p.second.c_str(), 1);
 		add_gap();
+
+		if (file_dlg_) {
+			file_dlg_->SendMessageW(WM_CLOSE);
+			file_dlg_.reset();
+		}
 
 		if (!file_dlg_) {
 			file_dlg_ = std::make_shared<CDuiFileManagerDlg>(L"filemanager.xml");
@@ -389,8 +418,9 @@ void CDuiBottomTool::set_mode(mode m)
 		do_create(vv);
 
 		if (file_dlg_) {
-			file_dlg_->SendMessageW(WM_CLOSE);
-			file_dlg_.reset();
+			//file_dlg_->SendMessageW(WM_CLOSE);
+			//file_dlg_.reset();
+			file_dlg_->ShowWindow(false, false);
 		}
 	}
 		break;
@@ -418,8 +448,9 @@ void CDuiBottomTool::set_mode(mode m)
 		do_create(vv);
 
 		if (file_dlg_) {
-			file_dlg_->SendMessageW(WM_CLOSE);
-			file_dlg_.reset();
+			//file_dlg_->SendMessageW(WM_CLOSE);
+			//file_dlg_.reset();
+			file_dlg_->ShowWindow(false, false);
 		}
 	}
 		break;
@@ -475,18 +506,34 @@ void CDuiBottomTool::enable_btns(bool able)
 
 void CDuiBottomTool::update_pic_sel(fv pics, fviters iters)
 {
+	JLOG_INFO("CDuiBottomTool::update_pic_sel fviters.size={}", iters.size());
 	pics_ = pics;
 	piters_ = iters;
 
 	update_file_mode_btns();
+
+	if (static_cast<COptionUI*>(m_PaintManager.FindControl(btn_names::edit))->IsSelected()) {
+
+	} else {
+		view_pic();
+	}
+	
 }
 
 void CDuiBottomTool::update_video_sel(fv videos, fviters iters)
 {
+	JLOG_INFO("CDuiBottomTool::update_video_sel fviters.size={}", iters.size());
 	videos_ = videos;
 	viters_ = iters;
 
 	update_file_mode_btns();
+
+	if (static_cast<COptionUI*>(m_PaintManager.FindControl(btn_names::edit))->IsSelected()) {
+
+	} else {
+		view_video();
+	}
+	
 }
 
 bool CDuiBottomTool::show_pic_tip(bool show)
@@ -1080,7 +1127,7 @@ void CDuiBottomTool::file_back_to_main()
 
 void CDuiBottomTool::update_file_mode_btns()
 {
-	m_PaintManager.FindControl(btn_names::edit)->SetEnabled(piters_.size() + viters_.size() == 1);
+	//m_PaintManager.FindControl(btn_names::edit)->SetEnabled(piters_.size() + viters_.size() == 1);
 	m_PaintManager.FindControl(btn_names::del)->SetEnabled(piters_.size() + viters_.size() > 0);
 	m_PaintManager.FindControl(btn_names::cp_to_usb)->SetEnabled(piters_.size() + viters_.size() > 0);
 }

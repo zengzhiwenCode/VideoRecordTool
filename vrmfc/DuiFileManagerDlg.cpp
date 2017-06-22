@@ -91,10 +91,16 @@ void CDuiFileManagerDlg::OnClick(TNotifyUI & msg)
 		//	index++;
 		//}
 
-		picbtns_[path].second = !(static_cast<pic_control_type*>(msg.pSender))->IsSelected();
+		
 		fviters iters;
 		fviter iter = 0;
 		for (auto p : pics_) {
+			if (path == p) {
+				picbtns_[p].second = !(static_cast<pic_control_type*>(msg.pSender))->IsSelected();
+			} else {
+				picbtns_[p].second = picbtns_[p].first->IsSelected();
+			}
+			
 			if (picbtns_[p].second) {
 				iters.push_back(iter);
 			}
@@ -116,10 +122,15 @@ void CDuiFileManagerDlg::OnClick(TNotifyUI & msg)
 		//	}
 		//	index++;
 		//}
-		videobtns_[path].second = !(static_cast<pic_control_type*>(msg.pSender))->IsSelected();
+		//videobtns_[path].second = !(static_cast<pic_control_type*>(msg.pSender))->IsSelected();
 		fviters iters;
 		fviter iter = 0;
 		for (auto p : videos_) {
+			if (path == p) {
+				videobtns_[p].second = !(static_cast<pic_control_type*>(msg.pSender))->IsSelected();
+			} else {
+				videobtns_[p].second = videobtns_[p].first->IsSelected();
+			}
 			if (videobtns_[p].second) {
 				iters.push_back(iter);
 			}

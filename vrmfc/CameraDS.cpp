@@ -159,7 +159,13 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 					mi_[MT_YUY2].default_sz = sz;
 				}
 
-				JLOG_INFO("MEDIASUBTYPE_YUY2 {}*{}", sz.first, sz.second);
+				long nTenMillion = 10000000;
+				long lAvgFrameDuration = 0;
+				lAvgFrameDuration = (LONG)videoInfoHeader->AvgTimePerFrame;
+				auto plFramesPerSecond = (lAvgFrameDuration != 0) ? ((long)(nTenMillion / lAvgFrameDuration)) : 0;
+				mi_[MT_YUY2].fps = static_cast<int>(plFramesPerSecond);
+
+				JLOG_INFO("MEDIASUBTYPE_YUY2 {}*{} fps{}", sz.first, sz.second, plFramesPerSecond);
 			} else if (pmt->subtype == MEDIASUBTYPE_MJPG) {
 				mi_[MT_MJPG].type = MT_MJPG;
 				misz sz = { videoInfoHeader->bmiHeader.biWidth , videoInfoHeader->bmiHeader.biHeight };
@@ -169,7 +175,14 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 				} else {
 					mi_[MT_MJPG].default_sz = sz;
 				}
-				JLOG_INFO("MEDIASUBTYPE_MJPG {}*{}", sz.first, sz.second);
+
+				long nTenMillion = 10000000;
+				long lAvgFrameDuration = 0;
+				lAvgFrameDuration = (LONG)videoInfoHeader->AvgTimePerFrame;
+				auto plFramesPerSecond = (lAvgFrameDuration != 0) ? ((long)(nTenMillion / lAvgFrameDuration)) : 0;
+				mi_[MT_MJPG].fps = static_cast<int>(plFramesPerSecond);
+
+				JLOG_INFO("MEDIASUBTYPE_MJPG {}*{} fps{}", sz.first, sz.second, plFramesPerSecond);
 			} else {
 				JLOG_INFO("unrecognized media type {} {}*{}", name, videoInfoHeader->bmiHeader.biWidth, videoInfoHeader->bmiHeader.biHeight);
 			}

@@ -300,6 +300,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		}
 	}
 
+	int fps = 0;
 	// init video
 	{
 		//if (!capture_.open(CV_CAP_DSHOW  + cfg->get_vidx())) {
@@ -403,6 +404,8 @@ BOOL CvrmfcDlg::OnInitDialog()
 					cfg->set_video_h(mi.begin()->second.default_sz.second);
 				}
 			}
+
+			fps = mi[cfg->get_vtype()].fps;
 		}
 
 		if (dscap_.OpenCamera(cfg->get_vidx(), false, cfg->get_video_w(), cfg->get_video_h(), cfg->get_vtype().c_str())) {
@@ -419,7 +422,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		}
 	}
 
-	SetTimer(timer_id::preview, 30, nullptr);
+	recalc_fps();
 	SetTimer(timer_id::updatetip, 1000, nullptr);
 
 
@@ -661,6 +664,17 @@ void CvrmfcDlg::process_com(const std::string & data)
 	}
 }
 
+void CvrmfcDlg::recalc_fps()
+{
+	auto cfg = config::get_instance();
+	KillTimer(timer_id::preview);
+	int fps = cfg->get_mi()[cfg->get_vtype()].fps;
+	int gap = fps == 0 ? 30 : 1000 / fps;
+	fps_.begin = std::chrono::steady_clock::now();
+	fps_.frames = 0;
+	SetTimer(timer_id::preview, gap, nullptr);
+}
+
 void CvrmfcDlg::do_exit_windows()
 {
 	AUTO_LOG_FUNCTION;
@@ -782,7 +796,7 @@ void CvrmfcDlg::do_file_manager_over()
 	UNLOCK_DLG;
 	tip_->Show();
 	rec_tip_->Show();
-	SetTimer(timer_id::preview, 30, nullptr);
+	recalc_fps();
 }
 
 void CvrmfcDlg::do_settings()
@@ -800,6 +814,8 @@ bool CvrmfcDlg::do_update_capmode(const std::string & mode)
 	dscap_.CloseCamera();
 	if (dscap_.OpenCamera(cfg->get_vidx(), false, cfg->get_video_w(), cfg->get_video_h(), mode.c_str())) {
 		cfg->set_vtype(mode);
+
+		recalc_fps();
 		return true;
 	}
 	return false;
@@ -812,6 +828,8 @@ bool CvrmfcDlg::do_update_resolution(misz sz)
 	if (dscap_.OpenCamera(cfg->get_vidx(), false, sz.first, sz.second, cfg->get_vtype().c_str())) {
 		cfg->set_video_w(sz.first);
 		cfg->set_video_h(sz.second);
+
+		recalc_fps();
 		return true;
 	}
 	return false;
@@ -820,7 +838,8 @@ bool CvrmfcDlg::do_update_resolution(misz sz)
 bool CvrmfcDlg::do_update_video(VideoProcAmpProperty p, int value)
 {
 	if (dscap_.isOpened() && dscap_.update_video(p, value)) {
-		config::get_instance()->set_procamp(dscap_.get_video());
+		auto cfg = config::get_instance();
+		cfg->set_procamp(dscap_.get_video());
 		return true;
 	}
 	return false;
@@ -830,6 +849,7 @@ bool CvrmfcDlg::do_reset_video()
 {
 	if (dscap_.isOpened() && dscap_.reset_video()) {
 		config::get_instance()->set_procamp(dscap_.get_video());
+		recalc_fps();
 		return true;
 	}
 	return false;

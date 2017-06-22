@@ -16,6 +16,7 @@ struct media_info {
 	std::string type;
 	misz default_sz;
 	std::set<misz> sizes;
+	int fps;
 };
 
 #define MT_YUY2 "YUY2"

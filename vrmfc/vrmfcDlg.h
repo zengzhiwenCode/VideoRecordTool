@@ -77,7 +77,7 @@ protected:
 	void adjust_player_size(int w, int h);
 	void handle_com();
 	void process_com(const std::string& cmd);
-
+	void recalc_fps();
 
 	// Public interface
 public:

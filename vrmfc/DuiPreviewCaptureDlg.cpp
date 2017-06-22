@@ -61,8 +61,18 @@ void CDuiPreviewCaptureDlg::Notify(DuiLib::TNotifyUI & msg)
 
 LRESULT CDuiPreviewCaptureDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	//JLOG_INFO("CDuiPreviewCaptureDlg::HandleMessage uMsg 0x{:X} {:d} {:d}", uMsg, wParam, lParam);
 	if (uMsg == WM_TIMER && wParam == 1) {
 		PostMessage(WM_CLOSE);
+	} else if (uMsg == WM_NCLBUTTONDOWN) {
+		//if (wParam == WM_LBUTTONDOWN) {
+			auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
+			if (maindlg) {
+				if (maindlg->do_picview_mode_show_or_hide_tools(show_tip_)) {
+					show_tip_ = !show_tip_;
+				}
+			}
+		//}
 	}
 
 	return __super::HandleMessage(uMsg, wParam, lParam);
