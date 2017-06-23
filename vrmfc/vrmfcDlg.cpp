@@ -39,7 +39,7 @@ serial::Serial g_serial;
 void serial_send(const std::string& msg)
 {
 	if (g_serial.isOpen()) {
-		g_serial.write("printf(\"" + msg + "\r\n\")");
+		g_serial.write(msg + "\r\n");
 	}
 }
 
@@ -588,6 +588,17 @@ void CvrmfcDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			dui_bt_->ShowWindow(false, false);
 		} else {
 			dui_bt_->ShowWindow(true, true);
+			CRect rc;
+			::GetWindowRect(dui_bt_->GetHWND(), rc);
+			CPoint lt(rc.left, rc.top);
+			CPoint rb(rc.right, rc.bottom);
+			::ScreenToClient(dui_bt_->GetHWND(), &lt);
+			::ScreenToClient(dui_bt_->GetHWND(), &rb);
+			rc.left = lt.x;
+			rc.top = lt.y;
+			rc.bottom = rb.y;
+			rc.right = rb.x;
+			::InvalidateRect(dui_bt_->GetHWND(), rc, 1);
 		}
 
 		bottom_show_ = !bottom_show_;
@@ -605,14 +616,13 @@ void CvrmfcDlg::handle_com()
 	com_data_ = g_serial.read(1024);
 	if (!com_data_.empty()) {
 		const auto npos = std::string::npos;
-		const auto prefix = "printf(\""; const size_t szpre = 8;
-		const auto postfix = "\r\n\")"; const size_t szpost = 4;
-		auto pos1 = com_data_.find(prefix);
+		//const auto prefix = "printf(\""; const size_t szpre = 8;
+		const auto postfix = "\r\n"; const size_t szpost = 2;
+		//auto pos1 = com_data_.find(prefix);
 		auto pos2 = com_data_.find(postfix);
-		while (pos1 != npos && pos2 != npos && pos1 < pos2 && pos1 + szpre < pos2) {
-			auto data = com_data_.substr(pos1 + szpre, pos2 - pos1 - szpre);
+		while (pos2 != npos && 0 < pos2) {
+			auto data = com_data_.substr(0, pos2);
 			com_data_ = com_data_.substr(pos2 + szpost);
-			pos1 = com_data_.find(prefix);
 			pos2 = com_data_.find(postfix);
 
 			process_com(data);

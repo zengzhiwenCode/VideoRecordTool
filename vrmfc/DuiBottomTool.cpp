@@ -295,8 +295,8 @@ void CDuiBottomTool::set_mode(mode m)
 	sel_all_ = false;
 
 	int GAP_WIDHT = 50;
-	//const int BTN_ROUND = 60;
-	//const SIZE BORDER_RND = { BTN_ROUND, BTN_ROUND };
+	static const int BTN_ROUND = 60;
+	static const SIZE BORDER_RND = { 0, BTN_ROUND };
 
 	auto add_gap = [&container, &GAP_WIDHT]() {
 		auto vert = new CVerticalLayoutUI();
@@ -309,9 +309,12 @@ void CDuiBottomTool::set_mode(mode m)
 		btn->SetName(name);
 		btn->SetText(text);
 		btn->SetFont(font_idx);
-		btn->SetBkColor(0xFF3275EE);
+		btn->SetTextColor(0xFF000000);
+		//btn->SetBkColor(0xFF4472C4);
 		//btn->SetBorderRound(BORDER_RND);
+		//btn->SetSelectedBkColor(0xFFFF9900);
 		btn->SetBkImage(L"image/btnbk.png");
+		//btn->SetSelectedImage(L"image/btnbk_new.png");
 		container->Add(btn);
 	};
 
@@ -355,6 +358,7 @@ void CDuiBottomTool::set_mode(mode m)
 			btn->SetName(btn_names::edit);
 			btn->SetText(trw(IDS_STRING_EDIT).c_str());
 			btn->SetFont(0);
+			btn->SetTextColor(0);
 			btn->SetBkColor(0xFF3275EE);
 			//btn->SetBorderRound(BORDER_RND);
 			btn->SetBkImage(L"image/btnbk.png");
@@ -543,6 +547,7 @@ bool CDuiBottomTool::show_pic_tip(bool show)
 		if (pic_view_tip_) {
 			show ? pic_view_tip_->Show() : pic_view_tip_->Hide();
 		}
+		m_PaintManager.NeedUpdate();
 		return true;
 	}
 	return false;
@@ -575,6 +580,8 @@ bool CDuiBottomTool::show_video_tips(bool show)
 						   rc.Height(),
 						   SWP_SHOWWINDOW);
 		}
+
+		m_PaintManager.NeedUpdate();
 
 		return true;
 	}

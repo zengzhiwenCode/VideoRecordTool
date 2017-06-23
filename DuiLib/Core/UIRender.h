@@ -31,7 +31,7 @@ public:
 	static DWORD AdjustColor(DWORD dwColor, short H, short S, short L);
 	static TImageInfo* LoadImage(STRINGorID bitmap, LPCTSTR type = NULL, DWORD mask = 0);
 	static void FreeImage(const TImageInfo* bitmap);
-	static void DrawImage(HDC hDC, HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint, 
+	static void DrawImage(HDC hDC, HBITMAP hBitmap, const RECT& rc, const RECT& rcPaint,
 						  const RECT& rcBmpPart, const RECT& rcCorners, bool alphaChannel, BYTE uFade = 255,
 						  bool hole = false, bool xtiled = false, bool ytiled = false);
 
@@ -47,7 +47,7 @@ public:
 	static void DrawLine(HDC hDC, const RECT& rc, int nSize, DWORD dwPenColor, int nStyle = PS_SOLID);
 	static void DrawRect(HDC hDC, const RECT& rc, int nSize, DWORD dwPenColor);
 	static void DrawRoundRect(HDC hDC, const RECT& rc, int width, int height, int nSize, DWORD dwPenColor);
-	static void DrawText(HDC hDC, CPaintManagerUI* pManager, RECT& rc, LPCTSTR pstrText, 
+	static void DrawText(HDC hDC, CPaintManagerUI* pManager, RECT& rc, LPCTSTR pstrText,
 						 DWORD dwTextColor, int iFont, UINT uStyle);
 	static void DrawHtmlText(HDC hDC, CPaintManagerUI* pManager, RECT& rc, LPCTSTR pstrText,
 							 DWORD dwTextColor, RECT* pLinks, CDuiString* sLinks, int& nLinkRects, UINT uStyle);

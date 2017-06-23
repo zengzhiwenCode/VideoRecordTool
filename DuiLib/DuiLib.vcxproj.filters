@@ -45,9 +45,6 @@
     <ClCompile Include="UIlib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\WinImplBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Utils\stb_image.c">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
@@ -146,6 +143,9 @@
     </ClCompile>
     <ClCompile Include="Control\UIWebBrowser.cpp">
       <Filter>Source Files\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\WinImplBase.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

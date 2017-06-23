@@ -38,6 +38,7 @@
 #pragma warning (disable : 4511) // copy operator could not be generated
 #pragma warning (disable : 4512) // assignment operator could not be generated
 #pragma warning (disable : 4702) // unreachable code (bugs in Microsoft's STL)
+#pragma warning (disable : 4706) // assignment within conditional expression
 #pragma warning (disable : 4786) // identifier was truncated
 #pragma warning (disable : 4996) // function or variable may be unsafe (deprecated)
 #ifndef _CRT_SECURE_NO_WARNINGS
@@ -50,7 +51,7 @@
 
 // Required for VS 2008 (fails on XP and Win2000 without this fix)
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0500
+#define _WIN32_WINNT 0x0501
 #endif
 
 #include "UIlib.h"

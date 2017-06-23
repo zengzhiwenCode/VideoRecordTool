@@ -1,6 +1,3 @@
-#ifndef WIN_IMPL_BASE_HPP
-#define WIN_IMPL_BASE_HPP
-
 #include "stdafx.h"
 #include <algorithm>
 
@@ -11,13 +8,13 @@ namespace DuiLib
 
 //////////////////////////////////////////////////////////////////////////
 
-LPBYTE WindowImplBase::m_lpResourceZIPBuffer=NULL;
+LPBYTE WindowImplBase::m_lpResourceZIPBuffer = NULL;
 
-DUI_BEGIN_MESSAGE_MAP(WindowImplBase,CNotifyPump)
-	DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK,OnClick)
+DUI_BEGIN_MESSAGE_MAP(WindowImplBase, CNotifyPump)
+DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
 DUI_END_MESSAGE_MAP()
 
-void WindowImplBase::OnFinalMessage( HWND hWnd )
+void WindowImplBase::OnFinalMessage(HWND hWnd)
 {
 	m_PaintManager.RemovePreMessageFilter(this);
 	m_PaintManager.RemoveNotifier(this);
@@ -26,12 +23,9 @@ void WindowImplBase::OnFinalMessage( HWND hWnd )
 
 LRESULT WindowImplBase::ResponseDefaultKeyEvent(WPARAM wParam)
 {
-	if (wParam == VK_RETURN)
-	{
+	if (wParam == VK_RETURN) {
 		return FALSE;
-	}
-	else if (wParam == VK_ESCAPE)
-	{
+	} else if (wParam == VK_ESCAPE) {
 		//Close();
 		return TRUE;
 	}
@@ -66,10 +60,8 @@ CControlUI* WindowImplBase::CreateControl(LPCTSTR pstrClass)
 
 LRESULT WindowImplBase::MessageHandler(UINT uMsg, WPARAM wParam, LPARAM /*lParam*/, bool& /*bHandled*/)
 {
-	if (uMsg == WM_KEYDOWN)
-	{
-		switch (wParam)
-		{
+	if (uMsg == WM_KEYDOWN) {
+		switch (wParam) {
 		case VK_RETURN:
 		case VK_ESCAPE:
 			return ResponseDefaultKeyEvent(wParam);
@@ -95,26 +87,22 @@ LRESULT WindowImplBase::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
 #if defined(WIN32) && !defined(UNDER_CE)
 LRESULT WindowImplBase::OnNcActivate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
-	if( ::IsIconic(*this) ) bHandled = FALSE;
+	if (::IsIconic(*this)) bHandled = FALSE;
 	return (wParam == 0) ? TRUE : FALSE;
 }
 
 LRESULT WindowImplBase::OnNcCalcSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	LPRECT pRect=NULL;
+	LPRECT pRect = NULL;
 
-	if ( wParam == TRUE)
-	{
+	if (wParam == TRUE) {
 		LPNCCALCSIZE_PARAMS pParam = (LPNCCALCSIZE_PARAMS)lParam;
-		pRect=&pParam->rgrc[0];
-	}
-	else
-	{
-		pRect=(LPRECT)lParam;
+		pRect = &pParam->rgrc[0];
+	} else {
+		pRect = (LPRECT)lParam;
 	}
 
-	if ( ::IsZoomed(m_hWnd))
-	{	// 最大化时，计算当前显示器最适合宽高度
+	if (::IsZoomed(m_hWnd)) {	// 最大化时，计算当前显示器最适合宽高度
 		MONITORINFO oMonitor = {};
 		oMonitor.cbSize = sizeof(oMonitor);
 		::GetMonitorInfo(::MonitorFromWindow(*this, MONITOR_DEFAULTTONEAREST), &oMonitor);
@@ -137,48 +125,44 @@ LRESULT WindowImplBase::OnNcPaint(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
 
 BOOL WindowImplBase::IsInStaticControl(CControlUI *pControl)
 {
-    BOOL bRet = FALSE;
-    if (! pControl)
-    {
-        return bRet;
-    }
+	BOOL bRet = FALSE;
+	if (!pControl) {
+		return bRet;
+	}
 
-    CDuiString strClassName;
-    std::vector<CDuiString> vctStaticName;
+	CDuiString strClassName;
+	std::vector<CDuiString> vctStaticName;
 
-    strClassName = pControl->GetClass();
-    strClassName.MakeLower();
-    vctStaticName.push_back(_T("controlui"));
-    vctStaticName.push_back(_T("textui"));
-    vctStaticName.push_back(_T("labelui"));
-    vctStaticName.push_back(_T("containerui"));
-    vctStaticName.push_back(_T("horizontallayoutui"));
-    vctStaticName.push_back(_T("verticallayoutui"));
-    vctStaticName.push_back(_T("tablayoutui"));
-    vctStaticName.push_back(_T("childlayoutui"));
-    vctStaticName.push_back(_T("dialoglayoutui"));
+	strClassName = pControl->GetClass();
+	strClassName.MakeLower();
+	vctStaticName.push_back(_T("controlui"));
+	vctStaticName.push_back(_T("textui"));
+	vctStaticName.push_back(_T("labelui"));
+	vctStaticName.push_back(_T("containerui"));
+	vctStaticName.push_back(_T("horizontallayoutui"));
+	vctStaticName.push_back(_T("verticallayoutui"));
+	vctStaticName.push_back(_T("tablayoutui"));
+	vctStaticName.push_back(_T("childlayoutui"));
+	vctStaticName.push_back(_T("dialoglayoutui"));
 
-    std::vector<CDuiString>::iterator it = std::find(vctStaticName.begin(), vctStaticName.end(), strClassName);
-    if (vctStaticName.end() != it)
-    {
-        CControlUI* pParent = pControl->GetParent();
-        while (pParent)
-        {
-            strClassName = pParent->GetClass();
-            strClassName.MakeLower();
-            it = std::find(vctStaticName.begin(), vctStaticName.end(), strClassName);
-            if (vctStaticName.end() == it)
-            {
-                return bRet;
-            }
+	std::vector<CDuiString>::iterator it = std::find(vctStaticName.begin(), vctStaticName.end(), strClassName);
+	if (vctStaticName.end() != it) {
+		CControlUI* pParent = pControl->GetParent();
+		while (pParent) {
+			strClassName = pParent->GetClass();
+			strClassName.MakeLower();
+			it = std::find(vctStaticName.begin(), vctStaticName.end(), strClassName);
+			if (vctStaticName.end() == it) {
+				return bRet;
+			}
 
-            pParent = pParent->GetParent();
-        }
+			pParent = pParent->GetParent();
+		}
 
-        bRet = TRUE;
-    }
+		bRet = TRUE;
+	}
 
-    return bRet;
+	return bRet;
 }
 
 LRESULT WindowImplBase::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -188,50 +172,43 @@ LRESULT WindowImplBase::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 
 	RECT rcClient;
 	::GetClientRect(*this, &rcClient);
-	
-	if( !::IsZoomed(*this) )
-	{
+
+	if (!::IsZoomed(*this)) {
 		RECT rcSizeBox = m_PaintManager.GetSizeBox();
-		if( pt.y < rcClient.top + rcSizeBox.top )
-		{
-			if( pt.x < rcClient.left + rcSizeBox.left ) return HTTOPLEFT;
-			if( pt.x > rcClient.right - rcSizeBox.right ) return HTTOPRIGHT;
+		if (pt.y < rcClient.top + rcSizeBox.top) {
+			if (pt.x < rcClient.left + rcSizeBox.left) return HTTOPLEFT;
+			if (pt.x > rcClient.right - rcSizeBox.right) return HTTOPRIGHT;
 			return HTTOP;
-		}
-		else if( pt.y > rcClient.bottom - rcSizeBox.bottom )
-		{
-			if( pt.x < rcClient.left + rcSizeBox.left ) return HTBOTTOMLEFT;
-			if( pt.x > rcClient.right - rcSizeBox.right ) return HTBOTTOMRIGHT;
+		} else if (pt.y > rcClient.bottom - rcSizeBox.bottom) {
+			if (pt.x < rcClient.left + rcSizeBox.left) return HTBOTTOMLEFT;
+			if (pt.x > rcClient.right - rcSizeBox.right) return HTBOTTOMRIGHT;
 			return HTBOTTOM;
 		}
 
-		if( pt.x < rcClient.left + rcSizeBox.left ) return HTLEFT;
-		if( pt.x > rcClient.right - rcSizeBox.right ) return HTRIGHT;
+		if (pt.x < rcClient.left + rcSizeBox.left) return HTLEFT;
+		if (pt.x > rcClient.right - rcSizeBox.right) return HTRIGHT;
 	}
 
-    // bottom为-1时，则整个窗口的高度都可以拖动
+	// bottom为-1时，则整个窗口的高度都可以拖动
 	RECT rcCaption = m_PaintManager.GetCaptionRect();
-    if (-1 == rcCaption.bottom)
-    {
-        rcCaption.bottom = rcClient.bottom;
-    }
+	if (-1 == rcCaption.bottom) {
+		rcCaption.bottom = rcClient.bottom;
+	}
 
-    if( pt.x >= rcClient.left + rcCaption.left && pt.x < rcClient.right - rcCaption.right
-        && pt.y >= rcCaption.top && pt.y < rcCaption.bottom ) 
-    {
-        CControlUI* pControl = m_PaintManager.FindControl(pt);
-        if (IsInStaticControl(pControl))
-        {
-            return HTCAPTION;
-        }
-    }
+	if (pt.x >= rcClient.left + rcCaption.left && pt.x < rcClient.right - rcCaption.right
+		&& pt.y >= rcCaption.top && pt.y < rcCaption.bottom) {
+		CControlUI* pControl = m_PaintManager.FindControl(pt);
+		if (IsInStaticControl(pControl)) {
+			return HTCAPTION;
+		}
+	}
 
 	return HTCLIENT;
 }
 
 LRESULT WindowImplBase::OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	LPMINMAXINFO lpMMI = (LPMINMAXINFO) lParam;
+	LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
 
 	MONITORINFO oMonitor = {};
 	oMonitor.cbSize = sizeof(oMonitor);
@@ -241,14 +218,14 @@ LRESULT WindowImplBase::OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam,
 	rcWork.Offset(-oMonitor.rcMonitor.left, -oMonitor.rcMonitor.top);
 
 	// 计算最大化时，正确的原点坐标
-	lpMMI->ptMaxPosition.x	= rcWork.left;
-	lpMMI->ptMaxPosition.y	= rcWork.top;
+	lpMMI->ptMaxPosition.x = rcWork.left;
+	lpMMI->ptMaxPosition.y = rcWork.top;
 
-	lpMMI->ptMaxTrackSize.x =rcWork.GetWidth();
-	lpMMI->ptMaxTrackSize.y =rcWork.GetHeight();
+	lpMMI->ptMaxTrackSize.x = rcWork.GetWidth();
+	lpMMI->ptMaxTrackSize.y = rcWork.GetHeight();
 
-	lpMMI->ptMinTrackSize.x =m_PaintManager.GetMinInfo().cx;
-	lpMMI->ptMinTrackSize.y =m_PaintManager.GetMinInfo().cy;
+	lpMMI->ptMinTrackSize.x = m_PaintManager.GetMinInfo().cx;
+	lpMMI->ptMinTrackSize.y = m_PaintManager.GetMinInfo().cy;
 
 	bHandled = FALSE;
 	return 0;
@@ -271,7 +248,7 @@ LRESULT WindowImplBase::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 {
 	SIZE szRoundCorner = m_PaintManager.GetRoundCorner();
 #if defined(WIN32) && !defined(UNDER_CE)
-	if( !::IsIconic(*this) && (szRoundCorner.cx != 0 || szRoundCorner.cy != 0) ) {
+	if (!::IsIconic(*this) && (szRoundCorner.cx != 0 || szRoundCorner.cy != 0)) {
 		CDuiRect rcWnd;
 		::GetWindowRect(*this, &rcWnd);
 		rcWnd.Offset(-rcWnd.left, -rcWnd.top);
@@ -293,8 +270,7 @@ LRESULT WindowImplBase::OnChar(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 
 LRESULT WindowImplBase::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	if (wParam == SC_CLOSE)
-	{
+	if (wParam == SC_CLOSE) {
 		bHandled = TRUE;
 		SendMessage(WM_CLOSE);
 		return 0;
@@ -302,18 +278,16 @@ LRESULT WindowImplBase::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 #if defined(WIN32) && !defined(UNDER_CE)
 	BOOL bZoomed = ::IsZoomed(*this);
 	LRESULT lRes = CWindowWnd::HandleMessage(uMsg, wParam, lParam);
-    if( ::IsZoomed(*this) != bZoomed )
-    {
-        CControlUI* pbtnMax     = static_cast<CControlUI*>(m_PaintManager.FindControl(_T("maxbtn")));       // 最大化按钮
-        CControlUI* pbtnRestore = static_cast<CControlUI*>(m_PaintManager.FindControl(_T("restorebtn")));   // 还原按钮
+	if (::IsZoomed(*this) != bZoomed) {
+		CControlUI* pbtnMax = static_cast<CControlUI*>(m_PaintManager.FindControl(_T("maxbtn")));       // 最大化按钮
+		CControlUI* pbtnRestore = static_cast<CControlUI*>(m_PaintManager.FindControl(_T("restorebtn")));   // 还原按钮
 
-        // 切换最大化按钮和还原按钮的状态
-        if (pbtnMax && pbtnRestore)
-        {
-            pbtnMax->SetVisible(TRUE == bZoomed);       // 此处用表达式是为了避免编译器BOOL转换的警告
-            pbtnRestore->SetVisible(FALSE == bZoomed);
-        }
-    }
+		// 切换最大化按钮和还原按钮的状态
+		if (pbtnMax && pbtnRestore) {
+			pbtnMax->SetVisible(TRUE == bZoomed);       // 此处用表达式是为了避免编译器BOOL转换的警告
+			pbtnRestore->SetVisible(FALSE == bZoomed);
+		}
+	}
 #else
 	LRESULT lRes = CWindowWnd::HandleMessage(uMsg, wParam, lParam);
 #endif
@@ -328,67 +302,60 @@ LRESULT WindowImplBase::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	RECT rcClient;
 	::GetClientRect(*this, &rcClient);
 	::SetWindowPos(*this, NULL, rcClient.left, rcClient.top, rcClient.right - rcClient.left, \
-		rcClient.bottom - rcClient.top, SWP_FRAMECHANGED);
+				   rcClient.bottom - rcClient.top, SWP_FRAMECHANGED);
 
 	m_PaintManager.Init(m_hWnd);
 	m_PaintManager.AddPreMessageFilter(this);
 
 	CDialogBuilder builder;
-    CDuiString strResourcePath=m_PaintManager.GetResourcePath();
-    if (strResourcePath.IsEmpty())
-    {
-        strResourcePath=m_PaintManager.GetInstancePath();
-        strResourcePath+=GetSkinFolder().GetData();
-    }
+	CDuiString strResourcePath = m_PaintManager.GetResourcePath();
+	if (strResourcePath.IsEmpty()) {
+		strResourcePath = m_PaintManager.GetInstancePath();
+		strResourcePath += GetSkinFolder().GetData();
+	}
 	m_PaintManager.SetResourcePath(strResourcePath.GetData());
 
-	switch(GetResourceType())
-	{
+	switch (GetResourceType()) {
 	case UILIB_ZIP:
 		m_PaintManager.SetResourceZip(GetZIPFileName().GetData(), true);
 		break;
 	case UILIB_ZIPRESOURCE:
-		{
-			HRSRC hResource = ::FindResource(m_PaintManager.GetResourceDll(), GetResourceID(), _T("ZIPRES"));
-			if( hResource == NULL )
-				return 0L;
-			DWORD dwSize = 0;
-			HGLOBAL hGlobal = ::LoadResource(m_PaintManager.GetResourceDll(), hResource);
-			if( hGlobal == NULL ) 
-			{
-#if defined(WIN32) && !defined(UNDER_CE)
-				::FreeResource(hResource);
-#endif
-				return 0L;
-			}
-			dwSize = ::SizeofResource(m_PaintManager.GetResourceDll(), hResource);
-			if( dwSize == 0 )
-				return 0L;
-			m_lpResourceZIPBuffer = new BYTE[ dwSize ];
-			if (m_lpResourceZIPBuffer != NULL)
-			{
-				::CopyMemory(m_lpResourceZIPBuffer, (LPBYTE)::LockResource(hGlobal), dwSize);
-			}
+	{
+		HRSRC hResource = ::FindResource(m_PaintManager.GetResourceDll(), GetResourceID(), _T("ZIPRES"));
+		if (hResource == NULL)
+			return 0L;
+		DWORD dwSize = 0;
+		HGLOBAL hGlobal = ::LoadResource(m_PaintManager.GetResourceDll(), hResource);
+		if (hGlobal == NULL) {
 #if defined(WIN32) && !defined(UNDER_CE)
 			::FreeResource(hResource);
 #endif
-			m_PaintManager.SetResourceZip(m_lpResourceZIPBuffer, dwSize);
+			return 0L;
 		}
-		break;
+		dwSize = ::SizeofResource(m_PaintManager.GetResourceDll(), hResource);
+		if (dwSize == 0)
+			return 0L;
+		m_lpResourceZIPBuffer = new BYTE[dwSize];
+		if (m_lpResourceZIPBuffer != NULL) {
+			::CopyMemory(m_lpResourceZIPBuffer, (LPBYTE)::LockResource(hGlobal), dwSize);
+		}
+#if defined(WIN32) && !defined(UNDER_CE)
+		::FreeResource(hResource);
+#endif
+		m_PaintManager.SetResourceZip(m_lpResourceZIPBuffer, dwSize);
+	}
+	break;
 	}
 
-	CControlUI* pRoot=NULL;
-	if (GetResourceType()==UILIB_RESOURCE)
-	{
+	CControlUI* pRoot = NULL;
+	if (GetResourceType() == UILIB_RESOURCE) {
 		STRINGorID xml(_ttoi(GetSkinFile().GetData()));
 		pRoot = builder.Create(xml, _T("xml"), this, &m_PaintManager);
-	}
-	else
+	} else
 		pRoot = builder.Create(GetSkinFile().GetData(), (UINT)0, this, &m_PaintManager);
 	ASSERT(pRoot);
-	if (pRoot==NULL)
-	{
-		MessageBox(NULL,_T("加载资源文件失败"),_T("Duilib"),MB_OK|MB_ICONERROR);
+	if (pRoot == NULL) {
+		MessageBox(NULL, _T("加载资源文件失败"), _T("Duilib"), MB_OK | MB_ICONERROR);
 		ExitProcess(1);
 		return 0;
 	}
@@ -440,8 +407,7 @@ LRESULT WindowImplBase::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LRESULT lRes = 0;
 	BOOL bHandled = TRUE;
-	switch (uMsg)
-	{
+	switch (uMsg) {
 	case WM_CREATE:			lRes = OnCreate(uMsg, wParam, lParam, bHandled); break;
 	case WM_CLOSE:			lRes = OnClose(uMsg, wParam, lParam, bHandled); break;
 	case WM_DESTROY:		lRes = OnDestroy(uMsg, wParam, lParam, bHandled); break;
@@ -492,25 +458,18 @@ LONG WindowImplBase::GetStyle()
 void WindowImplBase::OnClick(TNotifyUI& msg)
 {
 	CDuiString sCtrlName = msg.pSender->GetName();
-	if( sCtrlName == _T("closebtn") )
-	{
+	if (sCtrlName == _T("closebtn")) {
 		Close();
-		return; 
-	}
-	else if( sCtrlName == _T("minbtn"))
-	{ 
-		SendMessage(WM_SYSCOMMAND, SC_MINIMIZE, 0); 
-		return; 
-	}
-	else if( sCtrlName == _T("maxbtn"))
-	{ 
-		SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0); 
-		return; 
-	}
-	else if( sCtrlName == _T("restorebtn"))
-	{ 
-		SendMessage(WM_SYSCOMMAND, SC_RESTORE, 0); 
-		return; 
+		return;
+	} else if (sCtrlName == _T("minbtn")) {
+		SendMessage(WM_SYSCOMMAND, SC_MINIMIZE, 0);
+		return;
+	} else if (sCtrlName == _T("maxbtn")) {
+		SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+		return;
+	} else if (sCtrlName == _T("restorebtn")) {
+		SendMessage(WM_SYSCOMMAND, SC_RESTORE, 0);
+		return;
 	}
 	return;
 }
