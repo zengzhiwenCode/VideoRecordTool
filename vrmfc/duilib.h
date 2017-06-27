@@ -89,7 +89,22 @@ protected:
 	HWND m_hWnd;
 };
 
+inline void DuiSleep(UINT milliseconds) {
+	MSG msg;
+	auto begin = std::chrono::steady_clock::now();
+	while (GetMessage(&msg, nullptr, 0, 0)) {
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+		auto now = std::chrono::steady_clock::now();
+		auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - begin);
+		if (diff.count() >= milliseconds) {
+			break;
+		}
+	}
+}
+
 }
 
 using DuiLib::CXMLWnd;
 using DuiLib::CWndUI;
+using DuiLib::DuiSleep;

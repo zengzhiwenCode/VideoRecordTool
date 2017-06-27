@@ -13,6 +13,23 @@
 
 namespace {
 
+class auto_change_btn_bk {
+public:
+	explicit auto_change_btn_bk(CButtonUI* btn)
+		: btn(btn)
+	{
+		btn->SetBkImage(L"image/btnbk_hot.png");
+		btn->Invalidate();
+	}
+
+	~auto_change_btn_bk()
+	{
+		btn->SetBkImage(L"image/btnbk_normal.png");
+	}
+private:
+	CButtonUI* btn;
+};
+
 namespace btn_names {
 
 auto exit = L"exit";
@@ -47,9 +64,9 @@ CDuiVideoDetailDlg::videoinfo g_video_info = {};
 }
 
 
-//DUI_BEGIN_MESSAGE_MAP(CDuiBottomTool, CNotifyPump)
-//DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
-//DUI_END_MESSAGE_MAP()
+DUI_BEGIN_MESSAGE_MAP(CDuiBottomTool, CNotifyPump)
+DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
+DUI_END_MESSAGE_MAP()
 
 
 CDuiBottomTool::CDuiBottomTool(const wchar_t * xmlpath)
@@ -68,11 +85,7 @@ void CDuiBottomTool::InitWindow()
 
 void CDuiBottomTool::Notify(DuiLib::TNotifyUI & msg)
 {
-	if (msg.sType == L"click") {
-		OnClick(msg);
-		return;
-	}
-	//__super::Notify(msg);
+	__super::Notify(msg);
 }
 
 LRESULT CDuiBottomTool::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -83,30 +96,53 @@ LRESULT CDuiBottomTool::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void CDuiBottomTool::OnClick(TNotifyUI & msg)
 {
+	__super::OnClick(msg);
 	//std::string name = utf8::w2a(msg.pSender->GetName().GetData()); range_log rl("CDuiBottomTool::OnClick " + name);
 	std::wstring name = msg.pSender->GetName().GetData();
+	if (name.empty()) { return; }
 	auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
 	if (!maindlg) { JLOG_CRTC("cannot find main dlg!"); return; }
+	auto btn = static_cast<CButtonUI*>(msg.pSender);
+
+	auto hot_btn = [&btn]() {
+		btn->SetBkImage(L"image/btnbk_hot.png");
+	};
+
+	auto normal_btn = [&btn] {
+		btn->SetBkImage(L"image/btnbk_normal.png");
+	};
 
 	switch (mode_) {
 	case CDuiBottomTool::mainwnd:
 	{
+		//auto_change_btn_bk();
 		if (name == btn_names::exit) {
+			hot_btn();
 			maindlg->do_exit_windows();
+			normal_btn();
 		} else if (name == btn_names::rec) {
-			maindlg->do_record();
+			maindlg->do_record() ? hot_btn() : normal_btn();
 		} else if (name == btn_names::cap) {
+			hot_btn();
 			maindlg->do_capture();
+			normal_btn();
 		} else if (name == btn_names::file) {
 			if (maindlg->do_file_manager(rc_filedlg_)) {
 				set_mode(CDuiBottomTool::mode::filemgr);
 			}
 		} else if (name == btn_names::set) {
+			hot_btn();
 			maindlg->do_settings();
+			normal_btn();
 		} else if (name == btn_names::sys) {
+			hot_btn();
 			maindlg->do_system_info();
+			normal_btn();
 		} else if (name == btn_names::bright) {
+			hot_btn();
 			maindlg->do_adjust_brightness();
+			DuiSleep(300);
+			normal_btn();
 		}
 
 		break;
@@ -121,30 +157,37 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 		} else if (name == btn_names::edit) {
 			if ((static_cast<COptionUI*>(msg.pSender))->IsSelected()) {
 				file_dlg_->sel_all(false);
-			} else {
-				/*if (piters_.size() == 1) {
-					view_pic();
-				} else if (viters_.size() == 1) {
-					view_video();
-				}*/
-
-				
-			}
-			
+			} 
 		} else if (name == btn_names::filter) {
+			hot_btn();
 			file_dlg_->update_filter();
+			DuiSleep(300);
+			normal_btn();
 		} else if (name == btn_names::page_up) {
+			hot_btn();
 			file_dlg_->scroll_page(-1); 
+			DuiSleep(300);
+			normal_btn();
 		} else if (name == btn_names::page_dn) {
+			hot_btn();
 			file_dlg_->scroll_page(1);
+			DuiSleep(300);
+			normal_btn();
 		} else if (name == btn_names::sel_all) {
+			hot_btn();
 			sel_all_ = !sel_all_;
 			file_dlg_->sel_all(sel_all_);
+			DuiSleep(300);
+			normal_btn();
 		} else if (name == btn_names::del) {
+			hot_btn();
 			del_pic();
 			del_video();
+			DuiSleep(300);
+			normal_btn();
 		} else if (name == btn_names::cp_to_usb) {
 			copy_to_usb();
+			normal_btn();
 		}
 		
 		break;
@@ -177,9 +220,13 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 		} else if (name == btn_names::del) {
 			pic_view_dec();
 		} else if (name == btn_names::cp_to_usb) {
+			hot_btn();
 			copy_to_usb();
+			normal_btn();
 		} else if (name == btn_names::detail) {
+			hot_btn();
 			pic_view_detail();
+			normal_btn();
 		}
 		
 		break;
@@ -221,26 +268,39 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 				}
 			}
 		} else if (name == btn_names::stop) {
+			hot_btn();
 			video_player_->stop();
 			on_video_pos_changed(L"", L"", -1);
+			DuiSleep(300);
+			normal_btn();
 		} else if (name == btn_names::play) {
+			hot_btn();
 			if (video_player_->resume() || video_player_->play()) {
 				msg.pSender->SetName(btn_names::pause);
 				msg.pSender->SetText(trw(IDS_STRING_PAUSE).c_str());
 			}
+			DuiSleep(300);
+			normal_btn();
 		} else if (name == btn_names::pause) {
+			hot_btn();
 			if (video_player_->pause()) {
 				msg.pSender->SetName(btn_names::play);
 				msg.pSender->SetText(trw(IDS_STRING_PLAY).c_str());
 			}
+			DuiSleep(300);
+			normal_btn();
 		} else if (name == btn_names::del) {
 			video_view_del();
 		} else if (name == btn_names::cp_to_usb) {
+			hot_btn();
 			video_player_->stop();
 			on_video_pos_changed(L"", L"", -1);
 			copy_to_usb();
+			normal_btn();
 		} else if (name == btn_names::detail) {
+			hot_btn();
 			video_view_detail();
+			normal_btn();
 		}
 		
 		break;
@@ -249,9 +309,6 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 	default:
 		break;
 	}
-
-
-	//__super::OnClick(msg);
 }
 
 void CDuiBottomTool::on_update(const int & lang)
@@ -313,8 +370,10 @@ void CDuiBottomTool::set_mode(mode m)
 		//btn->SetBkColor(0xFF4472C4);
 		//btn->SetBorderRound(BORDER_RND);
 		//btn->SetSelectedBkColor(0xFFFF9900);
-		btn->SetBkImage(L"image/btnbk.png");
-		//btn->SetSelectedImage(L"image/btnbk_new.png");
+		btn->SetBkImage(L"image/btnbk_normal.png");
+		//btn->SetHotImage(L"image/btnbk_hot.png");
+		//btn->SetPushedImage(L"image/btnbk_hot.png");
+		//btn->SetSelectedImage(L"image/btnbk_hot.png");
 		container->Add(btn);
 	};
 
@@ -359,9 +418,11 @@ void CDuiBottomTool::set_mode(mode m)
 			btn->SetText(trw(IDS_STRING_EDIT).c_str());
 			btn->SetFont(0);
 			btn->SetTextColor(0);
-			btn->SetBkColor(0xFF3275EE);
+			//btn->SetBkColor(0xFF3275EE);
 			//btn->SetBorderRound(BORDER_RND);
-			btn->SetBkImage(L"image/btnbk.png");
+			btn->SetBkImage(L"image/btnbk_normal.png");
+			//btn->SetHotImage(L"image/btnbk_hot.png");
+			btn->SetSelectedImage(L"image/btnbk_hot.png");
 			container->Add(btn);
 		}
 

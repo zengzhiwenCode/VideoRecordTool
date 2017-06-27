@@ -153,17 +153,9 @@ BOOL CvrmfcDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 	m_bkbrush.CreateSolidBrush(RGB(0, 0, 0));
 
-	// init logger
-	{
-		auto path = get_exe_path_a() + "/log";
-		CreateDirectoryA(path.c_str(), nullptr);
-		path += "/vrmfc";
-		jlib::init_logger(path);
-		JLOG_INFO("vrmfc start running");
-	}
-
 	// init rc
 	{
+		range_log("init rc");
 		int x = 0;
 		int y = 0;
 		int cx = GetSystemMetrics(SM_CXSCREEN);
@@ -186,6 +178,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 
 	// init tip
 	{
+		range_log("init tip");
 		CRect rc;
 		GetWindowRect(rc);
 		if (cfg->get_lang() == "en") {
@@ -216,6 +209,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 
 	// init second tip
 	{
+		range_log("init second tip");
 		CRect rc;
 		GetWindowRect(rc);
 		rc.left = rc.right - 150;
@@ -231,6 +225,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 
 	// init bottom tool
 	{
+		range_log("init bottom tool");
 		CRect rc;
 		GetWindowRect(rc);
 		rc.top = rc.bottom - 65;
@@ -252,6 +247,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 	
 	// init serial
 	{
+		range_log("init serial");
 		auto ports = serial::list_ports();
 		if (ports.empty()) {
 			MessageBox(tr(IDS_STRING_NO_COM), tr(IDS_STRING_ERROR), MB_ICONERROR);
@@ -303,6 +299,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 	int fps = 0;
 	// init video
 	{
+		range_log("init video");
 		//if (!capture_.open(CV_CAP_DSHOW  + cfg->get_vidx())) {
 		//	if (capture_.open(0)) {
 		//		cfg->set_vidx(0);
@@ -366,7 +363,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		//	fps_.begin = std::chrono::steady_clock::now();
 		//	fps_.frames = 0;
 		//}
-
+		
 		//int w = 960; int h = 720;
 		Mat frame;
 
@@ -697,12 +694,12 @@ void CvrmfcDlg::do_exit_windows()
 	}
 }
 
-void CvrmfcDlg::do_record()
+bool CvrmfcDlg::do_record()
 {
-	AUTO_LOG_FUNCTION; TEST_LOCK_DLG;
+	AUTO_LOG_FUNCTION; if (modual_dialog_opened_) { return false; }
 	JLOG_INFO("recording_={}", record_.recording);
-	if (record_.recording) { do_stop_record(); return; }
-	if (!dscap_.isOpened()) { return; }
+	if (record_.recording) { do_stop_record(); return false; }
+	if (!dscap_.isOpened()) { return false; }
 	record_.file = config::get_instance()->create_new_video_path();
 	auto width = dscap_.GetWidth();
 	auto height = dscap_.GetHeight();
@@ -716,6 +713,7 @@ void CvrmfcDlg::do_record()
 	
 	record_.begin = std::chrono::steady_clock::now();
 	dui_bt_->enable_btns(false);
+	return true;
 }
 
 void CvrmfcDlg::do_stop_record()

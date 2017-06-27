@@ -40,7 +40,17 @@ CvrmfcApp theApp;
 
 BOOL CvrmfcApp::InitInstance()
 {
-	
+	// init logger
+	{
+		auto path = get_exe_path_a() + "/log";
+		CreateDirectoryA(path.c_str(), nullptr);
+		path += "/vrmfc";
+		jlib::init_logger(path);
+		JLOG_INFO("vrmfc start running");
+		JLOG_INFO("before }");
+	}
+	JLOG_INFO("before AUTO_LOG_FUNCTION");
+	AUTO_LOG_FUNCTION;
 
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable

@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <Window size="800,500" mininfo="800,500" maxinfo="800,500" caption="0,0,0,1" sizebox="0,0,0,0">
-    <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
+    <Font shared="true" id="0" name="微软雅黑" size="24" bold="false" />
 	<Font shared="true" id="1" name="宋体" size="20" />
     <Default shared="true" name="Slider" value="thumbsize=&quot;30,12&quot; bkimage=&quot;file='image\slider\bg.bmp' corner='6,0,6,0' mask='#FFFF00FF'&quot; foreimage=&quot;file='image\slider\bg.bmp' corner='6,0,6,0' mask='#FFFF00FF'&quot; thumbimage=&quot;file='image\slider\thumb.bmp' source='0,0,66,103' mask='#FFFFD966'&quot; thumbhotimage=&quot;file='image\slider\thumb.bmp' source='0,0,66,100' mask='#FFFFD966'&quot; " />
-	<HorizontalLayout bkcolor="FFD77E44#" bordersize="1" bordercolor="#FF707070"> <!--整个窗口-->
+	<HorizontalLayout bkcolor="FF595959#" bordersize="1" bordercolor="#FF707070"> <!--整个窗口-->
         <VerticalLayout width="180" bkcolor="FFFFD966#" bordersize="1" bordercolor="#FF707070"> <!--左侧列表-->
-            <HorizontalLayout height="25" />
+            <HorizontalLayout height="1" />
             <HorizontalLayout>
-                <VerticalLayout width="5" />
+                <VerticalLayout width="16" />
                 <VerticalLayout>
-                    <HorizontalLayout height="5" />
-                    <Option name="resolution" text="分辨率" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab" selected="true"/> <HorizontalLayout height="5" />
-                    <Option name="record" text="录像选项" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="5" />
-                    <Option name="video" text="视频设置" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="5" />
-                    <Option name="camera" text="摄像机设置" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="5" />
-                    <Option name="language" text="语言设置" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="5" />
-                    <Option name="time" text="时间设置" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="5" />
-                    <Option name="recover" text="恢复设置" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="5" />
+                    <HorizontalLayout height="15" />
+                    <Option name="resolution" text="分辨率" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab" selected="true"/> <HorizontalLayout height="15" />
+                    <Option name="record" text="录像选项" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="15" />
+                    <Option name="video" text="视频设置" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="15" />
+                    <Option name="camera" text="摄像机设置" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="15" />
+                    <Option name="language" text="语言设置" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="15" />
+                    <Option name="time" text="时间设置" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="15" />
+                    <Option name="recover" text="恢复设置" font="0" bkcolor="FF3275EE#" borderround="15,15" group="contenttab"/> <HorizontalLayout height="15" />
                 </VerticalLayout>
-                <VerticalLayout width="5" />
+                <VerticalLayout width="16" />
            </HorizontalLayout>
-           <HorizontalLayout height="15" />
+           <HorizontalLayout height="16" />
         </VerticalLayout>
         
         <VerticalLayout> <!--内容-->

@@ -82,7 +82,8 @@ protected:
 	// Public interface
 public:
 	void do_exit_windows();
-	void do_record();
+	// return true for recording, false for stopped
+	bool do_record();
 	void do_stop_record();
 	void do_capture();
 	bool do_file_manager(CRect& rc);

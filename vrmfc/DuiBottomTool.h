@@ -14,7 +14,7 @@ public:
 	explicit CDuiBottomTool(const wchar_t* xmlpath);
 	virtual ~CDuiBottomTool();
 
-	//DUI_DECLARE_MESSAGE_MAP();
+	
 	virtual void InitWindow() override;
 	virtual LPCTSTR GetWindowClassName() const override { return L"CDuiBottomTool"; }
 	virtual void Notify(DuiLib::TNotifyUI& msg) override;
@@ -79,4 +79,7 @@ protected:
 	void copy_to_usb(char root);
 	void file_back_to_main();
 	void update_file_mode_btns();
+
+
+	DUI_DECLARE_MESSAGE_MAP();
 };
