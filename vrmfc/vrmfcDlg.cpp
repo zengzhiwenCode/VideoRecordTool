@@ -98,7 +98,7 @@ void CvrmfcDlg::on_update(const int & lang)
 	CRect rc;
 	GetWindowRect(rc);
 	if (lang == 1) {
-		rc.left = rc.right - 325;
+		rc.left = rc.right - 355;
 	} else {
 		rc.left = rc.right - 286;
 	}
@@ -106,6 +106,8 @@ void CvrmfcDlg::on_update(const int & lang)
 
 	tip_->SetWindowPos(&wndTopMost, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
 }
+
+
 
 BEGIN_MESSAGE_MAP(CvrmfcDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
@@ -118,6 +120,7 @@ BEGIN_MESSAGE_MAP(CvrmfcDlg, CDialogEx)
 	ON_WM_DESTROY()
 	ON_MESSAGE(WM_DEVICECHANGE, &CvrmfcDlg::OnDeviceChange)
 	ON_WM_LBUTTONDOWN()
+	ON_MESSAGE(WM_REFRESH_MAT, &CvrmfcDlg::OnRefreshMat)
 END_MESSAGE_MAP()
 
 
@@ -182,7 +185,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		CRect rc;
 		GetWindowRect(rc);
 		if (cfg->get_lang() == "en") {
-			rc.left = rc.right - 335;
+			rc.left = rc.right - 355;
 		} else {
 			rc.left = rc.right - 286;
 		}
@@ -229,9 +232,9 @@ BOOL CvrmfcDlg::OnInitDialog()
 		CRect rc;
 		GetWindowRect(rc);
 		rc.top = rc.bottom - 65;
-		rc.bottom -= 5;
-		rc.left += 125;
-		rc.right -= 125;
+		//rc.bottom -= 5;
+		//rc.left += 125;
+		//rc.right -= 125;
 
 		CPaintManagerUI::SetInstance(AfxGetInstanceHandle());                    // 指定duilib的实例
 		CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + L"\\skin");    // 指定duilib资源的路径，这里指定为和exe同目录
@@ -475,6 +478,7 @@ void CvrmfcDlg::OnBnClickedOk()
 void CvrmfcDlg::OnBnClickedCancel()
 {
 //#ifdef _DEBUG
+	stop_worker();
 	CDialogEx::OnCancel();
 //#endif // !_DEBUG
 }
@@ -484,27 +488,7 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 	switch (nIDEvent) {
 	case timer_id::preview:
 	{
-		if (dscap_.isOpened()) {
-			Mat frame = dscap_.QueryFrame();
-			if (frame.data) {
-				drawer_->DrawImg(frame);
-
-				if (record_.recording && record_.writer && record_.writer->isOpened()) {
-					record_.writer->write(frame);
-					rec_tip_->SetText(utf8::a2w(fps_.get_string() + " " + record_.get_time()).c_str());
-					rec_tip_->Invalidate();
-
-					int rec_time = config::get_instance()->get_max_rec_minutes();
-					if (rec_time != 0 && record_.get_minutes() >= rec_time) {
-						do_stop_record();
-					}
-
-				} else {
-					rec_tip_->SetText(utf8::a2w(fps_.get_string()).c_str());
-					rec_tip_->Invalidate();
-				}
-			}
-		}
+		
 	}
 		break;
 
@@ -528,6 +512,80 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	CDialogEx::OnTimer(nIDEvent);
+}
+
+void CvrmfcDlg::stop_worker(bool close_cam)
+{
+	{
+		std::lock_guard<std::mutex> lg(mutex_);
+		running_ = false;
+	}
+
+	cv_.notify_one();
+
+	//std::this_thread::sleep_for(std::chrono::milliseconds(sleep_ms_ * 5));
+	if (thread_.joinable()) {
+		thread_.join();
+	}
+
+	if (close_cam && dscap_.isOpened()) {
+		dscap_.CloseCamera();
+	}
+}
+
+void CvrmfcDlg::start_worker()
+{
+	running_ = true;
+	thread_ = std::thread(&CvrmfcDlg::worker, this);
+}
+
+void CvrmfcDlg::worker()
+{
+	AUTO_LOG_FUNCTION;
+	while (running_) {
+		std::unique_lock<std::mutex> ul(mutex_);
+		cv_.wait_for(ul, std::chrono::milliseconds(sleep_ms_), [this]() {return !running_; });
+
+		if (!running_) {
+			break;
+		}
+
+		if (dscap_.isOpened()) {
+			frame_ = dscap_.QueryFrame();
+			if (frame_.data) {
+				SendMessage(WM_REFRESH_MAT);
+			}
+		}
+	}
+}
+
+afx_msg LRESULT CvrmfcDlg::OnRefreshMat(WPARAM wParam, LPARAM lParam)
+{
+	if (running_) {
+		draw_mat();
+	}
+
+	return 0;
+}
+
+void CvrmfcDlg::draw_mat()
+{
+	drawer_->DrawImg(frame_);
+
+	if (record_.recording && record_.writer && record_.writer->isOpened()) {
+		record_.writer->write(frame_);
+		rec_tip_->SetText(utf8::a2w(fps_.get_string() + " " + record_.get_time()).c_str());
+		rec_tip_->Invalidate();
+
+		int rec_time = config::get_instance()->get_max_rec_minutes();
+		if (rec_time != 0 && record_.get_minutes() >= rec_time) {
+			do_stop_record();
+		}
+
+	} else {
+		rec_tip_->SetText(utf8::a2w(fps_.get_string()).c_str());
+		rec_tip_->Invalidate();
+	}
 }
 
 void CvrmfcDlg::adjust_player_size(int w, int h)
@@ -562,7 +620,7 @@ HBRUSH CvrmfcDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 void CvrmfcDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
-
+	
 	serial_send("off");
 
 	JLOG_INFO("vrmfc stopped running");
@@ -674,12 +732,16 @@ void CvrmfcDlg::process_com(const std::string & data)
 void CvrmfcDlg::recalc_fps()
 {
 	auto cfg = config::get_instance();
-	KillTimer(timer_id::preview);
+	//KillTimer(timer_id::preview);
+	stop_worker(false);
 	int fps = cfg->get_mi()[cfg->get_vtype()].fps;
 	int gap = fps == 0 ? 30 : 1000 / fps;
 	fps_.begin = std::chrono::steady_clock::now();
 	fps_.frames = 0;
-	SetTimer(timer_id::preview, gap, nullptr);
+	//SetTimer(timer_id::preview, gap, nullptr);
+	sleep_ms_ = gap;
+
+	start_worker();
 }
 
 void CvrmfcDlg::do_exit_windows()
@@ -761,7 +823,8 @@ bool CvrmfcDlg::do_file_manager(CRect& rc)
 	GetWindowRect(rc);
 	rc.bottom -= 100;
 
-	KillTimer(timer_id::preview);
+	//KillTimer(timer_id::preview);
+	stop_worker(false);
 	
 	auto cfg = config::get_instance();
 	cv::Mat mat = cv::Mat::zeros(cfg->get_video_w(), cfg->get_video_h(), CV_8UC3);
@@ -819,7 +882,7 @@ void CvrmfcDlg::do_settings()
 bool CvrmfcDlg::do_update_capmode(const std::string & mode)
 {
 	auto cfg = config::get_instance();
-	dscap_.CloseCamera();
+	stop_worker();
 	if (dscap_.OpenCamera(cfg->get_vidx(), false, cfg->get_video_w(), cfg->get_video_h(), mode.c_str())) {
 		cfg->set_vtype(mode);
 
@@ -832,11 +895,11 @@ bool CvrmfcDlg::do_update_capmode(const std::string & mode)
 bool CvrmfcDlg::do_update_resolution(misz sz)
 {
 	auto cfg = config::get_instance();
-	dscap_.CloseCamera();
+	stop_worker();
 	if (dscap_.OpenCamera(cfg->get_vidx(), false, sz.first, sz.second, cfg->get_vtype().c_str())) {
 		cfg->set_video_w(sz.first);
 		cfg->set_video_h(sz.second);
-
+		adjust_player_size(sz.first, sz.second);
 		recalc_fps();
 		return true;
 	}

@@ -55,6 +55,7 @@ void CDuiSettingsDlg::InitWindow()
 			opt->SetText(name.c_str());
 			opt->SetFont(0);
 			opt->SetBkColor(0xFF3275EE);
+			opt->SetSelectedImage(L"image/option_bk_hot.png");
 			SIZE sz = { 15,15 };
 			opt->SetBorderRound(sz);
 			opt->SetGroup(L"cap_modes");
@@ -78,7 +79,7 @@ void CDuiSettingsDlg::InitWindow()
 			opt->SetName((L"resolutions_" + std::to_wstring(i.first) + L"_" + std::to_wstring(i.second)).c_str());
 			opt->SetText((std::to_wstring(i.first) + L"*" + std::to_wstring(i.second)).c_str());
 			opt->SetFont(0);
-			
+			opt->SetSelectedImage(L"image/option_bk_hot.png");
 			SIZE sz = { 15,15 };
 			opt->SetBorderRound(sz);
 			opt->SetGroup(L"resolutions");
@@ -468,11 +469,9 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 		maindlg->do_reset_camera();
 
 		PostMessage(WM_CLOSE);
-	} else if (name == "reset_cancel") {
+	} else if (name == "reset_cancel" || name == "theclosebtn") {
 		PostMessage(WM_CLOSE);
 	}
-
-
 
 	__super::OnClick(msg);
 }
@@ -487,6 +486,7 @@ void CDuiSettingsDlg::on_update(const int & lang)
 		{ L"language", trw(IDS_STRING_LANGSET) },
 		{ L"time", trw(IDS_STRING_TIMESET) },
 		{ L"recover", trw(IDS_STRING_RESET) },
+		{ L"theclosebtn", trw(IDS_STRING_WCLOSE) },
 		{ L"tab_resolution", trw(IDS_STRING_RESSET) },
 		{ L"tab_record", trw(IDS_STRING_RECSET) },
 			{ L"lable_rec_time", trw(IDS_STRING_RECTIME) },

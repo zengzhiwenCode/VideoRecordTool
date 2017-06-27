@@ -53,6 +53,20 @@ protected:
 	int temperature_ = 0;
 	bool usb_storage_plugin_ = false;
 	
+	std::mutex mutex_ = {};
+	std::condition_variable cv_ = {};
+	std::thread thread_ = {};
+	bool running_ = true;
+	//bool previewing_ = true;
+	//bool sig_received_ = false;
+	void stop_worker(bool close_cam = true);
+	void start_worker();
+	void worker();
+	int sleep_ms_ = 10;
+	cv::Mat frame_ = {};
+	void draw_mat();
+
+	
 
 	struct _fps {
 		std::chrono::steady_clock::time_point begin = {};
@@ -119,4 +133,6 @@ public:
 	afx_msg void OnDestroy();
 	afx_msg LRESULT OnDeviceChange(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+protected:
+	afx_msg LRESULT OnRefreshMat(WPARAM wParam, LPARAM lParam);
 };

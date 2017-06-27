@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<Window size="600,400" mininfo="600,400" maxinfo="600,400" caption="0,0,0,-1" sizebox="0,0,0,0">
+<Window size="600,450" mininfo="600,400" maxinfo="600,400" caption="0,0,0,-1" sizebox="0,0,0,0">
     <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
 	<Font shared="true" id="1" name="宋体" size="20" />
-    <VerticalLayout bkcolor="FFD77E44#" bordersize="1" bordercolor="#FF707070" borderround="5,5"> <!--整个窗口-->
-        <HorizontalLayout height="50" bkcolor="#FFFFFFB0" bkcolor2="#FFAAAAAA" borderround="1,1">
+    <VerticalLayout bkcolor="FF595959#" bordersize="1" bordercolor="#FF707070" borderround="5,5"> <!--整个窗口-->
+        <HorizontalLayout height="50" bkcolor="#FF595959" bkcolor2="#FF909090" borderround="1,1">
             <VerticalLayout width="60" />
             <Label name="title" text="视频详情" align="center" valign="center" font="0" />
             <Button name="closebtn" text="关闭" font="1" width="60" />

@@ -366,7 +366,8 @@ void CDuiBottomTool::set_mode(mode m)
 		btn->SetName(name);
 		btn->SetText(text);
 		btn->SetFont(font_idx);
-		btn->SetTextColor(0xFF000000);
+		btn->SetTextColor(0xFFFFFFFF);
+
 		//btn->SetBkColor(0xFF4472C4);
 		//btn->SetBorderRound(BORDER_RND);
 		//btn->SetSelectedBkColor(0xFFFF9900);
@@ -417,7 +418,7 @@ void CDuiBottomTool::set_mode(mode m)
 			btn->SetName(btn_names::edit);
 			btn->SetText(trw(IDS_STRING_EDIT).c_str());
 			btn->SetFont(0);
-			btn->SetTextColor(0);
+			btn->SetTextColor(0xFFFFFFFF);
 			//btn->SetBkColor(0xFF3275EE);
 			//btn->SetBorderRound(BORDER_RND);
 			btn->SetBkImage(L"image/btnbk_normal.png");
@@ -492,6 +493,10 @@ void CDuiBottomTool::set_mode(mode m)
 
 	case CDuiBottomTool::video_view:
 	{
+		{
+
+		}
+
 		tv vv = {
 			{ btn_names::prev_video, trw(IDS_STRING_PREV_VIDEO) },
 			{ btn_names::stop, trw(IDS_STRING_STOP) },
@@ -820,11 +825,12 @@ void CDuiBottomTool::view_video()
 		video_cur_time_ = std::make_shared<CAlarmTextDlg>();
 		video_cur_time_->Create(IDD_DIALOG_ALARM_TEXT, CWnd::FromHandle(m_hWnd));
 		CRect rc(rc_maindlg_);
-		rc.bottom -= 25;
+		rc.bottom -= 20;
 		rc.top = rc.bottom - 22;
 		rc.left += 15;
 		rc.right = rc.left + 100;
 		video_cur_time_->SetWindowPos(CWnd::FromHandle(HWND_TOPMOST), rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+		video_cur_time_->SetBkColor(RGB(91,155,213));
 	}
 
 	if (video_cur_time_) {
@@ -840,6 +846,7 @@ void CDuiBottomTool::view_video()
 		rc.right -= 15;
 		rc.left = rc.right - 100;
 		video_total_time_->SetWindowPos(CWnd::FromHandle(HWND_TOPMOST), rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+		video_total_time_->SetBkColor(RGB(91, 155, 213));
 	}
 
 	if (video_total_time_) {

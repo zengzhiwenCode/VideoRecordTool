@@ -37,7 +37,8 @@ private:
 	BOOL m_bDrawText;
 	CBitmap m_bitmap;
 	CDC m_memDC;
-	COLORREF m_clr;
+	COLORREF m_text_color;
+	COLORREF m_bk_color;
 	BOOL m_bAlreadyAddBlank;
 public:
 
@@ -63,10 +64,18 @@ public:
 		ShowWindow(SW_HIDE);
 	}
 
-	inline void SetColor(COLORREF color)
+	inline void SetTextColor(COLORREF color)
 	{
-		if (color != m_clr) {
-			m_clr = color;
+		if (color != m_text_color) {
+			m_text_color = color;
+			//GetParent()->UpdateWindow();
+		}
+	}
+
+	inline void SetBkColor(COLORREF color)
+	{
+		if (color != m_bk_color) {
+			m_bk_color = color;
 			//GetParent()->UpdateWindow();
 		}
 	}
