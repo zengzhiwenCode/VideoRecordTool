@@ -10,6 +10,8 @@
 #include "DuiVideoPlayer.h"
 #include "DuiVideoPos.h"
 #include "DuiVideoDetailDlg.h"
+#include "DuiUsbProgressDlg.h"
+
 
 namespace {
 
@@ -192,8 +194,11 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			DuiSleep(300);
 			normal_btn();
 		} else if (name == btn_names::cp_to_usb) {
+			hot_btn();
+			::EnableWindow(file_dlg_->GetHWND(), 0);
 			copy_to_usb();
 			normal_btn();
+			::EnableWindow(file_dlg_->GetHWND(), 1);
 		}
 		
 		break;
@@ -227,7 +232,9 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			pic_view_dec();
 		} else if (name == btn_names::cp_to_usb) {
 			hot_btn();
+			//::EnableWindow(file_dlg_->GetHWND(), 0);
 			copy_to_usb();
+			//::EnableWindow(file_dlg_->GetHWND(), 1);
 			normal_btn();
 		} else if (name == btn_names::detail) {
 			hot_btn();
@@ -299,9 +306,11 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			video_view_del();
 		} else if (name == btn_names::cp_to_usb) {
 			hot_btn();
+			//::EnableWindow(file_dlg_->GetHWND(), 0);
 			video_player_->stop();
 			on_video_pos_changed(L"", L"", -1);
 			copy_to_usb();
+			//::EnableWindow(file_dlg_->GetHWND(), 0);
 			normal_btn();
 		} else if (name == btn_names::detail) {
 			hot_btn();
@@ -1177,7 +1186,7 @@ void CDuiBottomTool::copy_to_usb(char root)
 		for (auto i : piters_) {
 			v.push_back(std::make_pair(utf8::mbcs_to_u16(pics_[i].string()), dst_pic_folder));
 		}
-		CopyFiles(m_hWnd, v);
+		//CopyFiles(m_hWnd, v);
 	}
 
 	if (!viters_.empty()) {
@@ -1199,8 +1208,22 @@ void CDuiBottomTool::copy_to_usb(char root)
 		
 	}
 
-	CopyFiles(m_hWnd, v);
+	//CopyFiles(m_hWnd, v);
 	
+	auto dlg = std::make_shared<CDuiUsbProgressDlg>(L"usbprogress.xml");
+	dlg->files_ = v;
+	dlg->Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
+	CRect rc = rc_maindlg_;
+	CRect rcdlg;
+	::GetWindowRect(dlg->GetHWND(), rcdlg);
+	int wgap = (rc.Width() - rcdlg.Width()) / 2;
+	int hgap = (rc.Height() - rcdlg.Height()) / 2;
+	rc.left += wgap;
+	rc.right -= wgap;
+	rc.top += hgap;
+	rc.bottom -= hgap;
+	::SetWindowPos(dlg->GetHWND(), HWND_TOP, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
+	dlg->ShowModal();
 }
 
 void CDuiBottomTool::file_back_to_main()

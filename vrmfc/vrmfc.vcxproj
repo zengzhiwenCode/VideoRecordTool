@@ -104,6 +104,7 @@
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>..\baseclasses\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Strmbasd.lib;winmm.lib;Msacm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -212,6 +213,7 @@
     <ClInclude Include="DuiPreviewCaptureDlg.h" />
     <ClInclude Include="DuiSettingsDlg.h" />
     <ClInclude Include="DuiSysInfoDlg.h" />
+    <ClInclude Include="DuiUsbProgressDlg.h" />
     <ClInclude Include="DuiVideoDetailDlg.h" />
     <ClInclude Include="DuiVideoPlayer.h" />
     <ClInclude Include="DuiVideoPos.h" />
@@ -236,6 +238,7 @@
     <ClCompile Include="DuiPreviewCaptureDlg.cpp" />
     <ClCompile Include="DuiSettingsDlg.cpp" />
     <ClCompile Include="DuiSysInfoDlg.cpp" />
+    <ClCompile Include="DuiUsbProgressDlg.cpp" />
     <ClCompile Include="DuiVideoDetailDlg.cpp" />
     <ClCompile Include="DuiVideoPlayer.cpp" />
     <ClCompile Include="DuiVideoPos.cpp" />

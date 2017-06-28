@@ -102,6 +102,9 @@
     <ClInclude Include="DuiVideoPos.h">
       <Filter>ui</Filter>
     </ClInclude>
+    <ClInclude Include="DuiUsbProgressDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vrmfc.cpp">
@@ -169,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="DuiVideoPos.cpp">
       <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiUsbProgressDlg.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,39 +1,47 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<Window size="600,300" alpha="255" bktrans="true" mininfo="750,60" maxinfo="750,60" caption="0,0,0,1" sizebox="0,0,0,0">
-    <Font shared="true" id="0" name="微软雅黑" size="20" color="FF000000#" bold="true" />
+<Window size="600,220" mininfo="750,60" maxinfo="750,60" caption="0,0,0,1" sizebox="0,0,0,0">
+    <Font shared="true" id="0" name="微软雅黑" size="20" color="FF000000#" bold="false" />
     <Font shared="true" id="1" name="微软雅黑" size="14" color="FF000000#" bold="true" />
 	<Font shared="true" id="2" name="幼圆" size="30" />
 	<HorizontalLayout bkcolor="FF5B9BD5#" bordersize="1" bordercolor="#FF707070"> <!--整个窗口-->
-        <VerticalLayout width="125" />
+        <VerticalLayout width="5" />
         <VerticalLayout>
             <HorizontalLayout height="5" />
             <HorizontalLayout >
-                <VerticalLayout width="50" >
-                    <Lable name="filename" text="文件名" font="0" textcolor="#00000000" />
+                <VerticalLayout width="280" >
                     <HorizontalLayout height="5" />
-                    <Lable name="filesize" text="文件大小" font="0" textcolor="#00000000" />
+                    <Label name="filename" text="文件名" font="0" textcolor="#00000000" />
                     <HorizontalLayout height="5" />
-                    <Lable name="speed" text="速度" font="0" textcolor="#00000000" />
+                    <Label name="filesize" text="文件大小" font="0" textcolor="#00000000" />
                     <HorizontalLayout height="5" />
-                    <Lable name="etr" text="剩余时间" font="0" textcolor="#00000000" />
+                    <Label name="speed" text="速度" font="0" textcolor="#00000000" />
+                    <HorizontalLayout height="5" />
+                    <Label name="etr" text="剩余时间" font="0" textcolor="#00000000" />
+                    <HorizontalLayout height="5" />
                 </VerticalLayout>
+                <VerticalLayout width="10" />
                 <VerticalLayout>
-                    <Lable name="filename_var" text="abc.txt" font="0" textcolor="#00000000" />
                     <HorizontalLayout height="5" />
-                    <Lable name="filename_var" text="abc.txt" font="0" textcolor="#00000000" />
+                    <Label name="filename_var" text="abc.txt" font="0" textcolor="#00000000" />
                     <HorizontalLayout height="5" />
-                    <Lable name="filename_var" text="abc.txt" font="0" textcolor="#00000000" />
+                    <Label name="filesize_var" text="abc.txt" font="0" textcolor="#00000000" />
                     <HorizontalLayout height="5" />
-                    <Lable name="filename_var" text="abc.txt" font="0" textcolor="#00000000" />
+                    <Label name="speed_var" text="abc.txt" font="0" textcolor="#00000000" />
+                    <HorizontalLayout height="5" />
+                    <Label name="etr_var" text="abc.txt" font="0" textcolor="#00000000" />
+                    <HorizontalLayout height="5" />
                 </VerticalLayout>
             </HorizontalLayout>
             
-            <HorizontalLayout>
-                <Progress name="progress" />
+            <HorizontalLayout height="15" />
+            
+            <HorizontalLayout height="50">
+                <Progress name="progress" bkcolor="#FFED7C30" foreimage="image/progress_fore.png" min="0" max="100" value="60" height="50" bordersize="2" bordercolor="#FFA8A8A8" />
             </HorizontalLayout>
             
+            <HorizontalLayout height="5" />
         </VerticalLayout>
-        <VerticalLayout width="125" />
+        <VerticalLayout width="5" />
 	</HorizontalLayout>
 </Window>
 
