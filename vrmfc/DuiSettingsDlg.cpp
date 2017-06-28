@@ -57,8 +57,8 @@ void CDuiSettingsDlg::InitWindow()
 			//opt->SetBkColor(0xFF3275EE);
 			opt->SetBkImage(L"image/option_bk_normal.png");
 			opt->SetSelectedImage(L"image/option_bk_hot.png");
-			SIZE sz = { 15,15 };
-			opt->SetBorderRound(sz);
+			//SIZE sz = { 15,15 };
+			//opt->SetBorderRound(sz);
 			opt->SetGroup(L"cap_modes");
 
 			if (i.first == cfg->get_vtype()) {
@@ -82,8 +82,8 @@ void CDuiSettingsDlg::InitWindow()
 			opt->SetFont(0);
 			opt->SetBkImage(L"image/option_bk_normal.png");
 			opt->SetSelectedImage(L"image/option_bk_hot.png");
-			SIZE sz = { 15,15 };
-			opt->SetBorderRound(sz);
+			//SIZE sz = { 15,15 };
+			//opt->SetBorderRound(sz);
 			opt->SetGroup(L"resolutions");
 
 			if (i.first == cfg->get_video_w() && i.second == cfg->get_video_h()) {

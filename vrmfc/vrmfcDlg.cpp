@@ -489,7 +489,12 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 	switch (nIDEvent) {
 	case timer_id::preview:
 	{
-		
+		if (dscap_.isOpened()) {
+			frame_ = dscap_.QueryFrame();
+			if (frame_.data) {
+				SendMessage(WM_REFRESH_MAT);
+			}
+		}
 	}
 		break;
 
@@ -515,6 +520,7 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 	CDialogEx::OnTimer(nIDEvent);
 }
 
+#ifdef USE_THREAD_TO_CAP_MAT
 void CvrmfcDlg::stop_worker(bool close_cam)
 {
 	AUTO_LOG_FUNCTION;
@@ -561,6 +567,7 @@ void CvrmfcDlg::worker()
 		}
 	}
 }
+#endif
 
 afx_msg LRESULT CvrmfcDlg::OnRefreshMat(WPARAM wParam, LPARAM lParam)
 {
@@ -738,17 +745,25 @@ void CvrmfcDlg::process_com(const std::string & data)
 void CvrmfcDlg::recalc_fps()
 {
 	auto cfg = config::get_instance();
-	//KillTimer(timer_id::preview);
+
+#ifdef USE_THREAD_TO_CAP_MAT
 	stop_worker(false);
+#else
+	KillTimer(timer_id::preview);
+#endif
+
 	int fps = cfg->get_mi()[cfg->get_vtype()].fps;
 	int gap = fps == 0 ? 30 : 1000 / fps;
 	//gap -= 5;
 	fps_.begin = std::chrono::steady_clock::now();
 	fps_.frames = 0;
-	//SetTimer(timer_id::preview, gap, nullptr);
-	sleep_ms_ = gap;
 
+#ifdef USE_THREAD_TO_CAP_MAT
+	sleep_ms_ = gap;
 	start_worker();
+#else
+	SetTimer(timer_id::preview, gap, nullptr);
+#endif	
 }
 
 void CvrmfcDlg::do_exit_windows()
@@ -831,9 +846,11 @@ bool CvrmfcDlg::do_file_manager(CRect& rc)
 	rec_tip_->Hide();
 	GetWindowRect(rc);
 	rc.bottom -= 100;
-
-	//KillTimer(timer_id::preview);
+#ifdef USE_THREAD_TO_CAP_MAT
 	stop_worker(false);
+#else
+	KillTimer(timer_id::preview);
+#endif
 	
 	auto cfg = config::get_instance();
 	cv::Mat mat = cv::Mat::zeros(cfg->get_video_w(), cfg->get_video_h(), CV_8UC3);
@@ -891,7 +908,9 @@ void CvrmfcDlg::do_settings()
 bool CvrmfcDlg::do_update_capmode(const std::string & mode)
 {
 	auto cfg = config::get_instance();
+#ifdef USE_THREAD_TO_CAP_MAT
 	stop_worker();
+#endif
 	if (dscap_.OpenCamera(cfg->get_vidx(), false, cfg->get_video_w(), cfg->get_video_h(), mode.c_str())) {
 		cfg->set_vtype(mode);
 
@@ -904,7 +923,9 @@ bool CvrmfcDlg::do_update_capmode(const std::string & mode)
 bool CvrmfcDlg::do_update_resolution(misz sz)
 {
 	auto cfg = config::get_instance();
+#ifdef USE_THREAD_TO_CAP_MAT
 	stop_worker();
+#endif
 	if (dscap_.OpenCamera(cfg->get_vidx(), false, sz.first, sz.second, cfg->get_vtype().c_str())) {
 		cfg->set_video_w(sz.first);
 		cfg->set_video_h(sz.second);

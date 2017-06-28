@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<Window size="800,500" mininfo="800,500" maxinfo="800,500" caption="0,0,0,1" sizebox="0,0,0,0">
+<Window size="600,400" mininfo="800,500" maxinfo="800,500" caption="0,0,0,1" sizebox="0,0,0,0">
+    <Include source="scrollbar.xml" />
     <Font shared="true" id="0" name="微软雅黑" size="24" bold="false" />
 	<Font shared="true" id="1" name="宋体" size="20" />
     <Font shared="true" id="2" name="微软雅黑" size="28" bold="true" />
-    <Default shared="true" name="Slider" value="thumbsize=&quot;30,12&quot; bkimage=&quot;file='image\slider\bg.bmp' corner='6,0,6,0' mask='#FFFF00FF'&quot; foreimage=&quot;file='image\slider\bg.bmp' corner='6,0,6,0' mask='#FFFF00FF'&quot; thumbimage=&quot;file='image\slider\thumb.bmp' source='0,0,66,103' mask='#FFFFD966'&quot; thumbhotimage=&quot;file='image\slider\thumb.bmp' source='0,0,66,100' mask='#FFFFD966'&quot; " />
+    <Default shared="true" name="Slider" value="thumbsize=&quot;30,48&quot; bkimage=&quot;file='image\slider\bg.bmp' corner='6,0,6,0' mask='#FFFF00FF'&quot; foreimage=&quot;file='image\slider\bg.bmp' corner='6,0,6,0' mask='#FFFF00FF'&quot; thumbimage=&quot;file='image\slider\thumb.bmp' source='0,0,66,103' mask='#FF5B9BD5'&quot; thumbhotimage=&quot;file='image\slider\thumb.bmp' source='0,0,66,103' mask='#FF5B9BD5'&quot; " />
 	<HorizontalLayout bkcolor="FF595959#" bordersize="1" bordercolor="#FF707070"> <!--整个窗口-->
-        <VerticalLayout width="180" bkcolor="FFFFD966#" bordersize="1" bordercolor="#FF707070"> <!--左侧列表-->
+        <VerticalLayout width="150" bkcolor="FFFFD966#" bordersize="1" bordercolor="#FF707070"> <!--左侧列表-->
             <HorizontalLayout height="1" />
             <HorizontalLayout>
-                <VerticalLayout width="16" />
+                <VerticalLayout width="10" />
                 <VerticalLayout>
-                    <HorizontalLayout height="20" />
+                    <HorizontalLayout height="10" />
                     <Option name="resolution" text="分辨率" font="0" textcolor="FFFFFFFF#" bkimage="file='image\option_bk_normal2.png'" selectedimage="file='image\option_bk_hot2.png'" borderround="5,5" group="contenttab" selected="true"/> 
-                    <HorizontalLayout height="20" />
+                    <HorizontalLayout height="10" />
                     <Option name="record" text="录像选项" font="0" textcolor="FFFFFFFF#" bkimage="file='image\option_bk_normal2.png'" selectedimage="file='image\option_bk_hot2.png'" borderround="15,15" group="contenttab"/> 
-                    <HorizontalLayout height="20" />
+                    <HorizontalLayout height="10" />
                     <Option name="video" text="视频设置" font="0" textcolor="FFFFFFFF#" bkimage="file='image\option_bk_normal2.png'" selectedimage="file='image\option_bk_hot2.png'" borderround="15,15" group="contenttab"/> 
-                    <HorizontalLayout height="20" />
+                    <HorizontalLayout height="10" />
                     <Option name="camera" text="摄像机设置" font="0" textcolor="FFFFFFFF#" bkimage="file='image\option_bk_normal2.png'" selectedimage="file='image\option_bk_hot2.png'" borderround="15,15" group="contenttab"/> 
-                    <HorizontalLayout height="20" />
+                    <HorizontalLayout height="10" />
                     <Option name="language" text="语言设置" font="0" textcolor="FFFFFFFF#" bkimage="file='image\option_bk_normal2.png'" selectedimage="file='image\option_bk_hot2.png'" borderround="15,15" group="contenttab"/> 
-                    <HorizontalLayout height="20" />
+                    <HorizontalLayout height="10" />
                     <Option name="time" text="时间设置" font="0" textcolor="FFFFFFFF#" bkimage="file='image\option_bk_normal2.png'" selectedimage="file='image\option_bk_hot2.png'" borderround="15,15" group="contenttab"/> 
-                    <HorizontalLayout height="20" />
+                    <HorizontalLayout height="10" />
                     <Option name="recover" text="恢复设置" font="0" textcolor="FFFFFFFF#" bkimage="file='image\option_bk_normal2.png'" selectedimage="file='image\option_bk_hot2.png'" borderround="15,15" group="contenttab"/> 
-                    <HorizontalLayout height="20" />
+                    <HorizontalLayout height="10" />
                     <Button name="theclosebtn" text="关  闭" font="0" textcolor="FFFFFFFF#" bkimage="file='image\option_bk_normal2.png'" selectedimage="file='image\option_bk_hot2.png'" borderround="15,15" />
                 </VerticalLayout>
-                <VerticalLayout width="16" />
+                <VerticalLayout width="10" />
            </HorizontalLayout>
-           <HorizontalLayout height="16" />
         </VerticalLayout>
         
         <VerticalLayout> <!--内容-->
             <HorizontalLayout name="container" >
                 <TabLayout name="options">
                     <VerticalLayout> <!--分辨率-->
-                        <HorizontalLayout height="50" />
+                        <HorizontalLayout height="25" />
                         <HorizontalLayout height="50"  ><!--标题栏-->
                         <VerticalLayout width="50" />
                         <Label name="tab_resolution" text="分辨率格式yuv/mpeg" font="0" align="center" valign="center" textcolor="#FF000000" bkcolor="FF3275EE#" borderround="15,15"/>
@@ -46,18 +46,18 @@
                         <HorizontalLayout height="25" />
                         <HorizontalLayout>
                             <VerticalLayout width="50" />
-                            <VerticalLayout name="resolutions">
+                            <VerticalLayout name="resolutions" vscrollbar="true" >
                             </VerticalLayout>
                             <VerticalLayout width="50" />
                             <VerticalLayout name="cap_mode">
                             </VerticalLayout>
                             <VerticalLayout width="50" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="50" />
+                        <HorizontalLayout height="5" />
                     </VerticalLayout>
                     <VerticalLayout> <!--录像选项-->
-                        <HorizontalLayout height="120" />
-                        <Label name="lable_rec_time" text="时长（值）" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                        <HorizontalLayout height="100" />
+                        <Label name="lable_rec_time" text="时长（值）" font="0" align="center" valign="center" textcolor="#FFFFD966"  />
                         <HorizontalLayout height="20" />
                         <HorizontalLayout>
                             <VerticalLayout width="20" />
@@ -66,22 +66,22 @@
                                 <HorizontalLayout height="25">
                                     <VerticalLayout width="25" />
                                     <Label text="max" font="0" align="center" valign="center" textcolor="#FF000000"  />
-                                    <VerticalLayout width="320"/>
+                                    <VerticalLayout width="100"/>
                                     <Label text="60min" font="0" align="center" valign="center" textcolor="#FF000000"  />
                                     <VerticalLayout width="25" />
                                 </HorizontalLayout>
                                 <HorizontalLayout height="15" />
                                 <HorizontalLayout>
                                     <VerticalLayout width="5" />
-                                    <Button name="rec_time_dec" width="85" height="45" normalimage="file='image\slider\left.bmp'" />
+                                    <Button name="rec_time_dec" width="45" height="45" normalimage="file='image\slider\left.bmp'" />
                                     <VerticalLayout width="5" />
                                     <VerticalLayout>
-                                        <HorizontalLayout height="10" />
-                                        <Slider name="rec_time" min="0" max="60" step="1" height="25" valign="center"/>
-                                        <HorizontalLayout height="10" />
+                                        <HorizontalLayout height="1" />
+                                        <Slider name="rec_time" min="0" max="60" step="1" height="43" valign="center" value="thumbsize=&quot;30,48&quot; bkimage=&quot;file='image\slider\bg.bmp' corner='6,0,6,0' mask='#FFFF00FF'&quot; foreimage=&quot;file='image\slider\bg.bmp' corner='6,0,6,0' mask='#FFFF00FF'&quot; thumbimage=&quot;file='image\slider\thumb.bmp' source='0,0,66,103' mask='#FF5B9BD5'&quot; thumbhotimage=&quot;file='image\slider\thumb.bmp' source='0,0,66,103' mask='#FF5B9BD5'&quot; "/>
+                                        <HorizontalLayout height="1" />
                                     </VerticalLayout>
                                     <VerticalLayout width="5" />
-                                    <Button name="rec_time_inc" width="85" height="45" normalimage="file='image\slider\right.bmp'" />
+                                    <Button name="rec_time_inc" width="45" height="45" normalimage="file='image\slider\right.bmp'" />
                                     <VerticalLayout width="5" />
                                 </HorizontalLayout>
                                 <HorizontalLayout height="25" >
@@ -91,57 +91,60 @@
                             </VerticalLayout>
                             <VerticalLayout width="20" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="160" />
+                        <HorizontalLayout height="100"/>
                     </VerticalLayout>
                     <VerticalLayout> <!--视频设置-->                      
-                        <HorizontalLayout height="80" />
+                        <HorizontalLayout height="25" />
                         <HorizontalLayout>
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
                             <Option name="brightness" text="亮度" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="video"/>
                             <VerticalLayout width="25" />
                             <Option name="contrast" text="对比度" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="video"/>
                             <VerticalLayout width="25" />
                             <Option name="hue" text="色调" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="video"/>
                             <VerticalLayout width="25" />
-                            <Option name="saturation" text="饱和度" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="video"/>
-                            <VerticalLayout width="50" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="35" />
+                        <HorizontalLayout height="25" />
                         <HorizontalLayout>
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
+                            <Option name="saturation" text="饱和度" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="video"/>
+                            <VerticalLayout width="25" />
                             <Option name="sharpness" text="清晰度" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="video"/>
                             <VerticalLayout width="25" />
                             <Option name="gamma" text="伽马" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="video"/>
                             <VerticalLayout width="25" />
+                        </HorizontalLayout>
+                        <HorizontalLayout height="25" />
+                        <HorizontalLayout>
+                            <VerticalLayout width="25" />
                             <Option name="white_balance" text="白平衡" endellipsis="true" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="video"/>
                             <VerticalLayout width="25" />
                             <Option name="backlight" text="逆光对比" endellipsis="true" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="video"/>
-                            <VerticalLayout width="50" />
-                        </HorizontalLayout>
-                        <HorizontalLayout height="35" />
-                        <HorizontalLayout>
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
                             <Option name="gain" text="增益" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="video"/>
                             <VerticalLayout width="25" />
+                        </HorizontalLayout>
+                        <HorizontalLayout height="25" />
+                        <HorizontalLayout>
                             <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
                             <VerticalLayout width="25" />
                             <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
                             <VerticalLayout width="25" />
                             <Button name="reset_video" text="恢复默认" font="0" bkimage="file='image\option_bk_normal.png'" group="video" borderround="5,5" />
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="80" />
+                        <HorizontalLayout height="25" />
                         <HorizontalLayout>
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
                             <VerticalLayout height="45" >
                                 <HorizontalLayout height="45">
                                     <VerticalLayout width="5" />
                                     <Button name="video_dec" width="45" height="45" normalimage="file='image\slider\left2.bmp'" />
                                     <VerticalLayout width="5" />
                                     <VerticalLayout>
-                                        <HorizontalLayout height="10" />
-                                        <Slider name="video_slider" min="0" max="5" step="1" height="25" valign="center"/>
-                                        <HorizontalLayout height="10" />
+                                        <HorizontalLayout height="1" />
+                                        <Slider name="video_slider" min="0" max="5" step="1" height="43" valign="center" thumbsize="30,48" bkimage="file='image\slider\bg2.bmp' corner='6,0,6,0' mask='#FFFF00FF'" foreimage="file='image\slider\bg2.bmp' corner='6,0,6,0' mask='#FFFF00FF'" thumbimage="file='image\slider\thumb.bmp' source='0,0,66,103' mask='#FF5B9BD5'" thumbhotimage="file='image\slider\thumb.bmp' source='0,0,66,103' mask='#FF5B9BD5'" />
+                                        <HorizontalLayout height="1" />
                                     </VerticalLayout>
                                     <VerticalLayout width="5" />
                                     <Button name="video_inc" width="45" height="45" normalimage="file='image\slider\right2.bmp'" />
@@ -153,68 +156,72 @@
                                 <Option name="video_auto" text="自动" enabled="false" width="80" height="35" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" />
                                 <HorizontalLayout height="5" />
                             </VerticalLayout>
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
                         </HorizontalLayout>
                         <HorizontalLayout height="20">
-                            <VerticalLayout width="100" />
-                            <Label name="video_min" text="0" font="0" align="left" valign="center" textcolor="#FF000000"  />
+                            <VerticalLayout width="60" />
+                            <Label name="video_min" text="0" font="0" align="left" valign="center" textcolor="#FFFFD966"  />
                             <VerticalLayout width="50" />
-                            <Label name="video_val" text="10" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                            <Label name="video_val" text="10" font="0" align="center" valign="center" textcolor="#FFFFD966"  />
                             <VerticalLayout width="50" />
-                            <Label name="video_max" text="256" font="0" align="right" valign="center" textcolor="#FF000000"  />
-                            <VerticalLayout width="180" />
+                            <Label name="video_max" text="256" font="0" align="right" valign="center" textcolor="#FFFFD966"  />
+                            <VerticalLayout width="130" />
                         </HorizontalLayout>
                         <HorizontalLayout />
                     </VerticalLayout>
                     <VerticalLayout> <!--摄像机设置-->                       
-                        <HorizontalLayout height="80" />
+                        <HorizontalLayout height="25" />
                         <HorizontalLayout>
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
                             <Option name="zoom" text="缩放" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="camera"/>
                             <VerticalLayout width="25" />
                             <Option name="focus" text="焦点" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="camera"/>
                             <VerticalLayout width="25" />
                             <Option name="exposure" text="曝光" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="camera"/>
                             <VerticalLayout width="25" />
-                            <Option name="iris" text="光圈" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="camera"/>
-                            <VerticalLayout width="50" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="35" />
+                        <HorizontalLayout height="25" />
                         <HorizontalLayout>
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
+                            <Option name="iris" text="光圈" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="camera"/>
+                            <VerticalLayout width="25" />
                             <Option name="pan" text="全景" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="camera"/>
                             <VerticalLayout width="25" />
                             <Option name="tilt" text="倾斜" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="camera"/>
                             <VerticalLayout width="25" />
-                            <Option name="roll" text="滚动" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="camera"/>
-                            <VerticalLayout width="25" />
-                            <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
-                            <VerticalLayout width="50" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="35" />
+                        <HorizontalLayout height="25" />
                         <HorizontalLayout>
-                            <VerticalLayout width="50" />
-                            <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
                             <VerticalLayout width="25" />
-                            <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
+                            <Option name="roll" text="滚动" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="camera"/>
                             <VerticalLayout width="25" />
                             <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
                             <VerticalLayout width="25" />
                             <Button name="reset_camera" text="恢复默认" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" group="camera" borderround="5,5" />
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="80" />
+                        <HorizontalLayout height="25" />
                         <HorizontalLayout>
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
+                            <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
+                            <VerticalLayout width="25" />
+                            <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
+                            <VerticalLayout width="25" />
+                            <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
+                            <VerticalLayout width="25" />
+                        </HorizontalLayout>
+                        <HorizontalLayout height="25" />
+                        <HorizontalLayout>
+                            <VerticalLayout width="25" />
                             <VerticalLayout height="45" >
                                 <HorizontalLayout height="45">
                                     <VerticalLayout width="5" />
                                     <Button name="camera_dec" width="45" height="45" normalimage="file='image\slider\left2.bmp'" />
                                     <VerticalLayout width="5" />
                                     <VerticalLayout>
-                                        <HorizontalLayout height="10" />
-                                        <Slider name="camera_slider" min="0" max="5" step="1" height="25" valign="center"/>
-                                        <HorizontalLayout height="10" />
+                                        <HorizontalLayout height="1" />
+                                        <Slider name="camera_slider" min="0" max="5" step="1" height="43" valign="center" thumbsize="30,48" bkimage="file='image\slider\bg2.bmp' corner='6,0,6,0' mask='#FFFF00FF'" foreimage="file='image\slider\bg2.bmp' corner='6,0,6,0' mask='#FFFF00FF'" thumbimage="file='image\slider\thumb.bmp' source='0,0,66,103' mask='#FF5B9BD5'" thumbhotimage="file='image\slider\thumb.bmp' source='0,0,66,103' mask='#FF5B9BD5'"/>
+                                        <HorizontalLayout height="1" />
                                     </VerticalLayout>
                                     <VerticalLayout width="5" />
                                     <Button name="camera_inc" width="45" height="45" normalimage="file='image\slider\right2.bmp'" />
@@ -226,76 +233,84 @@
                                 <Option name="camera_auto" text="自动" enabled="false" width="80" height="35" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" />
                                 <HorizontalLayout height="5" />
                             </VerticalLayout>
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
                         </HorizontalLayout>
                         <HorizontalLayout height="20">
-                            <VerticalLayout width="100" />
-                            <Label name="camera_min" text="0" font="0" align="left" valign="center" textcolor="#FF000000"  />
+                            <VerticalLayout width="60" />
+                            <Label name="camera_min" text="0" font="0" align="left" valign="center" textcolor="#FFFFD966"  />
                             <VerticalLayout width="50" />
-                            <Label name="camera_val" text="10" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                            <Label name="camera_val" text="10" font="0" align="center" valign="center" textcolor="#FFFFD966"  />
                             <VerticalLayout width="50" />
-                            <Label name="camera_max" text="256" font="0" align="right" valign="center" textcolor="#FF000000"  />
-                            <VerticalLayout width="180" />
+                            <Label name="camera_max" text="256" font="0" align="right" valign="center" textcolor="#FFFFD966"  />
+                            <VerticalLayout width="130" />
                         </HorizontalLayout>
                         <HorizontalLayout />
                     </VerticalLayout>
                     <VerticalLayout> <!--语言设置-->                        
-                        <HorizontalLayout height="170" />
+                        <HorizontalLayout height="140" />
                         <HorizontalLayout>
-                            <VerticalLayout width="180" />
+                            <VerticalLayout width="120" />
                             <VerticalLayout>
                             <Option name="chinese" text="中文 Chinese" align="center" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'"  group="language" />
                             <HorizontalLayout height="50" />
                             <Option name="english" text="英文 English" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'"  group="language" />
                             </VerticalLayout>
-                            <VerticalLayout width="220" />
+                            <VerticalLayout width="140" />
                         </HorizontalLayout>
                     </VerticalLayout>
                     <VerticalLayout> <!--时间设置-->                       
-                        <HorizontalLayout height="160" />
+                        <HorizontalLayout height="100" />
+                        <HorizontalLayout>
+                            <VerticalLayout  />
+                            <Button name="inc_time" font="0" width="50" bkimage="file='image\inc_time.png'" borderround="5,5" />
+                            <VerticalLayout  />
+                        </HorizontalLayout>
+                        <HorizontalLayout height="25" />
                         <HorizontalLayout>
                             <VerticalLayout width="50" />
                             <Option name="year" selected="true" text="2017年" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="time" />
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
                             <Option name="month" text="05月" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="time" />
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
                             <Option name="day" text="26日" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="time" />
                             <VerticalLayout width="50" />
                         </HorizontalLayout>
                         <HorizontalLayout height="25" />
                         <HorizontalLayout>
                             <VerticalLayout width="50" />
-                            <Button name="" enabled="false" text="" font="0"  borderround="5,5" />
-                            <VerticalLayout width="50" />
                             <Option name="hour" text="13时" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="time" />
-                            <VerticalLayout width="50" />
+                            <VerticalLayout width="25" />
                             <Option name="minute" text="37分" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="time" />
+                            <VerticalLayout width="25" />
+                            <Option name="second" text="47秒" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" borderround="5,5" group="time" />
                             <VerticalLayout width="50" />
                         </HorizontalLayout>
                         <HorizontalLayout height="25" />
                         <HorizontalLayout>
-                            <VerticalLayout width="50" />
-                            <Button name="inc_time" text="+" font="0" bkimage="file='image\option_bk_normal.png'" borderround="5,5" />
-                            <VerticalLayout width="50" />
-                            <Button name="dec_time" text="-" font="0" bkimage="file='image\option_bk_normal.png'" borderround="5,5" />
-                            <VerticalLayout width="50" />
-                            <Button name="apply_time" text="应用" font="0" bkimage="file='image\option_bk_normal.png'" borderround="5,5" />
+                            <VerticalLayout  />
+                            <Button name="dec_time" font="0" width="50" bkimage="file='image\dec_time.png'" borderround="5,5" />
+                            <VerticalLayout  />
+                        </HorizontalLayout>
+                        <HorizontalLayout height="25" />
+                        <HorizontalLayout>
+                            <VerticalLayout  />
+                            <Button name="apply_time" text="应用" font="0" width="80" bkimage="file='image\option_bk_normal.png'" borderround="5,5" />
                             <VerticalLayout width="50" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="160" />
+                        <HorizontalLayout />
                     </VerticalLayout>
                     <VerticalLayout> <!--恢复设置-->                        
                         <HorizontalLayout height="150" />
                         <Label name="reset_confirm" text="恢复出厂设置？" font="2" align="center" valign="center" textcolor="#FFFFD966"  />
-                        <HorizontalLayout height="50" />
+                        <HorizontalLayout height="20" />
                         <HorizontalLayout>
-                            <VerticalLayout width="170" />
+                            <VerticalLayout width="80" />
                             <Button name="reset_ok" text="确定" font="0" bkimage="file='image\option_bk_normal.png'" borderround="5,5" />
                             <VerticalLayout width="50" />
                             <Button name="reset_cancel" text="取消" font="0" bkimage="file='image\option_bk_normal.png'" borderround="5,5" />
-                            <VerticalLayout width="180" />
+                            <VerticalLayout width="80" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="220" />
+                        <HorizontalLayout height="150" />
                     </VerticalLayout>
                 </TabLayout>
             </HorizontalLayout>

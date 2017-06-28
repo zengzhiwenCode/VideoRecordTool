@@ -10,7 +10,7 @@ class CAlarmTextDlg;
 class PkMatToGDI;
 class CDuiBottomTool;
 
-#define USE_THREAD_TO_CAP_MAT
+//#define USE_THREAD_TO_CAP_MAT
 
 // CvrmfcDlg dialog
 class CvrmfcDlg : public CDialogEx
@@ -54,19 +54,21 @@ protected:
 	int brightness_level_ = 2;
 	int temperature_ = 0;
 	bool usb_storage_plugin_ = false;
-	
+
+	bool running_ = true;
+	cv::Mat frame_ = {};
 #ifdef USE_THREAD_TO_CAP_MAT
 	std::mutex mutex_ = {};
 	std::condition_variable cv_ = {};
 	std::thread thread_ = {};
-	bool running_ = true;
+	
 	//bool previewing_ = true;
 	//bool sig_received_ = false;
 	void stop_worker(bool close_cam = true);
 	void start_worker();
 	void worker();
 	int sleep_ms_ = 10;
-	cv::Mat frame_ = {};
+	
 #else
 
 #endif // USE_THREAD_TO_CAP_MAT
