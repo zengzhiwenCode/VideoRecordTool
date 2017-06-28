@@ -413,7 +413,6 @@ BOOL CvrmfcDlg::OnInitDialog()
 			cfg->set_video_h(dscap_.GetHeight());
 
 			adjust_player_size(cfg->get_video_w(), cfg->get_video_h());
-			drawer_ = std::make_shared<PkMatToGDI>(m_player.GetSafeHwnd(), false);		
 
 			fps_.begin = std::chrono::steady_clock::now();
 			fps_.frames = 0;
@@ -478,7 +477,9 @@ void CvrmfcDlg::OnBnClickedOk()
 void CvrmfcDlg::OnBnClickedCancel()
 {
 //#ifdef _DEBUG
+#ifdef USE_THREAD_TO_CAP_MAT
 	stop_worker();
+#endif
 	CDialogEx::OnCancel();
 //#endif // !_DEBUG
 }
@@ -516,6 +517,7 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 
 void CvrmfcDlg::stop_worker(bool close_cam)
 {
+	AUTO_LOG_FUNCTION;
 	{
 		std::lock_guard<std::mutex> lg(mutex_);
 		running_ = false;
@@ -535,6 +537,7 @@ void CvrmfcDlg::stop_worker(bool close_cam)
 
 void CvrmfcDlg::start_worker()
 {
+	AUTO_LOG_FUNCTION;
 	running_ = true;
 	thread_ = std::thread(&CvrmfcDlg::worker, this);
 }
@@ -591,25 +594,28 @@ void CvrmfcDlg::draw_mat()
 void CvrmfcDlg::adjust_player_size(int w, int h)
 {
 	CRect rc, rcplayer;
-	GetWindowRect(rc);
+	GetClientRect(rc);
 	rcplayer = rc;
 	double r = rc.Width() * 1.0 / rc.Height();
 	double rr = w * 1.0 / h;
+	double width = 1.0 * rc.Width();
+	double height = 1.0 * rc.Height();
 
 	if (r <= rr) {
-		int hh = h * rc.Width() / w;
+		int hh = static_cast<int>(width / rr);
 		int gap = (rc.Height() - hh) / 2;
 		rcplayer.top += gap;
 		rcplayer.bottom -= gap;
 	} else {
-		int ww = w * rc.Height() / h;
+		int ww = static_cast<int>(height * rr);
 		int gap = (rc.Width() - ww) / 2;
 		rcplayer.left += gap;
 		rcplayer.right -= gap;
 	}
 
-	ScreenToClient(rcplayer);
+	//ScreenToClient(rcplayer);
 	m_player.MoveWindow(rcplayer);
+	drawer_ = std::make_shared<PkMatToGDI>(m_player.GetSafeHwnd(), false);
 }
 
 HBRUSH CvrmfcDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -736,6 +742,7 @@ void CvrmfcDlg::recalc_fps()
 	stop_worker(false);
 	int fps = cfg->get_mi()[cfg->get_vtype()].fps;
 	int gap = fps == 0 ? 30 : 1000 / fps;
+	//gap -= 5;
 	fps_.begin = std::chrono::steady_clock::now();
 	fps_.frames = 0;
 	//SetTimer(timer_id::preview, gap, nullptr);
@@ -766,10 +773,12 @@ bool CvrmfcDlg::do_record()
 	auto width = dscap_.GetWidth();
 	auto height = dscap_.GetHeight();
 	auto fourcc = CV_FOURCC('M', 'J', 'P', 'G'); // todo
+	auto cfg = config::get_instance();
 	record_.writer = std::make_shared<cv::VideoWriter>();
 	record_.recording = record_.writer->open(record_.file,
 											 fourcc , 
 											 fps_.get(),
+											 //cfg->get_mi()[cfg->get_vtype()].fps,
 											 cv::Size(width, height),
 											 true);
 	
@@ -799,7 +808,7 @@ void CvrmfcDlg::do_capture()
 		if (img.data) {
 			cv::imwrite(cfile, img);
 
-			if (CDuiPreviewCaptureDlg::make_xml(img.cols, img.rows)) {
+			if (CDuiPreviewCaptureDlg::make_xml(600, 400)) {
 				CDuiPreviewCaptureDlg dlg(L"capture.xml");
 				dlg.set_auto_close();
 				dlg.set_image(cfile);
@@ -1024,10 +1033,13 @@ std::string CvrmfcDlg::_fps::get_string()
 	auto diff = now - begin;
 
 	auto total_sec = std::chrono::duration_cast<std::chrono::seconds>(diff).count();
-	if (total_sec > 0) {
+	/*if (total_sec >= 3) {
+		frames = 0;
+		begin = now;
+	} else */if (total_sec > 0) {
 		auto fps = frames / total_sec;
 		prev_fps = std::to_string(fps) + "fps ";
-	} 
+	}
 
 	return prev_fps;
 }

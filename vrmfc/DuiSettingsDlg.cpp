@@ -54,7 +54,8 @@ void CDuiSettingsDlg::InitWindow()
 			opt->SetName((L"cap_mod_" + name).c_str());
 			opt->SetText(name.c_str());
 			opt->SetFont(0);
-			opt->SetBkColor(0xFF3275EE);
+			//opt->SetBkColor(0xFF3275EE);
+			opt->SetBkImage(L"image/option_bk_normal.png");
 			opt->SetSelectedImage(L"image/option_bk_hot.png");
 			SIZE sz = { 15,15 };
 			opt->SetBorderRound(sz);
@@ -62,9 +63,9 @@ void CDuiSettingsDlg::InitWindow()
 
 			if (i.first == cfg->get_vtype()) {
 				opt->Selected(true); 
-				opt->SetBkColor(0xFFD7E4FC);
+				//opt->SetBkColor(0xFFD7E4FC);
 			} else {
-				opt->SetBkColor(0xFF3275EE);
+				//opt->SetBkColor(0xFF3275EE);
 			}
 		}
 
@@ -79,6 +80,7 @@ void CDuiSettingsDlg::InitWindow()
 			opt->SetName((L"resolutions_" + std::to_wstring(i.first) + L"_" + std::to_wstring(i.second)).c_str());
 			opt->SetText((std::to_wstring(i.first) + L"*" + std::to_wstring(i.second)).c_str());
 			opt->SetFont(0);
+			opt->SetBkImage(L"image/option_bk_normal.png");
 			opt->SetSelectedImage(L"image/option_bk_hot.png");
 			SIZE sz = { 15,15 };
 			opt->SetBorderRound(sz);
@@ -86,9 +88,9 @@ void CDuiSettingsDlg::InitWindow()
 
 			if (i.first == cfg->get_video_w() && i.second == cfg->get_video_h()) {
 				opt->Selected(true);
-				opt->SetBkColor(0xFFD7E4FC);
+				//opt->SetBkColor(0xFFD7E4FC);
 			} else {
-				opt->SetBkColor(0xFF3275EE);
+				//opt->SetBkColor(0xFF3275EE);
 			}
 
 			
@@ -309,6 +311,7 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 		case_dt(day)
 		case_dt(hour)
 		case_dt(minute)
+		case_dt(second)
 
 #undef sel_elif
 
@@ -350,6 +353,16 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 	
 	auto cfg = config::get_instance();
 	auto mi = cfg->get_mi();
+
+	auto btn = static_cast<CButtonUI*>(msg.pSender);
+
+	auto hot_btn = [&btn]() {
+		btn->SetBkImage(L"image/option_bk_hot.png");
+	};
+
+	auto normal_btn = [&btn] {
+		btn->SetBkImage(L"image/option_bk_normal.png");
+	};
 
 	// ¸ñÊ½
 	std::string cap_mode = "cap_mod_";
@@ -447,19 +460,33 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 	case_slider_inc("camera_inc", camera_slider, on_camera_slider)
 
 	else if (name == "reset_video") {
+		hot_btn();
 		if (maindlg->do_reset_video()) {
 			//(static_cast<COptionUI*>(msg.pSender))->Selected(false);
 			//on_video_slider();
-		}
+		}DuiSleep(300);
+		normal_btn();
 	} else if (name == "reset_camera") {
-		maindlg->do_reset_camera();
+		hot_btn();
+		maindlg->do_reset_camera(); DuiSleep(300);
+		normal_btn();
 	} else if (name == "inc_time") {
-		on_update_time(1);
+		//hot_btn();
+		on_update_time(1); 
+		//DuiSleep(300);
+		//normal_btn();
 	} else if (name == "dec_time") {
-		on_update_time(-1);
+		//hot_btn();
+		on_update_time(-1); 
+		//DuiSleep(300);
+		//normal_btn();
 	} else if (name == "apply_time") {
-		on_apply_time();
+		hot_btn();
+		on_apply_time(); 
+		DuiSleep(300);
+		normal_btn();
 	} else if (name == "reset_ok") {
+		hot_btn();
 		bool ok = true;
 		if (!cfg->clear_root()) {
 			ok = false;
@@ -468,8 +495,13 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 		maindlg->do_reset_video();
 		maindlg->do_reset_camera();
 
+		DuiSleep(300);
+		normal_btn();
 		PostMessage(WM_CLOSE);
 	} else if (name == "reset_cancel" || name == "theclosebtn") {
+		hot_btn();
+		DuiSleep(300);
+		normal_btn();
 		PostMessage(WM_CLOSE);
 	}
 
@@ -623,6 +655,12 @@ void CDuiSettingsDlg::on_update_time(int step)
 			time_ -= COleDateTimeSpan(0, 0, 1, 0);
 		}
 		break;
+	case CDuiSettingsDlg::second:
+		if (step > 0) {
+			time_ += COleDateTimeSpan(0, 0, 0, 1);
+		} else {
+			time_ -= COleDateTimeSpan(0, 0, 0, 1);
+		}
 	default:
 		return;
 		break;

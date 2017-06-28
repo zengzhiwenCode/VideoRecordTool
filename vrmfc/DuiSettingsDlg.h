@@ -27,6 +27,7 @@ private:
 		day,
 		hour, 
 		minute,
+		second,
 	};
 	dt dt_ = year;
 

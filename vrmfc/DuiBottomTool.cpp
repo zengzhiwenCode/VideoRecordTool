@@ -121,7 +121,13 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			maindlg->do_exit_windows();
 			normal_btn();
 		} else if (name == btn_names::rec) {
-			maindlg->do_record() ? hot_btn() : normal_btn();
+			if (maindlg->do_record()) {
+				hot_btn();
+				btn->SetText(trw(IDS_STRING_STOP).c_str());
+			} else {
+				normal_btn();
+				btn->SetText(trw(IDS_STRING_REC).c_str());
+			}
 		} else if (name == btn_names::cap) {
 			hot_btn();
 			maindlg->do_capture();
@@ -582,6 +588,10 @@ void CDuiBottomTool::update_pic_sel(fv pics, fviters iters)
 
 	update_file_mode_btns();
 
+	if (sel_all_) {
+		return;
+	}
+
 	if (static_cast<COptionUI*>(m_PaintManager.FindControl(btn_names::edit))->IsSelected()) {
 
 	} else {
@@ -597,6 +607,10 @@ void CDuiBottomTool::update_video_sel(fv videos, fviters iters)
 	viters_ = iters;
 
 	update_file_mode_btns();
+
+	if (sel_all_) {
+		return;
+	}
 
 	if (static_cast<COptionUI*>(m_PaintManager.FindControl(btn_names::edit))->IsSelected()) {
 

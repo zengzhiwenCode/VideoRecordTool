@@ -33,8 +33,18 @@ LRESULT CDuiConfirmExitDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lPara
 void CDuiConfirmExitDlg::OnClick(TNotifyUI & msg)
 {
 	std::string name = utf8::w2a(msg.pSender->GetName().GetData()); range_log rl("CDuiConfirmExitDlg::OnClick " + name);
+	auto btn = static_cast<CButtonUI*>(msg.pSender);
+
+	auto hot_btn = [&btn]() {
+		btn->SetBkImage(L"image/option_bk_hot.png");
+	};
+
+	auto normal_btn = [&btn] {
+		btn->SetBkImage(L"image/option_bk_normal.png");
+	};
 
 	if (name == "ok") {
+		hot_btn();
 		confirmed_ = true;
 #ifndef _DEBUG
 		LUID luid;
@@ -61,8 +71,13 @@ void CDuiConfirmExitDlg::OnClick(TNotifyUI & msg)
 			MessageBox(m_hWnd, txt, nullptr, 0);
 		}
 #endif
+
+		normal_btn();
 		PostMessage(WM_CLOSE);
 	} else if (name == "cancel") {
+		hot_btn();
+		DuiSleep(300);
+		normal_btn();
 		PostMessage(WM_CLOSE);
 	} 
 

@@ -50,7 +50,7 @@ void CDuiPreviewCaptureDlg::InitWindow()
 	}
 
 	if (auto_close_) {
-		SetTimer(m_hWnd, 1, 1500, nullptr);
+		SetTimer(m_hWnd, 1, 800, nullptr);
 	}
 }
 

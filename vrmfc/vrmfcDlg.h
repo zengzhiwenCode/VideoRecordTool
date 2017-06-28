@@ -10,6 +10,8 @@ class CAlarmTextDlg;
 class PkMatToGDI;
 class CDuiBottomTool;
 
+#define USE_THREAD_TO_CAP_MAT
+
 // CvrmfcDlg dialog
 class CvrmfcDlg : public CDialogEx
 {
@@ -53,6 +55,7 @@ protected:
 	int temperature_ = 0;
 	bool usb_storage_plugin_ = false;
 	
+#ifdef USE_THREAD_TO_CAP_MAT
 	std::mutex mutex_ = {};
 	std::condition_variable cv_ = {};
 	std::thread thread_ = {};
@@ -64,6 +67,11 @@ protected:
 	void worker();
 	int sleep_ms_ = 10;
 	cv::Mat frame_ = {};
+#else
+
+#endif // USE_THREAD_TO_CAP_MAT
+
+	
 	void draw_mat();
 
 	
