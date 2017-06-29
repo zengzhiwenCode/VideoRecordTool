@@ -303,6 +303,21 @@ std::string config::format_space(uintmax_t bytes)
 	}
 }
 
+void config::dump_amp() const
+{
+	_procamp.dump();
+}
+
+void config::dump_cam() const
+{
+	_camera.dump();
+}
+
+void config::dump_mi() const
+{
+
+}
+
 std::string config::get_video_path() const
 {
 	auto p = _root + "\\" + utf8::u16_to_mbcs(utf8::a2w(VR_VIDEO_FOLDER));
@@ -403,4 +418,61 @@ std::string config::get_selected_pic(const std::string & path)
 	}
 
 	return std::string();
+}
+
+void media_info::dump() const
+{
+}
+
+void vq::dump() const
+{
+	JLOG_INFO("-------------");
+	JLOG_INFO("valid_ {}", valid_);
+	JLOG_INFO("min_ {}", min_);
+	JLOG_INFO("max_ {}", max_);
+	JLOG_INFO("step_ {}", step_);
+	JLOG_INFO("default_ {}", default_);
+	JLOG_INFO("flags_ {}", flags_);
+	JLOG_INFO("val_ {}", val_);
+	JLOG_INFO("---------------------------");
+}
+
+void procamp::dump() const
+{
+	JLOG_INFO("backlight");
+	backlight.dump();
+	JLOG_INFO("brightness");
+	brightness.dump();
+	JLOG_INFO("contrast");
+	contrast.dump();
+	JLOG_INFO("gain");
+	gain.dump();
+	JLOG_INFO("gamma");
+	gamma.dump();
+	JLOG_INFO("hue");
+	hue.dump();
+	JLOG_INFO("saturation");
+	saturation.dump();
+	JLOG_INFO("sharpness");
+	sharpness.dump();
+	JLOG_INFO("white_balance");
+	white_balance.dump();
+}
+
+void camera_set::dump() const
+{
+	JLOG_INFO("exposure");
+	exposure.dump();
+	JLOG_INFO("focus");
+	focus.dump();
+	JLOG_INFO("iris");
+	iris.dump();
+	JLOG_INFO("pan");
+	pan.dump();
+	JLOG_INFO("roll");
+	roll.dump();
+	JLOG_INFO("tilt");
+	tilt.dump();
+	JLOG_INFO("zoom");
+	zoom.dump();
 }

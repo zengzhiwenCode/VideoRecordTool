@@ -213,14 +213,26 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 		}
 		*/
 
+#define get_property(p, s, n) \
+		hr = pamp->GetRange(p, &s.n.min_, &s.n.max_, &s.n.step_, &s.n.default_, &s.n.flags_); \
+		if (SUCCEEDED(hr)) { \
+			hr = pamp->Get(p, &s.n.val_, &s.n.flags_); \
+			if (SUCCEEDED(hr)) { \
+				s.n.valid_ = 1; \
+			} else { \
+				JLOG_ERRO("GetValue " + get_hr_msg(hr)); \
+			} \
+		} else { \
+			JLOG_ERRO("GetRange " + get_hr_msg(hr)); \
+			if (s.n.min_ != s.n.max_) { \
+				s.n.valid_ = 1; \
+			} \
+		} 
+
 #define get_video_property(p, n) \
-		hr = pamp->GetRange(p, &vamp.n.min_, &vamp.n.max_, &vamp.n.step_, &vamp.n.default_, &vamp.n.flags_); \
-		if (SUCCEEDED(hr)) { \
-			hr = pamp->Get(p, &vamp.n.val_, &vamp.n.flags_); \
-		} \
-		if (SUCCEEDED(hr)) { \
-			vamp.n.valid_ = 1; \
-		}
+		JLOG_INFO("getting video property {}", #p); \
+		get_property(p, vamp, n);
+		
 
 		get_video_property(VideoProcAmp_BacklightCompensation, backlight);
 		get_video_property(VideoProcAmp_Brightness, brightness);
@@ -250,13 +262,19 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 		*/
 
 #define get_camera_property(p, n) \
+		JLOG_INFO("getting camera property {}", #p); \
 		hr = pcam->GetRange(p, &cam.n.min_, &cam.n.max_, &cam.n.step_, &cam.n.default_, &cam.n.flags_); \
 		if (SUCCEEDED(hr)) { \
 			hr = pcam->Get(p, &cam.n.val_, &cam.n.flags_); \
-		} \
-		if (SUCCEEDED(hr)) { \
-			cam.n.valid_ = 1; \
-		}
+			if (SUCCEEDED(hr)) { \
+				cam.n.valid_ = 1; \
+			} else { \
+				JLOG_ERRO("GetValue " + utf8::w2a(_com_error(hr).ErrorMessage())); \
+			} \
+		} else { \
+			JLOG_ERRO("GetRange " + utf8::w2a(_com_error(hr).ErrorMessage())); \
+		} 
+		
 
 		get_camera_property(CameraControl_Exposure, exposure);
 		get_camera_property(CameraControl_Focus, focus);

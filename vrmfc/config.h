@@ -14,10 +14,12 @@
 
 using misz = std::pair<int, int>;
 struct media_info {
-	std::string type;
-	misz default_sz;
-	std::set<misz> sizes;
-	int fps;
+	std::string type = {};
+	misz default_sz = {};
+	std::set<misz> sizes = {};
+	int fps = {};
+
+	void dump() const;
 };
 
 #define MT_YUY2 "YUY2"
@@ -26,35 +28,41 @@ struct media_info {
 using mi = std::map<std::string, media_info>;
 
 struct vq {
-	long valid_;
-	long min_;
-	long max_;
-	long step_;
-	long default_;
-	long flags_;
-	long val_;
+	long valid_ = {};
+	long min_ = {};
+	long max_ = {};
+	long step_ = {};
+	long default_ = {};
+	long flags_ = {};
+	long val_ = {};
+
+	void dump() const;
 };
 
 struct procamp {
-	vq backlight;
-	vq brightness;
-	vq contrast;
-	vq gain;
-	vq gamma;
-	vq hue;
-	vq saturation;
-	vq sharpness;
-	vq white_balance;
+	vq backlight = {};
+	vq brightness = {};
+	vq contrast = {};
+	vq gain = {};
+	vq gamma = {};
+	vq hue = {};
+	vq saturation = {};
+	vq sharpness = {};
+	vq white_balance = {};
+
+	void dump() const;
 };
 
 struct camera_set {
-	vq exposure;
-	vq focus;
-	vq iris;
-	vq pan;
-	vq roll;
-	vq tilt;
-	vq zoom;
+	vq exposure = {};
+	vq focus = {};
+	vq iris = {};
+	vq pan = {};
+	vq roll = {};
+	vq tilt = {};
+	vq zoom = {};
+
+	void dump() const;
 };
 
 class config : public dp::singleton<config>, public dp::observable<int>
@@ -114,14 +122,18 @@ public:
 	std::string get_remainder_space() const;
 	static std::string format_space(uintmax_t bytes);
 
-	void set_mi(mi mi) { _mi = mi; }
-	mi get_mi() const { return _mi; }
+	void dump_amp() const;
+	void dump_cam() const;
+	void dump_mi() const;
 
-	void set_procamp(procamp pa) { _procamp = pa;  }
-	procamp get_procamp() const { return _procamp; }
+	void set_mi(mi mi) { AUTO_LOG_FUNCTION; _mi = mi; dump_mi(); }
+	mi get_mi() const { AUTO_LOG_FUNCTION;  dump_mi(); return _mi; }
 
-	void set_camera(camera_set cs) { _camera = cs;  }
-	camera_set get_camera() const { return _camera; }
+	void set_procamp(procamp pa) { AUTO_LOG_FUNCTION; _procamp = pa;  dump_amp(); }
+	procamp get_procamp() const { AUTO_LOG_FUNCTION; dump_amp(); return _procamp; }
+
+	void set_camera(camera_set cs) { AUTO_LOG_FUNCTION; _camera = cs; dump_cam(); }
+	camera_set get_camera() const { AUTO_LOG_FUNCTION; dump_cam(); return _camera; }
 
 
 	std::string get_video_path() const;
