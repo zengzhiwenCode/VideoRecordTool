@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DuiConfirmExitDlg.h"
+#include "vrmfc.h"
 
 DUI_BEGIN_MESSAGE_MAP(CDuiConfirmExitDlg, CNotifyPump)
 DUI_ON_MSGTYPE(DUI_MSGTYPE_CLICK, OnClick)
@@ -18,6 +19,14 @@ CDuiConfirmExitDlg::~CDuiConfirmExitDlg()
 void CDuiConfirmExitDlg::InitWindow()
 {
 	CenterWindow();
+
+	get_ctrl(CLabelUI, confirm);
+	get_ctrl(CButtonUI, ok);
+	get_ctrl(CButtonUI, cancel);
+
+	confirm->SetText(trw(IDS_STRING_CONFIRM_POWEROFF).c_str());
+	ok->SetText(trw(IDS_STRING_OK).c_str());
+	cancel->SetText(trw(IDS_STRING_CANCEL).c_str());
 }
 
 void CDuiConfirmExitDlg::Notify(DuiLib::TNotifyUI & msg)

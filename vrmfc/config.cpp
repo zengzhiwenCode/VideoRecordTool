@@ -350,7 +350,6 @@ std::string config::create_new_thumb_path(const std::string & stem)
 
 std::string config::get_thumb_of_video(const std::string & vpath)
 {
-	namespace fs = std::experimental::filesystem;
 	auto thumb_path = create_new_thumb_path(fs::canonical(vpath).stem().string());
 	if (fs::exists(thumb_path)) {
 		return thumb_path;
@@ -371,6 +370,30 @@ std::string config::get_thumb_of_video(const std::string & vpath)
 			addWeighted(roi, alpha, icon, beta, 0, roi);
 			imwrite(thumb_path, frame);
 			return thumb_path;
+		}
+	}
+
+	return std::string();
+}
+
+std::string config::create_selected_pic_path(const std::string & stem)
+{
+	auto p = _root + "\\" + VR_SEL_PIC_FOLDER;
+	fs::create_directory(p);
+	p += "\\" + stem + VR_THUMBNAIL_EXT;
+	return p;
+}
+
+std::string config::get_selected_pic(const std::string & path)
+{
+	auto sel_path = create_selected_pic_path(fs::canonical(path).stem().string());
+	if (fs::exists(sel_path)) {
+		return sel_path;
+	} else {
+		using namespace cv;
+		Mat img = imread(path);
+		if (img.data) {
+			//Mat mask(img.size(), )
 		}
 	}
 

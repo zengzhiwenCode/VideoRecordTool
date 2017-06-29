@@ -66,6 +66,7 @@ public:
 	bool show_video_tips(bool show);
 	bool on_video_pos_changed(const std::wstring& cur, const std::wstring& total, int pos);
 	bool on_user_change_video_pos(int pos);
+	void on_record_stopped();
 protected:
 	void view_pic();
 	void view_video();

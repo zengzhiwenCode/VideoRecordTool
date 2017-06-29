@@ -132,12 +132,7 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			if (maindlg->do_record()) {
 				hot_btn();
 				btn->SetText(trw(IDS_STRING_STOP).c_str());
-			} else {
-				normal_btn();
-				btn->SetText(trw(IDS_STRING_REC).c_str());
-				btn->SetEnabled(false);
-				SetTimer(m_hWnd, 1, 3000, nullptr);
-			}
+			} 
 		} else if (name == btn_names::cap) {
 			hot_btn();
 			maindlg->do_capture();
@@ -750,6 +745,17 @@ bool CDuiBottomTool::on_user_change_video_pos(int pos)
 		return true;
 	}
 	return false;
+}
+
+void CDuiBottomTool::on_record_stopped()
+{
+	auto btn = static_cast<CButtonUI*>(m_PaintManager.FindControl(btn_names::rec)); 
+	assert(btn);
+	if (!btn)return;
+	btn->SetBkImage(L"image/btnbk_normal.png");
+	btn->SetText(trw(IDS_STRING_REC).c_str());
+	btn->SetEnabled(false);
+	SetTimer(m_hWnd, 1, 3000, nullptr);
 }
 
 void CDuiBottomTool::view_pic()

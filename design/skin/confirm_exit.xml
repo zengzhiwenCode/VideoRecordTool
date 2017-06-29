@@ -9,7 +9,7 @@
         
             <HorizontalLayout height="30" > <!--是否关机-->
                 <VerticalLayout width="20" />
-                <Label text="是否关机" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                <Label name="confirm" text="是否关机" font="0" align="center" valign="center" textcolor="#FF000000"  />
                 <VerticalLayout width="20" />
             </HorizontalLayout>
             

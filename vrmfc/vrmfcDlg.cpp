@@ -812,7 +812,7 @@ void CvrmfcDlg::do_stop_record()
 	fps_.frames = 0;
 	fps_.begin = std::chrono::steady_clock::now();
 	dui_bt_->enable_btns(true);
-
+	dui_bt_->on_record_stopped();
 }
 
 void CvrmfcDlg::do_capture()

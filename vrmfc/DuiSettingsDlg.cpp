@@ -687,12 +687,13 @@ void CDuiSettingsDlg::update_time(COleDateTime& st)
 		auto cday = static_cast<COptionUI*>(m_PaintManager.FindControl(L"day")); assert(cday);
 		auto chour = static_cast<COptionUI*>(m_PaintManager.FindControl(L"hour")); assert(chour);
 		auto cmin = static_cast<COptionUI*>(m_PaintManager.FindControl(L"minute")); assert(cmin);
+		auto csec = static_cast<COptionUI*>(m_PaintManager.FindControl(L"second")); assert(csec);
 
 		cyear->SetText((std::to_wstring(st.GetYear()) + trw(IDS_STRING_YEAR)).c_str());
 		cmonth->SetText((std::to_wstring(st.GetMonth()) + trw(IDS_STRING_MONTH)).c_str());
 		cday->SetText((std::to_wstring(st.GetDay()) + trw(IDS_STRING_DAY)).c_str());
 		chour->SetText((std::to_wstring(st.GetHour()) + trw(IDS_STRING_HOUR)).c_str());
 		cmin->SetText((std::to_wstring(st.GetMinute()) + trw(IDS_STRING_MINUTE)).c_str());
-
+		csec->SetText((std::to_wstring(st.GetSecond()) + trw(IDS_STRING_SECOND)).c_str());
 	} while (false);
 }
