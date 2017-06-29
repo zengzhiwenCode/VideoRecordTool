@@ -10,6 +10,7 @@
 #define VR_CAPTRUE_EXT		".bmp"
 #define VR_THUMBNAIL_FOLDER "thumb"
 #define VR_THUMBNAIL_EXT	".png"
+#define VR_SEL_PIC_FOLDER   "sel"
 
 using misz = std::pair<int, int>;
 struct media_info {

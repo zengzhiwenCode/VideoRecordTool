@@ -249,13 +249,14 @@ BOOL CvrmfcDlg::OnInitDialog()
 	}
 	
 	// init serial
-	{
+	do{
 		range_log("init serial");
 		auto ports = serial::list_ports();
 		if (ports.empty()) {
 			MessageBox(tr(IDS_STRING_NO_COM), tr(IDS_STRING_ERROR), MB_ICONERROR);
-			ExitProcess(0);
-			return 1;
+			//ExitProcess(0);
+			//return 1;
+			break;
 		}
 
 		if (g_serial.isOpen()) {
@@ -297,7 +298,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 			//ExitProcess(0);
 			//return 1;
 		}
-	}
+	} while (false);
 
 	int fps = 0;
 	// init video
