@@ -277,7 +277,7 @@ void CDuiFileManagerDlg::update_content(filter f)
 	mainwnd->do_update_video_sel(videos_, fviters());
 }
 
-void CDuiFileManagerDlg::update_filter()
+CDuiFileManagerDlg::filter CDuiFileManagerDlg::update_filter()
 {
 	switch (filter_) {
 	case CDuiFileManagerDlg::all:
@@ -295,6 +295,7 @@ void CDuiFileManagerDlg::update_filter()
 	}
 
 	update_content(filter_);
+	return filter_;
 }
 
 void CDuiFileManagerDlg::scroll_page(int step)

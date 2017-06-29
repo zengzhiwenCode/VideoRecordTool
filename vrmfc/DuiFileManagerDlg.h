@@ -5,6 +5,12 @@ class CDuiFileManagerDlg :
 	public CXMLWnd
 {
 public:
+	enum filter {
+		all,
+		pic,
+		video
+	};
+
 	explicit CDuiFileManagerDlg(const wchar_t* xmlpath);
 	virtual ~CDuiFileManagerDlg();
 	
@@ -17,11 +23,7 @@ public:
 	DUI_DECLARE_MESSAGE_MAP();
 
 protected:
-	enum filter {
-		all,
-		pic,
-		video
-	};
+	
 
 	static filter filter_;
 
@@ -39,7 +41,7 @@ protected:
 
 
 public:
-	void update_filter();
+	filter update_filter();
 	void scroll_page(int step);
 	void sel_all(bool all = true);
 	void del_pic(fviters piters);

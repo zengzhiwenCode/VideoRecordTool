@@ -294,8 +294,8 @@ BOOL CvrmfcDlg::OnInitDialog()
 		
 		if (!g_serial.isOpen()) {
 			MessageBox(tr(IDS_STRING_COM_ERR), tr(IDS_STRING_ERROR), MB_ICONERROR);
-			ExitProcess(0);
-			return 1;
+			//ExitProcess(0);
+			//return 1;
 		}
 	}
 
@@ -811,6 +811,7 @@ void CvrmfcDlg::do_stop_record()
 	fps_.frames = 0;
 	fps_.begin = std::chrono::steady_clock::now();
 	dui_bt_->enable_btns(true);
+
 }
 
 void CvrmfcDlg::do_capture()
@@ -910,6 +911,9 @@ bool CvrmfcDlg::do_update_capmode(const std::string & mode)
 	auto cfg = config::get_instance();
 #ifdef USE_THREAD_TO_CAP_MAT
 	stop_worker();
+#else
+	KillTimer(timer_id::preview);
+	dscap_.CloseCamera();
 #endif
 	if (dscap_.OpenCamera(cfg->get_vidx(), false, cfg->get_video_w(), cfg->get_video_h(), mode.c_str())) {
 		cfg->set_vtype(mode);
@@ -925,6 +929,9 @@ bool CvrmfcDlg::do_update_resolution(misz sz)
 	auto cfg = config::get_instance();
 #ifdef USE_THREAD_TO_CAP_MAT
 	stop_worker();
+#else
+	KillTimer(timer_id::preview);
+	dscap_.CloseCamera();
 #endif
 	if (dscap_.OpenCamera(cfg->get_vidx(), false, sz.first, sz.second, cfg->get_vtype().c_str())) {
 		cfg->set_video_w(sz.first);

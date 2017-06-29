@@ -92,7 +92,13 @@ void CDuiBottomTool::Notify(DuiLib::TNotifyUI & msg)
 
 LRESULT CDuiBottomTool::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	
+	if (uMsg == WM_TIMER && wParam == 1) {
+		KillTimer(m_hWnd, 1);
+		CButtonUI* rec = static_cast<CButtonUI*>(m_PaintManager.FindControl(btn_names::rec));
+		if (rec) {
+			rec->SetEnabled(true);
+		}
+	}
 	return __super::HandleMessage(uMsg, wParam, lParam);
 }
 
@@ -129,6 +135,8 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			} else {
 				normal_btn();
 				btn->SetText(trw(IDS_STRING_REC).c_str());
+				btn->SetEnabled(false);
+				SetTimer(m_hWnd, 1, 3000, nullptr);
 			}
 		} else if (name == btn_names::cap) {
 			hot_btn();
@@ -168,9 +176,24 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			} 
 		} else if (name == btn_names::filter) {
 			hot_btn();
-			file_dlg_->update_filter();
-			DuiSleep(300);
+			auto filter = file_dlg_->update_filter();
+			switch (filter) {
+			case CDuiFileManagerDlg::all:
+				btn->SetText(trw(IDS_STRING_ALL).c_str());
+				break;
+			case CDuiFileManagerDlg::pic:
+				btn->SetText(trw(IDS_STRING_PICTURE).c_str());
+				break;
+			case CDuiFileManagerDlg::video:
+				btn->SetText(trw(IDS_STRING_VIDEO).c_str());
+				break;
+			default:
+				break;
+			}
+			sel_all_ = false;
+			DuiSleep(500);
 			normal_btn();
+			btn->SetText(trw(IDS_STRING_FILTER).c_str());
 		} else if (name == btn_names::page_up) {
 			hot_btn();
 			file_dlg_->scroll_page(-1); 
@@ -560,7 +583,6 @@ void CDuiBottomTool::enable_btns(bool able)
 	if (0) {
 		auto btn_exit = static_cast<CButtonUI*>(m_PaintManager.FindControl(L"exit"));
 		if (btn_exit) {
-
 			btn_exit->SetBkColor(bk_color);
 			btn_exit->SetEnabled(able);
 			auto container = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"container")); assert(container);
@@ -574,7 +596,6 @@ void CDuiBottomTool::enable_btns(bool able)
 	CButtonUI* btn_##name = static_cast<CButtonUI*>(m_PaintManager.FindControl(utf8::a2w(#name).c_str())); \
 	if (btn_##name) { \
 		btn_##name->SetEnabled(able); \
-		btn_##name->SetBkColor(bk_color); \
 	}
 
 	__apply_dui_bottom_tool_btn(exit);
@@ -587,6 +608,8 @@ void CDuiBottomTool::enable_btns(bool able)
 	auto container = static_cast<CHorizontalLayoutUI*>(m_PaintManager.FindControl(L"container")); assert(container);
 	if (!container) { return; }
 	container->NeedUpdate();
+
+	
 }
 
 void CDuiBottomTool::update_pic_sel(fv pics, fviters iters)
