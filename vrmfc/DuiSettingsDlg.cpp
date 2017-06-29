@@ -6,7 +6,57 @@
 
 namespace {
 
+#define set_video_min_text(vname) \
+		if (video_min) { \
+			video_min->SetText(std::to_wstring(vamp.vname.min_).c_str()); \
+		}
 
+#define set_video_val_text(vname) \
+		if (video_val) { \
+			video_val->SetText(std::to_wstring(vamp.vname.val_).c_str()); \
+		}
+
+#define set_video_max_text(vname) \
+		if (video_max) { \
+			video_max->SetText(std::to_wstring(vamp.vname.max_).c_str()); \
+		}
+
+#define adjust_video_dec(vname) \
+		if (video_dec) { \
+			video_dec->SetEnabled(vamp.vname.valid_ > 0); \
+		}
+
+#define adjust_video_inc(vname) \
+		if (video_inc) { \
+			video_inc->SetEnabled(vamp.vname.valid_ > 0); \
+		}
+
+#define adjust_video_slider(vname) \
+		if (video_slider) { \
+			video_slider->SetMinValue(vamp.vname.min_); \
+			video_slider->SetMaxValue(vamp.vname.max_); \
+			video_slider->SetChangeStep(vamp.vname.step_); \
+			video_slider->SetValue(vamp.vname.val_); \
+			video_slider->SetEnabled(vamp.vname.valid_ > 0); \
+		}
+
+#define adjust_video_auto(vname) \
+		if (video_auto) { \
+			video_auto->SetEnabled(vamp.vname.flags_ == VideoProcAmp_Flags_Auto || vamp.vname.flags_ == VideoProcAmp_Flags_Manual); \
+			video_auto->Selected(vamp.vname.flags_ == VideoProcAmp_Flags_Auto); \
+		} 
+
+#define case_video(vname, p) \
+		else if (name == #vname) { \
+			svideo_ = name; \
+			set_video_min_text(vname); \
+			set_video_val_text(vname); \
+			set_video_max_text(vname); \
+			adjust_video_dec(vname); \
+			adjust_video_inc(vname); \
+			adjust_video_slider(vname); \
+			pvideo_ = p; \
+		}
 
 }
 
@@ -207,56 +257,7 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 		auto vamp = cfg->get_procamp();
 		auto camera = cfg->get_camera();
 
-#define set_video_min_text(vname) \
-		if (video_min) { \
-			video_min->SetText(std::to_wstring(vamp.vname.min_).c_str()); \
-		}
 
-#define set_video_val_text(vname) \
-		if (video_val) { \
-			video_val->SetText(std::to_wstring(vamp.vname.val_).c_str()); \
-		}
-
-#define set_video_max_text(vname) \
-		if (video_max) { \
-			video_max->SetText(std::to_wstring(vamp.vname.max_).c_str()); \
-		}
-
-#define adjust_video_dec(vname) \
-		if (video_dec) { \
-			video_dec->SetEnabled(vamp.vname.valid_ > 0); \
-		}
-
-#define adjust_video_inc(vname) \
-		if (video_inc) { \
-			video_inc->SetEnabled(vamp.vname.valid_ > 0); \
-		}
-
-#define adjust_video_slider(vname) \
-		if (video_slider) { \
-			video_slider->SetMinValue(vamp.vname.min_); \
-			video_slider->SetMaxValue(vamp.vname.max_); \
-			video_slider->SetChangeStep(vamp.vname.step_); \
-			video_slider->SetValue(vamp.vname.val_); \
-			video_slider->SetEnabled(vamp.vname.valid_ > 0); \
-		}
-
-#define adjust_video_auto(vname) \
-		if (video_auto) { \
-			video_auto->SetEnabled(vamp.vname.flags_ == VideoProcAmp_Flags_Auto || vamp.vname.flags_ == VideoProcAmp_Flags_Manual); \
-			video_auto->Selected(vamp.vname.flags_ == VideoProcAmp_Flags_Auto); \
-		} 
-
-#define case_video(vname, p) \
-		else if (name == #vname) { \
-			set_video_min_text(vname); \
-			set_video_val_text(vname); \
-			set_video_max_text(vname); \
-			adjust_video_dec(vname); \
-			adjust_video_inc(vname); \
-			adjust_video_slider(vname); \
-			pvideo_ = p; \
-		}
 
 		if (name == "resolution") {		// 分辨率/格式设置
 			options->SelectItem(0);
@@ -293,6 +294,7 @@ void CDuiSettingsDlg::Notify(DuiLib::TNotifyUI & msg)
 		case_video(gain, VideoProcAmp_Gain)
 
 		else if (name == "exposure") {
+			scamera_ = name;
 			camera_min->SetText(std::to_wstring(camera.exposure.min_).c_str());
 			camera_val->SetText(std::to_wstring(camera.exposure.val_).c_str());
 			camera_max->SetText(std::to_wstring(camera.exposure.max_).c_str());
@@ -462,11 +464,57 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 		if (maindlg->do_reset_video()) {
 			//(static_cast<COptionUI*>(msg.pSender))->Selected(false);
 			//on_video_slider();
-		}DuiSleep(300);
+			get_ctrl(CLabelUI, video_min);
+			get_ctrl(CLabelUI, video_val);
+			get_ctrl(CLabelUI, video_max);
+			get_ctrl(COptionUI, video_auto);
+			get_ctrl(CSliderUI, video_slider);
+			get_ctrl(CButtonUI, video_inc);
+			get_ctrl(CButtonUI, video_dec);
+
+			auto name = svideo_;
+			auto vamp = cfg->get_procamp();
+			if (svideo_.empty()) {}
+			case_video(brightness, VideoProcAmp_Brightness)
+			case_video(contrast, VideoProcAmp_Contrast)
+			case_video(hue, VideoProcAmp_Hue)
+			case_video(saturation, VideoProcAmp_Saturation)
+			case_video(sharpness, VideoProcAmp_Sharpness)
+			case_video(gamma, VideoProcAmp_Gamma)
+			case_video(white_balance, VideoProcAmp_WhiteBalance)
+			case_video(backlight, VideoProcAmp_BacklightCompensation)
+			case_video(gain, VideoProcAmp_Gain)
+		}
+		DuiSleep(300);
 		normal_btn();
 	} else if (name == "reset_camera") {
 		hot_btn();
-		maindlg->do_reset_camera(); DuiSleep(300);
+		if (maindlg->do_reset_camera()) {
+			get_ctrl(CLabelUI, camera_min);
+			get_ctrl(CLabelUI, camera_val);
+			get_ctrl(CLabelUI, camera_max);
+			get_ctrl(COptionUI, camera_auto);
+			get_ctrl(CSliderUI, camera_slider);
+			get_ctrl(CButtonUI, camera_inc);
+			get_ctrl(CButtonUI, camera_dec);
+
+			auto name = scamera_;
+			auto camera = cfg->get_camera();
+			if (name.empty()) {}
+			else if (name == "exposure") {
+				camera_min->SetText(std::to_wstring(camera.exposure.min_).c_str());
+				camera_val->SetText(std::to_wstring(camera.exposure.val_).c_str());
+				camera_max->SetText(std::to_wstring(camera.exposure.max_).c_str());
+				camera_slider->SetMinValue(camera.exposure.min_);
+				camera_slider->SetMaxValue(camera.exposure.max_);
+				camera_slider->SetChangeStep(camera.exposure.step_);
+				camera_slider->SetValue(camera.exposure.val_);
+				camera_dec->SetEnabled(camera.exposure.valid_ > 0);
+				camera_inc->SetEnabled(camera.exposure.valid_ > 0);
+
+			}
+		}
+		DuiSleep(300);
 		normal_btn();
 	} else if (name == "inc_time") {
 		//hot_btn();

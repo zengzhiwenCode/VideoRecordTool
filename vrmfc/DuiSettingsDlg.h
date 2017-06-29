@@ -18,6 +18,8 @@ public:
 	virtual void on_update(const int& lang);
 
 private:
+	std::string svideo_ = "";
+	std::string scamera_ = "";
 	VideoProcAmpProperty pvideo_ = VideoProcAmp_Brightness;
 	CameraControlProperty pcamera_ = CameraControl_Exposure;
 
