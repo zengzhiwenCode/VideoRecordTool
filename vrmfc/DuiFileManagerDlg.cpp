@@ -155,7 +155,7 @@ void CDuiFileManagerDlg::update_content(filter f)
 
 	auto cfg = config::get_instance();
 
-	typedef std::function<std::pair<std::string, content_tag>(const fs::path& file, pic_control_type* opt)> get_picture;
+	typedef std::function<std::pair<std::pair<std::string, std::string>, content_tag>(const fs::path& file, pic_control_type* opt)> get_picture;
 
 	auto create_content = [&container](fv& vv, const wchar_t* group, get_picture get) {
 		constexpr int window_width = 1000;
@@ -202,11 +202,14 @@ void CDuiFileManagerDlg::update_content(filter f)
 			pic->SetFixedWidth(img_width);
 			pic->SetBorderRound(img_round);
 
-			auto bkimg = get(file, pic);
+			auto res = get(file, pic);
+			auto bkimg = res.first.first;
+			auto selimg = res.first.second;
 
-			pic->SetBkImage(utf8::mbcs_to_u16(bkimg.first).c_str());
+			pic->SetBkImage(utf8::mbcs_to_u16(bkimg).c_str());
+			pic->SetSelectedImage(utf8::mbcs_to_u16(selimg).c_str());
 			//pic->SetGroup(group);
-			pic->SetTag(bkimg.second);
+			pic->SetTag(res.second);
 
 			auto text = new CLabelUI();
 			text->SetFixedHeight(text_height);
@@ -239,12 +242,15 @@ void CDuiFileManagerDlg::update_content(filter f)
 			allbtns_[p] = std::make_pair(opt, false);
 			if (p.parent_path().string() == cfg->get_capture_path()) {
 				picbtns_[p] = std::make_pair(opt, false);
-				return std::make_pair(p.string(), content_tag::pic);
+				auto selimg = cfg->get_selected_pic(p.string());
+				return std::make_pair(std::make_pair(p.string(), selimg), content_tag::pic);
 			} else if (p.parent_path().string() == cfg->get_video_path()) {
 				videobtns_[p] = std::make_pair(opt, false);
-				return std::make_pair(cfg->get_thumb_of_video(p.string()), content_tag::video);
+				auto bkimg = cfg->get_thumb_of_video(p.string());
+				auto selimg = cfg->get_selected_pic(bkimg);
+				return std::make_pair(std::make_pair(bkimg, selimg), content_tag::video);
 			} else {
-				assert(0); return std::make_pair(std::string(), content_tag::pic);
+				assert(0); return std::make_pair(std::make_pair(std::string(), std::string()), content_tag::pic);
 			}
 		});
 	}
@@ -252,9 +258,10 @@ void CDuiFileManagerDlg::update_content(filter f)
 
 	case CDuiFileManagerDlg::pic:
 	{
-		create_content(pics_, L"image", [this](const fs::path& p, pic_control_type* opt) {
+		create_content(pics_, L"image", [cfg, this](const fs::path& p, pic_control_type* opt) {
 			picbtns_[p] = std::make_pair(opt, false);
-			return std::make_pair(p.string(), content_tag::pic); 
+			auto selimg = cfg->get_selected_pic(p.string());
+			return std::make_pair(std::make_pair(p.string(), selimg), content_tag::pic);
 		});
 	}
 		break;
@@ -263,7 +270,9 @@ void CDuiFileManagerDlg::update_content(filter f)
 	{
 		create_content(videos_, L"thumb", [cfg, this](const fs::path& p, pic_control_type* opt) {
 			videobtns_[p] = std::make_pair(opt, false);
-			return std::make_pair(cfg->get_thumb_of_video(p.string()), content_tag::video);
+			auto bkimg = cfg->get_thumb_of_video(p.string());
+			auto selimg = cfg->get_selected_pic(bkimg);
+			return std::make_pair(std::make_pair(bkimg, selimg), content_tag::video);
 		});
 	}
 		break;

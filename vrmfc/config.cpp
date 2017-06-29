@@ -393,7 +393,12 @@ std::string config::get_selected_pic(const std::string & path)
 		using namespace cv;
 		Mat img = imread(path);
 		if (img.data) {
-			//Mat mask(img.size(), )
+			Mat mask(img.size(), img.type(), Scalar(255, 255, 255));
+			Mat dst;
+			addWeighted(img, 0.3, mask, 0.7, 0, dst);
+			if (imwrite(sel_path, dst)) {
+				return sel_path;
+			}
 		}
 	}
 
