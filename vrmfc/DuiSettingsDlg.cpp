@@ -377,10 +377,10 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 					if (opt) {
 						if (opt->GetName().GetData() == wname) {
 							opt->Selected(true);
-							opt->SetBkColor(0xFFD7E4FC);
+							//opt->SetBkColor(0xFFD7E4FC);
 						} else {
 							opt->Selected(false);
-							opt->SetBkColor(0xFF3275EE);
+							//opt->SetBkColor(0xFF3275EE);
 						}
 					}
 				}
@@ -410,14 +410,12 @@ void CDuiSettingsDlg::OnClick(TNotifyUI & msg)
 						if (opt) {
 							if (opt->GetName().GetData() == wname) {
 								opt->Selected(true);
-								opt->SetBkColor(0xFFD7E4FC);
+								//opt->SetBkColor(0xFFD7E4FC);
 							} else {
 								opt->Selected(false);
-								opt->SetBkColor(0xFF3275EE);
+								//opt->SetBkColor(0xFF3275EE);
 							}
 						}
-
-						
 					}
 				}
 			}
