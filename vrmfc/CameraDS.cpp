@@ -96,7 +96,9 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 	m_pGraph->AddFilter(m_pSampleGrabberFilter, L"Grabber");
 
 	// Bind Device Filter.  We know the device because the id was passed in
-	BindFilter(nCamID, &m_pDeviceFilter);
+	if (!BindFilter(nCamID, &m_pDeviceFilter)) {
+		return false;
+	}
 	m_pGraph->AddFilter(m_pDeviceFilter, NULL);
 
 	CComPtr<IEnumPins> pEnum;
@@ -226,6 +228,7 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 			JLOG_ERRO("GetRange " + get_hr_msg(hr)); \
 			if (s.n.min_ != s.n.max_) { \
 				s.n.valid_ = 1; \
+				s.n.val_ = s.n.default_; \
 			} \
 		} 
 
@@ -521,7 +524,9 @@ bool CCameraDS::OpenCamera(int nCamID, bool bDisplayProperties, int nWidth, int 
 	m_pGraph->AddFilter(m_pSampleGrabberFilter, L"Grabber");
 
 	// Bind Device Filter.  We know the device because the id was passed in
-	BindFilter(nCamID, &m_pDeviceFilter);
+	if (!BindFilter(nCamID, &m_pDeviceFilter)) {
+		return false;
+	}
 	m_pGraph->AddFilter(m_pDeviceFilter, NULL);
 
 	CComPtr<IEnumPins> pEnum;

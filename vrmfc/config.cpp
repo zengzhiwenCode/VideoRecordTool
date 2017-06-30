@@ -378,9 +378,13 @@ std::string config::get_thumb_of_video(const std::string & vpath)
 			auto icon_play_path = utf8::u16_to_mbcs((CPaintManagerUI::GetResourcePath() + L"image\\play_128px.png").GetData());
 			Mat icon = cv::imread(icon_play_path); assert(!icon.empty());
 			c = icon.channels();
-			Mat roi = frame(Range(frame.rows / 2 - icon.rows / 2, frame.rows / 2 + icon.rows / 2), 
-							Range(frame.cols / 2 - icon.cols / 2, frame.cols / 2 + icon.cols / 2));
-			auto alpha = 0.5;
+			const int ICON_W = frame.cols / 4;
+			const int ICON_H = frame.rows / 4;
+			cv::Size sz(ICON_W, ICON_H);
+			resize(icon, icon, sz);
+			Mat roi = frame(Range(frame.rows / 2 - ICON_H / 2, frame.rows / 2 + ICON_H / 2),
+							Range(frame.cols / 2 - ICON_W / 2, frame.cols / 2 + ICON_W / 2));
+			auto alpha = 0.6;
 			auto beta = 1.0 - alpha;
 			addWeighted(roi, alpha, icon, beta, 0, roi);
 			imwrite(thumb_path, frame);

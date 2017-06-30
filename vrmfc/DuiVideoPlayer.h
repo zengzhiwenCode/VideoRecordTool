@@ -24,6 +24,8 @@ protected:
 	CAVPlayer player_ = {};
 	std::string video_path_ = {};
 	bool show_tip_ = true;
+	time_t tm_remained_ = 0;
+	bool disable_click_ = false;
 
 	void OnEndReached(void*);
 

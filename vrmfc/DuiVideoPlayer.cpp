@@ -77,6 +77,7 @@ void CDuiVideoPlayer::Notify(DuiLib::TNotifyUI & msg)
 
 LRESULT CDuiVideoPlayer::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	AUTO_LOG_FUNCTION;
 	if (uMsg == WM_TIMER && wParam == 1) {
 		
 	} else if (uMsg == WM_USER_END_REACHED) {
@@ -85,7 +86,9 @@ LRESULT CDuiVideoPlayer::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	} else if (uMsg == WM_LBUTTONUP ) {
 		
 	} else if (uMsg == WM_PARENTNOTIFY) {
+		
 		if (wParam == WM_LBUTTONDOWN) {
+			JLOG_INFO("CDuiVideoPlayer::HandleMessage WM_PARENTNOTIFY WM_LBUTTONDOWN disable_click_ {}", disable_click_);
 			auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
 			if (maindlg) {
 				if (maindlg->do_video_view_mode_show_or_hide_tools(show_tip_)) {
@@ -101,6 +104,12 @@ LRESULT CDuiVideoPlayer::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		struct tm   tmTotal, tmCurrent;
 		time_t      timeTotal = player_.GetTotalTime() / 1000;
 		time_t      timeCurrent = player_.GetTime() / 1000;
+		tm_remained_ = timeTotal - timeCurrent;
+		if (tm_remained_ <= 1) {
+			disable_click_ = true;
+			::EnableWindow(m_hWnd, 0);
+		}
+		JLOG_INFO("playing, remained {}s, disable_click_ {}", tm_remained_, disable_click_);
 		TCHAR       szTotal[MAX_PATH], szCurrent[MAX_PATH];
 		gmtime_s(&tmTotal, &timeTotal);
 		gmtime_s(&tmCurrent, &timeCurrent);
@@ -145,16 +154,15 @@ CControlUI * CDuiVideoPlayer::CreateControl(LPCTSTR pstrClassName)
 
 void CDuiVideoPlayer::OnEndReached(void *)
 {
-	player_.Stop();
-	CWndUI *pWnd = static_cast<CWndUI*>(m_PaintManager.FindControl(_T("wndMedia")));
-	if (pWnd) {
-		pWnd->SetBkColor(0xFFABCDDC);
-	}
+	AUTO_LOG_FUNCTION;
+	stop();
 
 	auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
 	if (maindlg) {
 		maindlg->do_video_view_mode_pos_changed(L"", L"", -1);
 	}
+
+	
 }
 
 bool CDuiVideoPlayer::play(const std::string& path)
@@ -166,7 +174,8 @@ bool CDuiVideoPlayer::play(const std::string& path)
 		video_path_ = path;
 		show_tip_ = true;
 	}
-	
+	disable_click_ = false;
+	::EnableWindow(m_hWnd, 1);
 	return player_.Play(video_path_);
 }
 
@@ -191,6 +200,8 @@ bool CDuiVideoPlayer::resume()
 bool CDuiVideoPlayer::stop()
 {
 	player_.Stop();
+	disable_click_ = false;
+	::EnableWindow(m_hWnd, 1);
 	return true;
 }
 

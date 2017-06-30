@@ -662,6 +662,7 @@ bool CDuiBottomTool::show_pic_tip(bool show)
 
 bool CDuiBottomTool::show_video_tips(bool show)
 {
+	AUTO_LOG_FUNCTION;
 	if (mode_ == video_view) {
 		ShowWindow(show, show);
 		
@@ -697,6 +698,7 @@ bool CDuiBottomTool::show_video_tips(bool show)
 
 bool CDuiBottomTool::on_video_pos_changed(const std::wstring & cur, const std::wstring & total, int pos)
 {
+	AUTO_LOG_FUNCTION;
 	if (mode_ == video_view) {
 		if (pos == -1) {
 			auto pause = m_PaintManager.FindControl(btn_names::pause);

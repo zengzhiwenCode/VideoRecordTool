@@ -111,6 +111,7 @@ bool CAVPlayer::Play(const std::string &strPath)
 
 void CAVPlayer::Stop()
 {
+	AUTO_LOG_FUNCTION;
 	if (m_pVLC_Player) {
 		//m_data.path.clear();
 		//UserData* data = m_dataList.back();

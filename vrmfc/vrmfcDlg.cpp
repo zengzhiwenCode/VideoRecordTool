@@ -877,11 +877,13 @@ bool CvrmfcDlg::do_picview_mode_show_or_hide_tools(bool show)
 
 bool CvrmfcDlg::do_video_view_mode_show_or_hide_tools(bool show)
 {
+	AUTO_LOG_FUNCTION;
 	return dui_bt_->show_video_tips(show);
 }
 
 bool CvrmfcDlg::do_video_view_mode_pos_changed(const std::wstring & cur, const std::wstring & total, int pos)
 {
+	AUTO_LOG_FUNCTION;
 	return dui_bt_->on_video_pos_changed(cur, total, pos);
 }
 

@@ -73,7 +73,7 @@ void CDuiConfirmExitDlg::OnClick(TNotifyUI & msg)
 			txt.Format(L"AdjustTokenPrivileges Error%d", GetLastError());
 			MessageBox(m_hWnd, txt, nullptr, 0);
 		}
-		ok = ExitWindowsEx(EWX_POWEROFF, EWX_FORCEIFHUNG);
+		ok = ExitWindowsEx(EWX_POWEROFF, SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_MAINTENANCE | SHTDN_REASON_FLAG_PLANNED);
 		if (!ok) {
 			CString txt;
 			txt.Format(L"ExitWindowsEx Error%d", GetLastError());

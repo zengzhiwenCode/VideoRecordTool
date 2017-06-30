@@ -12,10 +12,23 @@ enum content_tag {
 
 auto list_files = [](const fs::path& path) {
 	fv v;
+	fv to_be_deled;
 	fs::directory_iterator end;
 	for (fs::directory_iterator iter(path); iter != end; iter++) {
 		if (fs::is_regular_file(iter->path())) {
-			v.push_back(iter->path());
+			if (fs::file_size(iter->path()) > 0) {
+				v.insert(v.begin(), iter->path());
+			} else {
+				to_be_deled.push_back(iter->path());
+			}
+		}
+	}
+
+	std::error_code ec;
+	for (auto p : to_be_deled) {
+		fs::remove(p, ec);
+		if (ec) {
+			JLOG_ERRO(ec.message());
 		}
 	}
 
@@ -54,7 +67,7 @@ void CDuiFileManagerDlg::InitWindow()
 	//	return p1.filename() < p2.filename();
 	//});
 	std::sort(all_.begin(), all_.end(), [](const fs::path& p1, const fs::path& p2) {
-		return p1.filename() < p2.filename();
+		return p2.filename() < p1.filename();
 	});
 
 	update_content(filter_);
@@ -439,7 +452,7 @@ void CDuiFileManagerDlg::del_video(fviters viters)
 	std::copy(pics_.begin(), pics_.end(), std::back_inserter(all_));
 	std::copy(videos_.begin(), videos_.end(), std::back_inserter(all_));
 	std::sort(all_.begin(), all_.end(), [](const fs::path& p1, const fs::path& p2) {
-		return p1.filename() < p2.filename();
+		return p2.filename() < p1.filename();
 	});
 	update_content(filter_);
 }
