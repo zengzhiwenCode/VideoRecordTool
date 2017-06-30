@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<Window size="600,220" mininfo="750,60" maxinfo="750,60" caption="0,0,0,1" sizebox="0,0,0,0">
+<Window size="600,220" mininfo="750,60" maxinfo="750,60" caption="0,0,0,-1" sizebox="0,0,0,0">
     <Font shared="true" id="0" name="微软雅黑" size="20" color="FF000000#" bold="false" />
     <Font shared="true" id="1" name="微软雅黑" size="14" color="FF000000#" bold="true" />
 	<Font shared="true" id="2" name="幼圆" size="30" />
@@ -22,13 +22,13 @@
                 <VerticalLayout width="10" />
                 <VerticalLayout>
                     <HorizontalLayout height="5" />
-                    <Label name="filename_var" text="abc.txt" font="0" textcolor="#00000000" />
+                    <Label name="filename_var" text="abc.avi" font="0" textcolor="#00000000" />
                     <HorizontalLayout height="5" />
-                    <Label name="filesize_var" text="abc.txt" font="0" textcolor="#00000000" />
+                    <Label name="filesize_var" text="100M" font="0" textcolor="#00000000" />
                     <HorizontalLayout height="5" />
-                    <Label name="speed_var" text="abc.txt" font="0" textcolor="#00000000" />
+                    <Label name="speed_var" text="0KB/s" font="0" textcolor="#00000000" />
                     <HorizontalLayout height="5" />
-                    <Label name="etr_var" text="abc.txt" font="0" textcolor="#00000000" />
+                    <Label name="etr_var" text="00:00:00" font="0" textcolor="#00000000" />
                     <HorizontalLayout height="5" />
                 </VerticalLayout>
             </HorizontalLayout>

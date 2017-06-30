@@ -16,10 +16,10 @@ auto list_files = [](const fs::path& path) {
 	fs::directory_iterator end;
 	for (fs::directory_iterator iter(path); iter != end; iter++) {
 		if (fs::is_regular_file(iter->path())) {
-			if (fs::file_size(iter->path()) > 0) {
-				v.insert(v.begin(), iter->path());
-			} else {
+			if (fs::file_size(iter->path()) == 0) {
 				to_be_deled.push_back(iter->path());
+			} else {
+				v.insert(v.begin(), iter->path());
 			}
 		}
 	}

@@ -103,7 +103,9 @@ void CDuiSettingsDlg::InitWindow()
 			auto name = utf8::a2w(i.first);
 			opt->SetName((L"cap_mod_" + name).c_str());
 			opt->SetText(name.c_str());
-			opt->SetFont(0);
+			opt->SetFont(1);
+			//opt->SetFixedHeight(32);
+			//opt->SetFixedWidth(150);
 			//opt->SetBkColor(0xFF3275EE);
 			opt->SetBkImage(L"image/option_bk_normal.png");
 			opt->SetSelectedImage(L"image/option_bk_hot.png");
@@ -129,7 +131,7 @@ void CDuiSettingsDlg::InitWindow()
 
 			opt->SetName((L"resolutions_" + std::to_wstring(i.first) + L"_" + std::to_wstring(i.second)).c_str());
 			opt->SetText((std::to_wstring(i.first) + L"*" + std::to_wstring(i.second)).c_str());
-			opt->SetFont(0);
+			opt->SetFont(1);
 			opt->SetBkImage(L"image/option_bk_normal.png");
 			opt->SetSelectedImage(L"image/option_bk_hot.png");
 			//SIZE sz = { 15,15 };
@@ -566,6 +568,7 @@ void CDuiSettingsDlg::on_update(const int & lang)
 		{ L"recover", trw(IDS_STRING_RESET) },
 		{ L"theclosebtn", trw(IDS_STRING_WCLOSE) },
 		{ L"tab_resolution", trw(IDS_STRING_RESSET) },
+		{ L"tab_format", trw(IDS_STRING_FORMAT) },
 		{ L"tab_record", trw(IDS_STRING_RECSET) },
 			{ L"lable_rec_time", trw(IDS_STRING_RECTIME) },
 		{ L"tab_video", trw(IDS_STRING_VIDEOSET) },

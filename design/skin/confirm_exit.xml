@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<Window size="300,100" mininfo="300,200" maxinfo="300,200" caption="0,0,0,-1" sizebox="0,0,0,0">
+<Window size="300,100" mininfo="300,200" maxinfo="300,200" caption="0,0,0,1" sizebox="0,0,0,0">
     <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
 	<Font shared="true" id="1" name="幼圆" size="30" />
 	<HorizontalLayout bkcolor="FF595959#" bordersize="1" bordercolor="#FF707070" borderround="25,25"> <!--整个窗口-->
@@ -17,9 +17,9 @@
             
             <HorizontalLayout name="container" > <!--按钮-->
                 <VerticalLayout width="30" />
-                <Button name="ok" text="确认" font="0" bkcolor="FF3275EE#" borderround="5,5"/>
+                <Button name="ok" text="确认" font="0" bkimage="file='image\option_bk_normal.png'" />
                 <VerticalLayout width="40" />
-                <Button name="cancel" text="取消" font="0" bkcolor="FF3275EE#" borderround="5,5"/>
+                <Button name="cancel" text="取消" font="0" bkimage="file='image\option_bk_normal.png'" />
                 <VerticalLayout width="30" />
             </HorizontalLayout>
             

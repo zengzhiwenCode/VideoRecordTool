@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<Window size="600,340" mininfo="600,400" maxinfo="600,400" caption="0,0,0,-1" sizebox="0,0,0,0">
+<Window size="600,340" mininfo="600,400" maxinfo="600,400" caption="0,0,0,1" sizebox="0,0,0,0">
     <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
 	<Font shared="true" id="1" name="宋体" size="20" />
     <VerticalLayout bkcolor="FF595959#" bordersize="1" bordercolor="#FF707070" borderround="5,5"> <!--整个窗口-->
