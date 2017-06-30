@@ -6,7 +6,6 @@
 	<HorizontalLayout bkcolor="FF5B9BD5#" bordersize="1" bordercolor="#FF707070"> <!--整个窗口-->
         <VerticalLayout width="125" />
         <VerticalLayout>
-            <HorizontalLayout height="5" />
             <HorizontalLayout name="container" >
                 
             </HorizontalLayout>
