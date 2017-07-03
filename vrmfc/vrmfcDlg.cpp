@@ -847,7 +847,7 @@ bool CvrmfcDlg::do_file_manager(CRect& rc)
 	tip_->Hide();
 	rec_tip_->Hide();
 	GetWindowRect(rc);
-	rc.bottom -= 100;
+	rc.bottom -= 60;
 #ifdef USE_THREAD_TO_CAP_MAT
 	stop_worker(false);
 #else

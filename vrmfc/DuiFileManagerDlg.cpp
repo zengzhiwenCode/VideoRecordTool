@@ -179,7 +179,8 @@ void CDuiFileManagerDlg::update_content(filter f)
 		constexpr int img_width = 220;
 		constexpr int img_height = img_width * 2 / 3;
 		constexpr int text_height = 10;
-		constexpr int content_height = img_height + text_height;
+		constexpr int img_text_gap_height = 5;
+		constexpr int content_height = img_height + img_text_gap_height + text_height;
 		constexpr int gap_width = (window_width - img_width * max_col) / (max_col + 1) + 1;
 		constexpr int gap_height = 20;
 		const SIZE img_round = { 5,5 };
@@ -228,10 +229,15 @@ void CDuiFileManagerDlg::update_content(filter f)
 			pic->SetTag(res.second);
 
 			auto text = new CLabelUI();
+			text->SetAttribute(L"align", L"center");
 			text->SetFixedHeight(text_height);
 			text->SetBkColor(container->GetBkColor());
 			text->SetText(file.stem().generic_wstring().c_str());
+			text->SetTextColor(0xFFFFFFFF);
 			content->Add(pic);
+			auto vgap = new CHorizontalLayoutUI();
+			vgap->SetFixedHeight(img_text_gap_height);
+			content->Add(vgap);
 			content->Add(text);
 			line->Add(content);
 			add_gap_for_line();

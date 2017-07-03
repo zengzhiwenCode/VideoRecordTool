@@ -264,7 +264,7 @@ std::string config::get_remainder_space() const
 	return format_space(si.available) + "/" + format_space(si.capacity);
 }
 
-std::string config::format_space(uintmax_t bytes)
+std::string config::format_space(uintmax_t bytes, int* pfactor, int* integer, int* real)
 {
 	const int factor = 1024;
 	uintmax_t KB = factor;
@@ -282,23 +282,38 @@ std::string config::format_space(uintmax_t bytes)
 		gb -= tb * factor;
 		gb = gb * 1000 / factor;
 		gb /= 10;
+		if (pfactor) { *pfactor = TB; }
+		if (integer) { *integer = tb; }
+		if (real) { *real = gb; }
 		return std::to_string(tb) + "." + std::to_string(gb) + "T";
 	} else if (gb > 0) {
 		mb -= gb * factor;
 		mb = mb * 1000 / factor;
 		mb /= 10;
+		if (pfactor) { *pfactor = GB; }
+		if (integer) { *integer = gb; }
+		if (real) { *real = mb; }
 		return std::to_string(gb) + "." + std::to_string(mb) + "G";
 	} else if (mb > 0) {
 		kb -= mb * factor;
 		kb = kb * 1000 / factor;
 		kb /= 10;
+		if (pfactor) { *pfactor = MB; }
+		if (integer) { *integer = mb; }
+		if (real) { *real = kb; }
 		return std::to_string(mb) + "." + std::to_string(kb) + "M";
 	} else if (kb > 0) {
 		bytes -= kb * factor;
 		bytes = bytes * 1000 / factor;
 		bytes /= 10;
+		if (integer) { *integer = kb; }
+		if (real) { *real = bytes; }
+		if (pfactor) { *pfactor = KB; }
 		return std::to_string(kb) + "." + std::to_string(bytes) + "K";
 	} else {
+		if (pfactor) { *pfactor = 1; }
+		if (integer) { *integer = bytes; }
+		if (real) { *real = 0; }
 		return std::to_string(bytes) + "B";
 	}
 }
@@ -363,6 +378,31 @@ std::string config::create_new_thumb_path(const std::string & stem)
 	return p;
 }
 
+void overlayImage(cv::Mat* src, cv::Mat* overlay, const cv::Point& location)
+{
+	for (int y = max(location.y, 0); y < src->rows; ++y) {
+		int fY = y - location.y;
+
+		if (fY >= overlay->rows)
+			break;
+
+		for (int x = max(location.x, 0); x < src->cols; ++x) {
+			int fX = x - location.x;
+
+			if (fX >= overlay->cols)
+				break;
+
+			double opacity = ((double)overlay->data[fY * overlay->step + fX * overlay->channels() + 3]) / 255;
+
+			for (int c = 0; opacity > 0 && c < src->channels(); ++c) {
+				unsigned char overlayPx = overlay->data[fY * overlay->step + fX * overlay->channels() + c];
+				unsigned char srcPx = src->data[y * src->step + x * src->channels() + c];
+				src->data[y * src->step + src->channels() * x + c] = srcPx * (1. - opacity) + overlayPx * opacity;
+			}
+		}
+	}
+}
+
 std::string config::get_thumb_of_video(const std::string & vpath)
 {
 	auto thumb_path = create_new_thumb_path(fs::canonical(vpath).stem().string());
@@ -372,21 +412,24 @@ std::string config::get_thumb_of_video(const std::string & vpath)
 		using namespace cv;
 		VideoCapture capture(vpath);
 		if (capture.isOpened()) {
-			Mat frame;
-			capture >> frame; assert(!frame.empty());
-			int c = frame.channels();			
-			auto icon_play_path = utf8::u16_to_mbcs((CPaintManagerUI::GetResourcePath() + L"image\\play_128px.png").GetData());
-			Mat icon = cv::imread(icon_play_path); assert(!icon.empty());
-			c = icon.channels();
-			const int ICON_W = frame.cols / 4;
-			const int ICON_H = frame.rows / 4;
-			cv::Size sz(ICON_W, ICON_H);
-			resize(icon, icon, sz);
-			Mat roi = frame(Range(frame.rows / 2 - ICON_H / 2, frame.rows / 2 + ICON_H / 2),
-							Range(frame.cols / 2 - ICON_W / 2, frame.cols / 2 + ICON_W / 2));
-			auto alpha = 0.6;
-			auto beta = 1.0 - alpha;
-			addWeighted(roi, alpha, icon, beta, 0, roi);
+			Mat frameo, frame;
+			capture >> frameo; assert(!frameo.empty());
+			cv::Size szo = { 600, 400};
+			resize(frameo, frame, szo);
+			auto icon_play_path = utf8::u16_to_mbcs((CPaintManagerUI::GetResourcePath() + L"image\\play.png").GetData());
+			Mat icon = cv::imread(icon_play_path, IMREAD_UNCHANGED); assert(!icon.empty());
+			//int c = icon.channels();
+			//const int ICON_W = frame.cols / 4;
+			//const int ICON_H = /*frame.rows / 4*/ICON_W;
+			//cv::Size sz(ICON_W, ICON_H);
+			//resize(icon, icon, sz);
+			//Mat roi = frame(Range(frame.rows / 2 - ICON_H / 2, frame.rows / 2 + ICON_H / 2),
+			//				Range(frame.cols / 2 - ICON_W / 2, frame.cols / 2 + ICON_W / 2));
+			//auto alpha = 0.6;
+			//auto beta = 1.0 - alpha;
+			//addWeighted(roi, alpha, icon, beta, 0, roi);
+
+			overlayImage(&frame, &icon, cv::Point((frame.cols - icon.cols)/ 2, (frame.rows - icon.rows)/2));
 			imwrite(thumb_path, frame);
 			return thumb_path;
 		}
