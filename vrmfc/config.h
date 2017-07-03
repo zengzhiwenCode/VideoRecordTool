@@ -120,7 +120,13 @@ public:
 
 	std::string get_version() const;
 	std::string get_remainder_space() const;
-	static std::string format_space(uintmax_t bytes, int* pfactor = nullptr, int* integer = nullptr, int* real=nullptr);
+
+	static constexpr uintmax_t FACTOR = 1024;
+	static constexpr uintmax_t KB = FACTOR;
+	static constexpr uintmax_t MB = KB * FACTOR;
+	static constexpr uintmax_t GB = MB * FACTOR;
+	static constexpr uintmax_t TB = GB * FACTOR;
+	static std::string format_space(uintmax_t bytes, uintmax_t* pfactor = nullptr, uintmax_t* integer = nullptr, uintmax_t* real=nullptr);
 
 	void dump_amp() const;
 	void dump_cam() const;

@@ -33,29 +33,13 @@ protected:
 	std::mutex mutex_ = {};
 
 	std::chrono::steady_clock::time_point begin_ = {};
+	int total_kb_ = 0;
 	uintmax_t total_file_size_ = 0;
 	uintmax_t copied_file_size_ = 0;
 
-	void add_cpr(const cpr& p) { 
-		std::lock_guard<std::mutex> lg(mutex_); 
-		cprs_.push_back(p); 
-	}
+	void add_cpr(const cpr& p);
 
-	bool get_cpr(cpr& p) {
-		if (mutex_.try_lock()) {
-			std::lock_guard<std::mutex> lg(mutex_, std::adopt_lock);
-			if (!cprs_.empty()) {
-				p = cprs_.back();
-				for (auto pp : cprs_) {
-					copied_file_size_ += pp->filesz;
-				}
-
-				cprs_.clear();
-				return true;
-			}
-		}
-		return false;
-	}
+	bool get_cpr(cpr& p);
 
 
 	DUI_DECLARE_MESSAGE_MAP();

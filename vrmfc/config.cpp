@@ -264,54 +264,48 @@ std::string config::get_remainder_space() const
 	return format_space(si.available) + "/" + format_space(si.capacity);
 }
 
-std::string config::format_space(uintmax_t bytes, int* pfactor, int* integer, int* real)
+std::string config::format_space(uintmax_t bytes, uintmax_t* factor, uintmax_t* integer, uintmax_t* real)
 {
-	const int factor = 1024;
-	uintmax_t KB = factor;
-	uintmax_t MB = KB * factor;
-	uintmax_t GB = MB * factor;
-	uintmax_t TB = GB * factor;
-
-	uintmax_t kb = bytes / factor;
-	uintmax_t mb = kb / factor;
-	uintmax_t gb = mb / factor;
-	uintmax_t tb = gb / factor;
+	uintmax_t kb = bytes / FACTOR;
+	uintmax_t mb = kb / FACTOR;
+	uintmax_t gb = mb / FACTOR;
+	uintmax_t tb = gb / FACTOR;
 
 	std::string s;
 	if (tb > 0) {
-		gb -= tb * factor;
-		gb = gb * 1000 / factor;
+		gb -= tb * FACTOR;
+		gb = gb * 1000 / FACTOR;
 		gb /= 10;
-		if (pfactor) { *pfactor = TB; }
+		if (factor) { *factor = TB; }
 		if (integer) { *integer = tb; }
 		if (real) { *real = gb; }
 		return std::to_string(tb) + "." + std::to_string(gb) + "T";
 	} else if (gb > 0) {
-		mb -= gb * factor;
-		mb = mb * 1000 / factor;
+		mb -= gb * FACTOR;
+		mb = mb * 1000 / FACTOR;
 		mb /= 10;
-		if (pfactor) { *pfactor = GB; }
+		if (factor) { *factor = GB; }
 		if (integer) { *integer = gb; }
 		if (real) { *real = mb; }
 		return std::to_string(gb) + "." + std::to_string(mb) + "G";
 	} else if (mb > 0) {
-		kb -= mb * factor;
-		kb = kb * 1000 / factor;
+		kb -= mb * FACTOR;
+		kb = kb * 1000 / FACTOR;
 		kb /= 10;
-		if (pfactor) { *pfactor = MB; }
+		if (factor) { *factor = MB; }
 		if (integer) { *integer = mb; }
 		if (real) { *real = kb; }
 		return std::to_string(mb) + "." + std::to_string(kb) + "M";
 	} else if (kb > 0) {
-		bytes -= kb * factor;
-		bytes = bytes * 1000 / factor;
+		bytes -= kb * FACTOR;
+		bytes = bytes * 1000 / FACTOR;
 		bytes /= 10;
 		if (integer) { *integer = kb; }
 		if (real) { *real = bytes; }
-		if (pfactor) { *pfactor = KB; }
+		if (factor) { *factor = KB; }
 		return std::to_string(kb) + "." + std::to_string(bytes) + "K";
 	} else {
-		if (pfactor) { *pfactor = 1; }
+		if (factor) { *factor = 1; }
 		if (integer) { *integer = bytes; }
 		if (real) { *real = 0; }
 		return std::to_string(bytes) + "B";

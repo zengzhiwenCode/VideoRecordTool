@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="300,100" mininfo="300,200" maxinfo="300,200" caption="0,0,0,1" sizebox="0,0,0,0">
+    <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
+	<Font shared="true" id="1" name="幼圆" size="30" />
+	<HorizontalLayout bkcolor="FF595959#" bordersize="1" bordercolor="#FF707070" borderround="25,25"> <!--整个窗口-->
+        <VerticalLayout width="20" />
+        <VerticalLayout>
+            <HorizontalLayout height="10" />
+        
+            <HorizontalLayout height="30" > <!--是否关机-->
+                <VerticalLayout width="20" />
+                <Label name="title" text="未检测到串口" font="0" align="center" valign="center" textcolor="#FF000000"  />
+                <VerticalLayout width="20" />
+            </HorizontalLayout>
+            
+            <HorizontalLayout height="15" />
+            
+            <HorizontalLayout name="container" > <!--按钮-->
+                <VerticalLayout  />
+                <Button name="ok" text="确认" font="0" width="100" bkimage="file='image\option_bk_normal.png'" />
+                <VerticalLayout  />
+            </HorizontalLayout>
+            
+            <HorizontalLayout height="10" />
+        </VerticalLayout>
+        <VerticalLayout width="20" />
+	</HorizontalLayout>
+</Window>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -3,6 +3,7 @@
     <Font shared="true" id="0" name="微软雅黑" size="20" color="FF000000#" bold="false" />
     <Font shared="true" id="1" name="微软雅黑" size="14" color="FF000000#" bold="true" />
 	<Font shared="true" id="2" name="幼圆" size="30" />
+    <Default shared="true" name="Slider" value="thumbsize=&quot;33,24&quot; bkimage=&quot;file='image\progress_bg.png' corner='6,0,6,0'&quot; foreimage=&quot;file='image\progress_fore.png' corner='6,0,6,0' &quot; thumbimage=&quot;file='image\progress_thumb.png' source='0,0,66,50' &quot; thumbhotimage=&quot;file='image\progress_thumb.png' source='0,0,66,50' &quot; " />
 	<HorizontalLayout bkcolor="FF5B9BD5#" bordersize="1" bordercolor="#FF707070"> <!--整个窗口-->
         <VerticalLayout width="5" />
         <VerticalLayout>
@@ -26,17 +27,17 @@
                     <HorizontalLayout height="5" />
                     <Label name="filesize_var" text="100M" font="0" textcolor="#00000000" />
                     <HorizontalLayout height="5" />
-                    <Label name="speed_var" text="0KB/s" font="0" textcolor="#00000000" />
+                    <Label name="speed_var" text="--KB/s" font="0" textcolor="#00000000" />
                     <HorizontalLayout height="5" />
-                    <Label name="etr_var" text="00:00:00" font="0" textcolor="#00000000" />
+                    <Label name="etr_var" text="--:--:--" font="0" textcolor="#00000000" />
                     <HorizontalLayout height="5" />
                 </VerticalLayout>
             </HorizontalLayout>
             
             <HorizontalLayout height="15" />
             
-            <HorizontalLayout height="50">
-                <Progress name="progress" bkcolor="#FFED7C30" foreimage="image/progress_fore.png" min="0" max="100" value="60" height="50" bordersize="2" bordercolor="#FFA8A8A8" />
+            <HorizontalLayout height="24">
+                <Progress name="progress" max="100" value="60" bkcolor="FF595959" foreimage="image\progress_fore.png" height="24" />
             </HorizontalLayout>
             
             <HorizontalLayout height="5" />

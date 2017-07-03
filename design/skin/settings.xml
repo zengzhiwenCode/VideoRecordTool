@@ -255,13 +255,13 @@
                         </HorizontalLayout>
                     </VerticalLayout>
                     <VerticalLayout> <!--时间设置-->                       
-                        <HorizontalLayout height="70" />
+                        <HorizontalLayout height="40" />
                         <HorizontalLayout>
                             <VerticalLayout  />
-                            <Button name="inc_time" font="0" width="50" bkimage="file='image\inc_time.png'" />
+                            <Button name="inc_time" font="0" width="47" height="40" bkimage="file='image\up.png'" />
                             <VerticalLayout  />
                         </HorizontalLayout>
-                        <HorizontalLayout height="25" />
+                        <HorizontalLayout height="10" />
                         <HorizontalLayout>
                             <VerticalLayout width="50" />
                             <Option name="year" selected="true" text="2017年" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" group="time" />
@@ -271,7 +271,7 @@
                             <Option name="day" text="26日" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" group="time" />
                             <VerticalLayout width="50" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="25" />
+                        <HorizontalLayout height="10" />
                         <HorizontalLayout>
                             <VerticalLayout width="50" />
                             <Option name="hour" text="13时" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" group="time" />
@@ -281,19 +281,23 @@
                             <Option name="second" text="47秒" font="0" bkimage="file='image\option_bk_normal.png'" selectedimage="file='image\option_bk_hot.png'" group="time" />
                             <VerticalLayout width="50" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="25" />
+                        <HorizontalLayout height="15" />
                         <HorizontalLayout>
                             <VerticalLayout  />
-                            <Button name="dec_time" font="0" width="50" bkimage="file='image\dec_time.png'" />
+                            <Button name="dec_time" font="0" width="47" height="40" bkimage="file='image\down.png'" />
                             <VerticalLayout  />
                         </HorizontalLayout>
-                        <HorizontalLayout height="25" />
+                        <HorizontalLayout height="10" />
                         <HorizontalLayout>
-                            <VerticalLayout  />
+                            <VerticalLayout width="50" />
+                            <Button enabled="false" />
+                            <VerticalLayout width="25" />
+                            <Button enabled="false" />
+                            <VerticalLayout width="25" />
                             <Button name="apply_time" text="应用" font="0" width="80" bkimage="file='image\option_bk_normal.png'"  />
                             <VerticalLayout width="50" />
                         </HorizontalLayout>
-                        <HorizontalLayout />
+                        <HorizontalLayout height="10" />
                     </VerticalLayout>
                     <VerticalLayout> <!--恢复设置-->                        
                         <HorizontalLayout height="100" />
