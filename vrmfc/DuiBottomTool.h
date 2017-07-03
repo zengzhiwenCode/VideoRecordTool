@@ -44,7 +44,7 @@ protected:
 	CRect rc_video_slider_up_ = {};
 	CRect rc_video_slider_down_ = {};
 
-
+	bool editting_ = false;
 	bool sel_all_ = false;
 	bool showing_ = true;
 

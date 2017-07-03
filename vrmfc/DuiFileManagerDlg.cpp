@@ -104,12 +104,13 @@ void CDuiFileManagerDlg::OnClick(TNotifyUI & msg)
 		//	index++;
 		//}
 
-		
+		bool seled = !(static_cast<pic_control_type*>(msg.pSender))->IsSelected();
+		JLOG_INFO("seled={}", seled);
 		fviters iters;
 		fviter iter = 0;
 		for (auto p : pics_) {
 			if (path == p) {
-				picbtns_[p].second = !(static_cast<pic_control_type*>(msg.pSender))->IsSelected();
+				picbtns_[p].second = seled;
 			} else {
 				picbtns_[p].second = picbtns_[p].first->IsSelected();
 			}
@@ -138,9 +139,11 @@ void CDuiFileManagerDlg::OnClick(TNotifyUI & msg)
 		//videobtns_[path].second = !(static_cast<pic_control_type*>(msg.pSender))->IsSelected();
 		fviters iters;
 		fviter iter = 0;
+		bool seled = !(static_cast<pic_control_type*>(msg.pSender))->IsSelected();
+		JLOG_INFO("seled={}", seled);
 		for (auto p : videos_) {
 			if (path == p) {
-				videobtns_[p].second = !(static_cast<pic_control_type*>(msg.pSender))->IsSelected();
+				videobtns_[p].second = seled;
 			} else {
 				videobtns_[p].second = videobtns_[p].first->IsSelected();
 			}

@@ -168,7 +168,10 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 		} else if (name == btn_names::edit) {
 			if ((static_cast<COptionUI*>(msg.pSender))->IsSelected()) {
 				file_dlg_->sel_all(false);
-			} 
+				editting_ = false;
+			} else {
+				editting_ = true;
+			}
 		} else if (name == btn_names::filter) {
 			hot_btn();
 			auto filter = file_dlg_->update_filter();
@@ -250,9 +253,9 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			pic_view_dec();
 		} else if (name == btn_names::cp_to_usb) {
 			hot_btn();
-			//::EnableWindow(file_dlg_->GetHWND(), 0);
+			::EnableWindow(pic_viewer_->GetHWND(), 0);
 			copy_to_usb();
-			//::EnableWindow(file_dlg_->GetHWND(), 1);
+			::EnableWindow(pic_viewer_->GetHWND(), 1);
 			normal_btn();
 		} else if (name == btn_names::detail) {
 			hot_btn();
@@ -324,11 +327,11 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			video_view_del();
 		} else if (name == btn_names::cp_to_usb) {
 			hot_btn();
-			//::EnableWindow(file_dlg_->GetHWND(), 0);
+			::EnableWindow(video_player_->GetHWND(), 0);
 			video_player_->stop();
 			on_video_pos_changed(L"", L"", -1);
 			copy_to_usb();
-			//::EnableWindow(file_dlg_->GetHWND(), 0);
+			::EnableWindow(video_player_->GetHWND(), 1);
 			normal_btn();
 		} else if (name == btn_names::detail) {
 			hot_btn();
@@ -619,7 +622,7 @@ void CDuiBottomTool::update_pic_sel(fv pics, fviters iters)
 		return;
 	}
 
-	if (static_cast<COptionUI*>(m_PaintManager.FindControl(btn_names::edit))->IsSelected()) {
+	if (editting_) {
 
 	} else {
 		view_pic();
@@ -639,7 +642,7 @@ void CDuiBottomTool::update_video_sel(fv videos, fviters iters)
 		return;
 	}
 
-	if (static_cast<COptionUI*>(m_PaintManager.FindControl(btn_names::edit))->IsSelected()) {
+	if (editting_) {
 
 	} else {
 		view_video();
@@ -1270,8 +1273,10 @@ void CDuiBottomTool::file_back_to_main()
 
 void CDuiBottomTool::update_file_mode_btns()
 {
+	auto total_seled = piters_.size() + viters_.size();
+	JLOG_INFO("total_seled={}", total_seled);
 	//m_PaintManager.FindControl(btn_names::edit)->SetEnabled(piters_.size() + viters_.size() == 1);
-	m_PaintManager.FindControl(btn_names::del)->SetEnabled(piters_.size() + viters_.size() > 0);
-	m_PaintManager.FindControl(btn_names::cp_to_usb)->SetEnabled(piters_.size() + viters_.size() > 0);
+	m_PaintManager.FindControl(btn_names::del)->SetEnabled(total_seled > 0);
+	m_PaintManager.FindControl(btn_names::cp_to_usb)->SetEnabled(total_seled > 0);
 }
 

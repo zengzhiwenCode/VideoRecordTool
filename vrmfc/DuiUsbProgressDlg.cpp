@@ -42,12 +42,16 @@ void CDuiUsbProgressDlg::InitWindow()
 		total_file_size_ += fs::file_size(f.first);
 	}
 
-
-
 	get_ctrl(CProgressUI, progress);
 	progress->SetMinValue(0);
 	progress->SetMaxValue(files_.size());
 	progress->SetValue(0);
+
+	get_ctrl(CLabelUI, filename_var);
+	get_ctrl(CLabelUI, filesize_var);
+	auto p = files_.front();
+	filename_var->SetText(fs::path(p.first).filename().wstring().c_str());
+	filesize_var->SetText(utf8::a2w(config::format_space(fs::file_size(p.first))).c_str());
 
 	begin_ = std::chrono::steady_clock::now();
 	thread_ = std::thread(&CDuiUsbProgressDlg::worker, this);
@@ -133,14 +137,12 @@ void CDuiUsbProgressDlg::worker()
 
 		auto path = fs::path(f.first);
 		JLOG_INFO("copying {}, progress {}", path.filename().string(), progress);
-
+		auto p = std::make_shared<cp_progress>();
 		{
-			auto p = std::make_shared<cp_progress>();
 			p->filename = fs::path(f.first).filename().wstring();
 			p->filesz = fs::file_size(f.first);
 			p->sfilesize = utf8::a2w(config::format_space(p->filesz));
 			p->progress = progress++;
-			add_cpr(p);
 		}
 
 		std::error_code ec;
@@ -148,6 +150,8 @@ void CDuiUsbProgressDlg::worker()
 		if (ec) {
 			JLOG_ERRO(ec.message());
 		}
+
+		add_cpr(p);
 
 		/*auto b = CopyFileW(f.first.c_str(), f.second.c_str(), 1);
 		if (!b) {
