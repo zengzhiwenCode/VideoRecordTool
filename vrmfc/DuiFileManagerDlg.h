@@ -44,7 +44,7 @@ public:
 	filter update_filter();
 	void scroll_page(int step);
 	void sel_all(bool all = true);
-	void del_pic(fviters piters);
-	void del_video(fviters viters);
+	void del_pic(fviters piters, bool b_update_content = true);
+	void del_video(fviters viters, bool b_update_content = true);
 };
 

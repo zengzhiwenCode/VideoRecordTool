@@ -210,8 +210,8 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			normal_btn();
 		} else if (name == btn_names::del) {
 			hot_btn();
-			del_pic();
-			del_video();
+			file_dlg_->del_pic(piters_, false);
+			file_dlg_->del_video(viters_);
 			DuiSleep(300);
 			normal_btn();
 		} else if (name == btn_names::cp_to_usb) {
@@ -1269,6 +1269,7 @@ void CDuiBottomTool::file_back_to_main()
 	file_dlg_.reset();
 	maindlg->do_file_manager_over();
 	set_mode(mainwnd);
+	on_record_stopped();
 }
 
 void CDuiBottomTool::update_file_mode_btns()

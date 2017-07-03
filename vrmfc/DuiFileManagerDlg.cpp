@@ -415,7 +415,7 @@ void CDuiFileManagerDlg::sel_all(bool all)
 	}
 }
 
-void CDuiFileManagerDlg::del_pic(fviters piters)
+void CDuiFileManagerDlg::del_pic(fviters piters, bool b_update_content)
 {
 	for (auto i : piters) {
 		auto p = pics_[i];
@@ -433,10 +433,13 @@ void CDuiFileManagerDlg::del_pic(fviters piters)
 	std::sort(all_.begin(), all_.end(), [](const fs::path& p1, const fs::path& p2) {
 		return p1.filename() < p2.filename();
 	});
-	update_content(filter_);
+
+	if (b_update_content) {
+		update_content(filter_);
+	}
 }
 
-void CDuiFileManagerDlg::del_video(fviters viters)
+void CDuiFileManagerDlg::del_video(fviters viters, bool b_update_content)
 {
 	auto cfg = config::get_instance();
 	for (auto i : viters) {
@@ -463,7 +466,10 @@ void CDuiFileManagerDlg::del_video(fviters viters)
 	std::sort(all_.begin(), all_.end(), [](const fs::path& p1, const fs::path& p2) {
 		return p2.filename() < p1.filename();
 	});
-	update_content(filter_);
+	
+	if (b_update_content) {
+		update_content(filter_);
+	}
 }
 
 
