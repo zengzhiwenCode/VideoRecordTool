@@ -211,6 +211,7 @@
     <ClInclude Include="DuiMenu.h" />
     <ClInclude Include="DuiPicDetailDlg.h" />
     <ClInclude Include="DuiPreviewCaptureDlg.h" />
+    <ClInclude Include="DuiSerialErrorDlg.h" />
     <ClInclude Include="DuiSettingsDlg.h" />
     <ClInclude Include="DuiSysInfoDlg.h" />
     <ClInclude Include="DuiUsbProgressDlg.h" />
@@ -236,6 +237,7 @@
     <ClCompile Include="DuiMenu.cpp" />
     <ClCompile Include="DuiPicDetailDlg.cpp" />
     <ClCompile Include="DuiPreviewCaptureDlg.cpp" />
+    <ClCompile Include="DuiSerialErrorDlg.cpp" />
     <ClCompile Include="DuiSettingsDlg.cpp" />
     <ClCompile Include="DuiSysInfoDlg.cpp" />
     <ClCompile Include="DuiUsbProgressDlg.cpp" />

@@ -105,6 +105,9 @@
     <ClInclude Include="DuiUsbProgressDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DuiSerialErrorDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vrmfc.cpp">
@@ -174,6 +177,9 @@
       <Filter>ui</Filter>
     </ClCompile>
     <ClCompile Include="DuiUsbProgressDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DuiSerialErrorDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

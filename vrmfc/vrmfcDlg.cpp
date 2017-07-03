@@ -20,6 +20,7 @@
 #include "DuiSettingsDlg.h"
 #include "DuiPreviewCaptureDlg.h"
 #include "DuiSysInfoDlg.h"
+#include "DuiSerialErrorDlg.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "serial/lib/Debug/serial.lib")
@@ -253,7 +254,8 @@ BOOL CvrmfcDlg::OnInitDialog()
 		range_log("init serial");
 		auto ports = serial::list_ports();
 		if (ports.empty()) {
-			MessageBox(tr(IDS_STRING_NO_COM), tr(IDS_STRING_ERROR), MB_ICONERROR);
+			CDuiSerialErrorDlg::show_error(m_hWnd, trw(IDS_STRING_NO_COM));
+			//MessageBox(tr(IDS_STRING_NO_COM), tr(IDS_STRING_ERROR), MB_ICONERROR);
 			//ExitProcess(0);
 			//return 1;
 			break;
@@ -294,7 +296,8 @@ BOOL CvrmfcDlg::OnInitDialog()
 		}
 		
 		if (!g_serial.isOpen()) {
-			MessageBox(tr(IDS_STRING_COM_ERR), tr(IDS_STRING_ERROR), MB_ICONERROR);
+			//MessageBox(tr(IDS_STRING_COM_ERR), tr(IDS_STRING_ERROR), MB_ICONERROR);
+			CDuiSerialErrorDlg::show_error(m_hWnd, trw(IDS_STRING_COM_ERR));
 			//ExitProcess(0);
 			//return 1;
 		}
