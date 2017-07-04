@@ -39,17 +39,10 @@ bool PkMatToGDI::SetDestination(HWND ctrl)
 
 bool PkMatToGDI::DrawImg(const cv::Mat & img)
 {
+	AUTO_LOG_FUNCTION;
 	if (m_WinCtrl == NULL || img.empty())
 		return false;
 
-	/*
-	CDC* pDC = m_WinCtrl->GetDC();
-	if (pDC == NULL)
-	return;
-	HDC hDC = pDC->GetSafeHdc();
-	*/
-	//CClientDC hDC(m_WinCtrl);
-	//HDC hDC = ::GetDC(m_WinCtrl);
 	detail::clientdc hDC(m_WinCtrl);
 	int bpp = 8 * img.elemSize();
 	assert((bpp == 8 || bpp == 24 || bpp == 32));

@@ -12,6 +12,8 @@ class CDuiBottomTool;
 
 //#define USE_THREAD_TO_CAP_MAT
 
+#define PLAYER_NAME "IDC_STATIC_OUTPUT"
+
 // CvrmfcDlg dialog
 class CvrmfcDlg : public CDialogEx
 {
@@ -42,7 +44,8 @@ public:
 protected:
 	HICON m_hIcon;
 	CStatic m_player;
-	std::shared_ptr<PkMatToGDI> drawer_ = {};
+	CWnd* pcvwnd_ = nullptr;
+	//std::shared_ptr<PkMatToGDI> drawer_ = {};
 	//cv::VideoCapture capture_ = {};
 	CCameraDS dscap_ = {};
 	CBrush m_bkbrush = {};
@@ -150,4 +153,6 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 protected:
 	afx_msg LRESULT OnRefreshMat(WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 };

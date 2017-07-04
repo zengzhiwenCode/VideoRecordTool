@@ -122,11 +122,22 @@ BEGIN_MESSAGE_MAP(CvrmfcDlg, CDialogEx)
 	ON_MESSAGE(WM_DEVICECHANGE, &CvrmfcDlg::OnDeviceChange)
 	ON_WM_LBUTTONDOWN()
 	ON_MESSAGE(WM_REFRESH_MAT, &CvrmfcDlg::OnRefreshMat)
+	ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
 
 // CvrmfcDlg message handlers
+void CallBackFunc(int event, int x, int y, int flags, void* userdata)
+{
+	HWND hWnd = (HWND)(userdata);
+	if (event == EVENT_LBUTTONUP) {
+		::PostMessageW(hWnd, WM_LBUTTONDOWN,0,0);
+		::PostMessageW(hWnd, WM_LBUTTONUP,0,0);
+	} else if (event == EVENT_MOUSEMOVE) {
 
+
+	}
+}
 BOOL CvrmfcDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -155,7 +166,19 @@ BOOL CvrmfcDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-	m_bkbrush.CreateSolidBrush(RGB(0, 0, 0));
+	m_bkbrush.CreateSolidBrush(RGB(0x59, 0x59, 0x59));
+
+	{
+		cvNamedWindow(PLAYER_NAME, 0);
+		HWND hWnd = (HWND)cvGetWindowHandle(PLAYER_NAME);
+		::ShowWindow(hWnd, SW_HIDE);
+		HWND hParent = ::GetParent(hWnd);
+		::ShowWindow(hParent, SW_HIDE);
+		setMouseCallback(PLAYER_NAME, CallBackFunc, m_hWnd);
+		pcvwnd_ = CWnd::FromHandle(hWnd);
+		pcvwnd_->ModifyStyle(WS_CAPTION | WS_SYSMENU, 0);
+		//pcvwnd_->ModifyStyleEx(0, WS_EX_CLIENTEDGE);
+	}
 
 	// init rc
 	{
@@ -489,19 +512,61 @@ void CvrmfcDlg::OnBnClickedCancel()
 //#endif // !_DEBUG
 }
 
+int ShowMat(cv::Mat img, HWND hWndDisplay)
+{
+	if (img.channels()<3) {
+		return -1;
+	}
+
+	RECT rect;
+	GetClientRect(hWndDisplay, &rect);
+	cv::Mat imgShow(abs(rect.top - rect.bottom), abs(rect.right - rect.left), CV_8UC3);
+	resize(img, imgShow, imgShow.size());
+
+	ATL::CImage CI;
+	int w = imgShow.cols;//宽  
+	int h = imgShow.rows;//高  
+	int channels = imgShow.channels();//通道数  
+
+	CI.Create(w, h, 8 * channels);
+	uchar *pS;
+	uchar *pImg = (uchar *)CI.GetBits();//得到CImage数据区地址  
+	int step = CI.GetPitch();
+	for (int i = 0; i<h; i++) {
+		pS = imgShow.ptr<uchar>(i);
+		for (int j = 0; j<w; j++) {
+			for (int k = 0; k<3; k++)
+				*(pImg + i*step + j * 3 + k) = pS[j * 3 + k];
+			//注意到这里的step不用乘以3  
+		}
+	}
+
+	HDC dc;
+	dc = GetDC(hWndDisplay);
+	CI.Draw(dc, 0, 0);
+	ReleaseDC(hWndDisplay, dc);
+	CI.Destroy();
+
+	return 0;
+}
+
 void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	switch (nIDEvent) {
 	case timer_id::preview:
 	{
+		range_log rl("timer_id::preview");
 		if (dscap_.isOpened()) {
 			auto frame_ = dscap_.QueryFrame();
 			if (frame_.data) {
-				drawer_->DrawImg(frame_);
+				//drawer_->DrawImg(frame_);
+				imshow(PLAYER_NAME, frame_);
+				//ShowMat(frame_, m_player.GetSafeHwnd());
 
 				if (record_.recording /*&& record_.writer && record_.writer->isOpened()*/) {
 					//record_.writer->write(frame_);
 					{
+						range_log rl("timer_id::preview save frame");
 						std::lock_guard<std::mutex> lg(mutex_);
 						recorded_frames_.push_back(frame_.clone());
 					}
@@ -646,6 +711,8 @@ void CvrmfcDlg::draw_mat()
 
 void CvrmfcDlg::adjust_player_size(int w, int h)
 {
+	w--;
+	h--;
 	CRect rc, rcplayer;
 	GetClientRect(rc);
 	rcplayer = rc;
@@ -668,7 +735,20 @@ void CvrmfcDlg::adjust_player_size(int w, int h)
 
 	//ScreenToClient(rcplayer);
 	m_player.MoveWindow(rcplayer);
-	drawer_ = std::make_shared<PkMatToGDI>(m_player.GetSafeHwnd(), false);
+	//drawer_ = std::make_shared<PkMatToGDI>(m_player.GetSafeHwnd(), false);
+	
+	//cvNamedWindow(PLAYER_NAME, 0);
+	//cvDestroyWindow(PLAYER_NAME);
+	cvResizeWindow(PLAYER_NAME, rcplayer.Width()/* - (rcplayer.Width() % 4)*/, rcplayer.Height()/* - (rcplayer.Width() % 4)*/);
+	HWND hWnd = (HWND)cvGetWindowHandle(PLAYER_NAME);
+	::ShowWindow(hWnd, SW_HIDE);
+	
+	//cvResizeWindow(PLAYER_NAME, w, h);
+	::SetParent(hWnd, m_player.GetSafeHwnd());
+	::ShowWindow(hWnd, SW_SHOW);
+
+	//CWnd* pwnd = CWnd::FromHandle(hWnd);
+	
 }
 
 HBRUSH CvrmfcDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -788,6 +868,11 @@ void CvrmfcDlg::process_com(const std::string & data)
 	}
 }
 
+void previewr()
+{
+	
+}
+
 void CvrmfcDlg::recalc_fps()
 {
 	auto cfg = config::get_instance();
@@ -801,7 +886,8 @@ void CvrmfcDlg::recalc_fps()
 	int fps = cfg->get_mi()[cfg->get_vtype()].fps;
 
 	int gap = fps == 0 ? 30 : 1000 / fps;
-	if (cfg->get_vtype() == MT_MJPG && fps == 30) {
+	gap -= 10;
+	if (cfg->get_vtype() == MT_MJPG) {
 		gap = 30;
 	}
 
@@ -814,6 +900,7 @@ void CvrmfcDlg::recalc_fps()
 	start_worker();
 #else
 	SetTimer(timer_id::preview, gap, nullptr);
+
 #endif	
 }
 
@@ -864,7 +951,7 @@ void CvrmfcDlg::do_stop_record()
 	if (thread_.joinable()) {
 		thread_.join();
 	}
-	
+	record_.writer->set(cv::CAP_PROP_FPS, fps_.get());
 	record_.writer.reset();
 	recorded_frames_.clear();
 	record_.file.clear();
@@ -906,7 +993,7 @@ bool CvrmfcDlg::do_file_manager(CRect& rc)
 	tip_->Hide();
 	rec_tip_->Hide();
 	GetWindowRect(rc);
-	rc.bottom -= 60;
+	rc.bottom -= 65;
 #ifdef USE_THREAD_TO_CAP_MAT
 	stop_worker(false);
 #else
@@ -915,7 +1002,9 @@ bool CvrmfcDlg::do_file_manager(CRect& rc)
 	
 	auto cfg = config::get_instance();
 	cv::Mat mat = cv::Mat::zeros(cfg->get_video_w(), cfg->get_video_h(), CV_8UC3);
-	drawer_->DrawImg(mat);
+	//drawer_->DrawImg(mat);
+	imshow(PLAYER_NAME, mat);
+	//ShowMat(mat, m_player.GetSafeHwnd());
 	return true;
 }
 
@@ -1136,4 +1225,7 @@ std::string CvrmfcDlg::_fps::get_string()
 	return prev_fps;
 }
 
-
+BOOL CvrmfcDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
+	return CDialogEx::OnSetCursor(pWnd, nHitTest, message);
+}
