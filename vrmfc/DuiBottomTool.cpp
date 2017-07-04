@@ -368,10 +368,16 @@ void CDuiBottomTool::on_update(const int & lang)
 			{ btn_names::file, trw(IDS_STRING_FILE) },
 			{ btn_names::set, trw(IDS_STRING_SET) },
 			{ btn_names::sys, trw(IDS_STRING_SYSINFO) },
-			{ btn_names::bright, trw(IDS_STRING_BRIGHTNESS) }
+			
 		};
 
 		update_lang(vv);
+
+		//vv = { { btn_names::bright, trw(IDS_STRING_BRIGHTNESS) } };
+		auto btn = m_PaintManager.FindControl(btn_names::bright);
+		if (btn) {
+			btn->SetText((trw(IDS_STRING_BRIGHTNESS) + L" " + std::to_wstring(brightness_level_)).c_str());
+		}
 	}
 		break;
 	default:
@@ -412,6 +418,7 @@ void CDuiBottomTool::set_mode(mode m)
 		//btn->SetPushedImage(L"image/btnbk_hot.png");
 		//btn->SetSelectedImage(L"image/btnbk_hot.png");
 		container->Add(btn);
+		//return btn;
 	};
 
 	auto do_create = [add_gap, add_btn](const tv& vv) {
@@ -432,11 +439,14 @@ void CDuiBottomTool::set_mode(mode m)
 			{ btn_names::file, trw(IDS_STRING_FILE) },
 			{ btn_names::set, trw(IDS_STRING_SET) },
 			{ btn_names::sys, trw(IDS_STRING_SYSINFO) },
-			{ btn_names::bright, trw(IDS_STRING_BRIGHTNESS) }
+			
 		};
 
 		GAP_WIDHT = 10;
 		do_create(vv);
+		//{ btn_names::bright, trw(IDS_STRING_BRIGHTNESS) }
+		add_gap();
+		add_btn(btn_names::bright, (trw(IDS_STRING_BRIGHTNESS) + L" " + std::to_wstring(brightness_level_)).c_str());
 
 		editting_ = false;
 		sel_all_ = false;
@@ -760,6 +770,17 @@ void CDuiBottomTool::on_record_stopped()
 	btn->SetText(trw(IDS_STRING_REC).c_str());
 	btn->SetEnabled(false);
 	SetTimer(m_hWnd, 1, 3000, nullptr);
+}
+
+void CDuiBottomTool::set_brightness_level(int level)
+{
+	brightness_level_ = level;
+	if (mode_ == mainwnd) {
+		get_ctrl(CButtonUI, bright);
+		if (bright) {
+			bright->SetText((trw(IDS_STRING_BRIGHTNESS) + L" " + std::to_wstring(brightness_level_)).c_str());
+		}
+	}
 }
 
 void CDuiBottomTool::view_pic()

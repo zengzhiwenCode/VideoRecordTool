@@ -47,8 +47,8 @@ protected:
 	bool editting_ = false;
 	bool sel_all_ = false;
 	bool showing_ = true;
-
 public:
+	int brightness_level_ = 0;
 	enum mode {
 		mainwnd,
 		filemgr,
@@ -67,6 +67,7 @@ public:
 	bool on_video_pos_changed(const std::wstring& cur, const std::wstring& total, int pos);
 	bool on_user_change_video_pos(int pos);
 	void on_record_stopped();
+	void set_brightness_level(int level);
 protected:
 	void view_pic();
 	void view_video();

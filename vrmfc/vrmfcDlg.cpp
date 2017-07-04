@@ -99,9 +99,9 @@ void CvrmfcDlg::on_update(const int & lang)
 	CRect rc;
 	GetWindowRect(rc);
 	if (lang == 1) {
-		rc.left = rc.right - 355;
+		rc.left = rc.right - 270;
 	} else {
-		rc.left = rc.right - 286;
+		rc.left = rc.right - 226;
 	}
 	rc.bottom = rc.top + 22;
 
@@ -186,9 +186,9 @@ BOOL CvrmfcDlg::OnInitDialog()
 		CRect rc;
 		GetWindowRect(rc);
 		if (cfg->get_lang() == "en") {
-			rc.left = rc.right - 355;
+			rc.left = rc.right - 270;
 		} else {
-			rc.left = rc.right - 286;
+			rc.left = rc.right - 226;
 		}
 		rc.bottom = rc.top + 22;
 
@@ -198,10 +198,10 @@ BOOL CvrmfcDlg::OnInitDialog()
 		tip_->SetWindowPos(&wndTopMost, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
 		CString txt;
 		usb_storage_plugin_ = !config::list_removable_drives().empty();
-		txt.Format(L"%s %s%d %s", 
+		txt.Format(L"%s %s", 
 				   now_to_wstring().c_str(), 
-				   tr(IDS_STRING_BRIGHTNESS), 
-				   brightness_level_, 
+				  /* tr(IDS_STRING_BRIGHTNESS), 
+				   brightness_level_, */
 				   usb_storage_plugin_ ? tr(IDS_STRING_U_IN) : tr(IDS_STRING_U_OUT));
 		tip_->SetText(txt);
 		tip_->Show();
@@ -216,7 +216,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		range_log("init second tip");
 		CRect rc;
 		GetWindowRect(rc);
-		rc.left = rc.right - 150;
+		rc.left = rc.right - 120;
 		rc.top += 25;
 		rc.bottom = rc.top + 22;
 
@@ -240,6 +240,7 @@ BOOL CvrmfcDlg::OnInitDialog()
 		CPaintManagerUI::SetInstance(AfxGetInstanceHandle());                    // 指定duilib的实例
 		CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + L"\\skin");    // 指定duilib资源的路径，这里指定为和exe同目录
 		dui_bt_ = std::make_shared<CDuiBottomTool>(L"bottomtool.xml");
+		dui_bt_->brightness_level_ = brightness_level_;
 		cfg->register_observer(dui_bt_);
 		dui_bt_->Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 		::SetWindowPos(dui_bt_->GetHWND(), HWND_TOPMOST, rc.left, rc.top, rc.Width(), rc.Height(), SWP_SHOWWINDOW);
@@ -523,10 +524,10 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 		//range_log rl("timer_id::updatetip");
 		handle_com();
 		CString txt;
-		txt.Format(L"%s     %s:%d     %s",
+		txt.Format(L"%s     %s",
 				   now_to_wstring().c_str(),
-				   tr(IDS_STRING_BRIGHTNESS),
-				   brightness_level_,
+				  /* tr(IDS_STRING_BRIGHTNESS),
+				   brightness_level_,*/
 				   usb_storage_plugin_ ? tr(IDS_STRING_U_IN) : tr(IDS_STRING_U_OUT));
 		tip_->SetText(txt);
 		tip_->Invalidate();
@@ -1033,6 +1034,8 @@ void CvrmfcDlg::do_adjust_brightness()
 	}
 
 	brightness_level_ = idx;
+
+	dui_bt_->set_brightness_level(idx);
 }
 
 std::string CvrmfcDlg::_record::get_time()

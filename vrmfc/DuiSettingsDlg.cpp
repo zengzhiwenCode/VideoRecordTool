@@ -171,6 +171,19 @@ void CDuiSettingsDlg::InitWindow()
 		auto brightness = static_cast<COptionUI*>(m_PaintManager.FindControl(L"brightness"));
 		if (brightness) {
 			brightness->SetEnabled(vamp.brightness.valid_ > 0);
+			brightness->Selected(true);
+			get_ctrl(CLabelUI, video_min);
+			get_ctrl(CLabelUI, video_val);
+			get_ctrl(CLabelUI, video_max);
+			get_ctrl(COptionUI, video_auto);
+			get_ctrl(CSliderUI, video_slider);
+			get_ctrl(CButtonUI, video_inc);
+			get_ctrl(CButtonUI, video_dec);
+
+			std::string name = "brightness";
+			auto vamp = cfg->get_procamp();
+			if (name.empty()) {}
+			case_video(brightness, VideoProcAmp_Brightness)
 		}
 
 #define adjust_video_btns(btnname) \
@@ -187,6 +200,8 @@ void CDuiSettingsDlg::InitWindow()
 		adjust_video_btns(white_balance);
 		adjust_video_btns(backlight);
 		adjust_video_btns(gain);
+
+		
 
 #undef adjust_video_btns
 	} while (false);
@@ -212,6 +227,32 @@ void CDuiSettingsDlg::InitWindow()
 		adjust_camera_btn(tilt);
 		adjust_camera_btn(roll);
 		adjust_camera_btn(iris);
+
+		if (exposure) {
+			exposure->Selected(true);
+			get_ctrl(CLabelUI, camera_min);
+			get_ctrl(CLabelUI, camera_val);
+			get_ctrl(CLabelUI, camera_max);
+			get_ctrl(COptionUI, camera_auto);
+			get_ctrl(CSliderUI, camera_slider);
+			get_ctrl(CButtonUI, camera_inc);
+			get_ctrl(CButtonUI, camera_dec);
+
+			std::string name = "exposure";
+			auto camera = cfg->get_camera();
+			{
+				camera_min->SetText(std::to_wstring(camera.exposure.min_).c_str());
+				camera_val->SetText(std::to_wstring(camera.exposure.val_).c_str());
+				camera_max->SetText(std::to_wstring(camera.exposure.max_).c_str());
+				camera_slider->SetMinValue(camera.exposure.min_);
+				camera_slider->SetMaxValue(camera.exposure.max_);
+				camera_slider->SetChangeStep(camera.exposure.step_);
+				camera_slider->SetValue(camera.exposure.val_);
+				camera_dec->SetEnabled(camera.exposure.valid_ > 0);
+				camera_inc->SetEnabled(camera.exposure.valid_ > 0);
+
+			}
+		}
 
 #undef adjust_camera_btn
 

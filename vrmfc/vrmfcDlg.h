@@ -51,7 +51,7 @@ protected:
 	std::shared_ptr<CDuiBottomTool> dui_bt_ = {};
 	bool bottom_show_ = false;
 	std::string com_data_ = {};
-	int brightness_level_ = 2;
+	int brightness_level_ = 0;
 	int temperature_ = 0;
 	bool usb_storage_plugin_ = false;
 
