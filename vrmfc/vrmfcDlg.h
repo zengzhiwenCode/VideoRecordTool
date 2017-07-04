@@ -56,7 +56,8 @@ protected:
 	bool usb_storage_plugin_ = false;
 
 	bool running_ = true;
-	cv::Mat frame_ = {};
+	//cv::Mat frame_ = {};
+	std::vector<cv::Mat> recorded_frames_ = {};
 #ifdef USE_THREAD_TO_CAP_MAT
 	std::mutex mutex_ = {};
 	std::condition_variable cv_ = {};

@@ -494,9 +494,25 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 	case timer_id::preview:
 	{
 		if (dscap_.isOpened()) {
-			frame_ = dscap_.QueryFrame();
+			auto frame_ = dscap_.QueryFrame();
 			if (frame_.data) {
-				SendMessage(WM_REFRESH_MAT);
+				drawer_->DrawImg(frame_);
+
+				if (record_.recording /*&& record_.writer && record_.writer->isOpened()*/) {
+					//record_.writer->write(frame_);
+					recorded_frames_.push_back(frame_.clone());
+					rec_tip_->SetText(utf8::a2w(fps_.get_string() + " " + record_.get_time()).c_str());
+					rec_tip_->Invalidate();
+
+					int rec_time = config::get_instance()->get_max_rec_minutes();
+					if (rec_time != 0 && record_.get_minutes() >= rec_time) {
+						do_stop_record();
+					}
+
+				} else {
+					rec_tip_->SetText(utf8::a2w(fps_.get_string()).c_str());
+					rec_tip_->Invalidate();
+				}
 			}
 		}
 	}
@@ -584,7 +600,7 @@ afx_msg LRESULT CvrmfcDlg::OnRefreshMat(WPARAM wParam, LPARAM lParam)
 
 void CvrmfcDlg::draw_mat()
 {
-	drawer_->DrawImg(frame_);
+	/*drawer_->DrawImg(frame_);
 
 	if (record_.recording && record_.writer && record_.writer->isOpened()) {
 		record_.writer->write(frame_);
@@ -599,7 +615,7 @@ void CvrmfcDlg::draw_mat()
 	} else {
 		rec_tip_->SetText(utf8::a2w(fps_.get_string()).c_str());
 		rec_tip_->Invalidate();
-	}
+	}*/
 }
 
 void CvrmfcDlg::adjust_player_size(int w, int h)
@@ -794,17 +810,10 @@ bool CvrmfcDlg::do_record()
 	if (record_.recording) { do_stop_record(); return false; }
 	if (!dscap_.isOpened()) { return false; }
 	record_.file = config::get_instance()->create_new_video_path();
-	auto width = dscap_.GetWidth();
-	auto height = dscap_.GetHeight();
-	auto fourcc = CV_FOURCC('M', 'J', 'P', 'G'); // todo
-	auto cfg = config::get_instance();
+	//auto cfg = config::get_instance();
 	record_.writer = std::make_shared<cv::VideoWriter>();
-	record_.recording = record_.writer->open(record_.file,
-											 fourcc , 
-											 fps_.get(),
-											 //cfg->get_mi()[cfg->get_vtype()].fps,
-											 cv::Size(width, height),
-											 true);
+	recorded_frames_.clear();
+	record_.recording = true;
 	
 	record_.begin = std::chrono::steady_clock::now();
 	dui_bt_->enable_btns(false);
@@ -815,7 +824,20 @@ void CvrmfcDlg::do_stop_record()
 {
 	if (!record_.recording)return;
 	record_.recording = false;
+	auto fourcc = CV_FOURCC('M', 'J', 'P', 'G'); // todo
+	auto width = dscap_.GetWidth();
+	auto height = dscap_.GetHeight();
+	record_.writer->open(record_.file,
+						 fourcc,
+						 fps_.get(),
+						 //cfg->get_mi()[cfg->get_vtype()].fps,
+						 cv::Size(width, height),
+						 true);
+	for (auto frame : recorded_frames_) {
+		record_.writer->write(frame);
+	}
 	record_.writer.reset();
+	recorded_frames_.clear();
 	record_.file.clear();
 	fps_.frames = 0;
 	fps_.begin = std::chrono::steady_clock::now();
