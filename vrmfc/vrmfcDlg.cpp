@@ -757,7 +757,12 @@ void CvrmfcDlg::recalc_fps()
 #endif
 
 	int fps = cfg->get_mi()[cfg->get_vtype()].fps;
+
 	int gap = fps == 0 ? 30 : 1000 / fps;
+	if (cfg->get_vtype() == MT_MJPG && fps == 30) {
+		gap = 30;
+	}
+
 	//gap -= 5;
 	fps_.begin = std::chrono::steady_clock::now();
 	fps_.frames = 0;

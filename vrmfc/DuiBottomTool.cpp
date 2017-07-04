@@ -437,6 +437,9 @@ void CDuiBottomTool::set_mode(mode m)
 
 		GAP_WIDHT = 10;
 		do_create(vv);
+
+		editting_ = false;
+		sel_all_ = false;
 	}
 		break;
 
