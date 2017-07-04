@@ -501,7 +501,12 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 
 				if (record_.recording /*&& record_.writer && record_.writer->isOpened()*/) {
 					//record_.writer->write(frame_);
-					recorded_frames_.push_back(frame_.clone());
+					{
+						std::lock_guard<std::mutex> lg(mutex_);
+						recorded_frames_.push_back(frame_.clone());
+					}
+					cv_.notify_one();
+					
 					rec_tip_->SetText(utf8::a2w(fps_.get_string() + " " + record_.get_time()).c_str());
 					rec_tip_->Invalidate();
 
@@ -541,6 +546,26 @@ void CvrmfcDlg::OnTimer(UINT_PTR nIDEvent)
 	CDialogEx::OnTimer(nIDEvent);
 }
 
+void CvrmfcDlg::worker()
+{
+	while (record_.recording) {
+		std::list<cv::Mat> frames;
+
+		{
+			std::unique_lock<std::mutex> ul(mutex_);
+			if (cv_.wait_for(ul, std::chrono::milliseconds(1), [this] {return !record_.recording || !recorded_frames_.empty(); })) {
+				std::copy(recorded_frames_.begin(), recorded_frames_.end(), std::back_inserter(frames));
+				recorded_frames_.clear();
+			}
+		}
+		
+		for (auto frame : frames) {
+			record_.writer->write(frame);
+		}
+	}
+	
+}
+
 #ifdef USE_THREAD_TO_CAP_MAT
 void CvrmfcDlg::stop_worker(bool close_cam)
 {
@@ -569,7 +594,7 @@ void CvrmfcDlg::start_worker()
 	thread_ = std::thread(&CvrmfcDlg::worker, this);
 }
 
-void CvrmfcDlg::worker()
+
 {
 	AUTO_LOG_FUNCTION;
 	while (running_) {
@@ -812,9 +837,19 @@ bool CvrmfcDlg::do_record()
 	if (!dscap_.isOpened()) { return false; }
 	record_.file = config::get_instance()->create_new_video_path();
 	//auto cfg = config::get_instance();
+	auto fourcc = CV_FOURCC('M', 'J', 'P', 'G'); // todo
+	auto width = dscap_.GetWidth();
+	auto height = dscap_.GetHeight();
 	record_.writer = std::make_shared<cv::VideoWriter>();
+	record_.writer->open(record_.file,
+						 fourcc,
+						 fps_.get(),
+						 //cfg->get_mi()[cfg->get_vtype()].fps,
+						 cv::Size(width, height),
+						 true);
 	recorded_frames_.clear();
 	record_.recording = true;
+	thread_ = std::thread(&CvrmfcDlg::worker, this);
 	
 	record_.begin = std::chrono::steady_clock::now();
 	dui_bt_->enable_btns(false);
@@ -825,18 +860,11 @@ void CvrmfcDlg::do_stop_record()
 {
 	if (!record_.recording)return;
 	record_.recording = false;
-	auto fourcc = CV_FOURCC('M', 'J', 'P', 'G'); // todo
-	auto width = dscap_.GetWidth();
-	auto height = dscap_.GetHeight();
-	record_.writer->open(record_.file,
-						 fourcc,
-						 fps_.get(),
-						 //cfg->get_mi()[cfg->get_vtype()].fps,
-						 cv::Size(width, height),
-						 true);
-	for (auto frame : recorded_frames_) {
-		record_.writer->write(frame);
+	
+	if (thread_.joinable()) {
+		thread_.join();
 	}
+	
 	record_.writer.reset();
 	recorded_frames_.clear();
 	record_.file.clear();

@@ -57,10 +57,14 @@ protected:
 
 	bool running_ = true;
 	//cv::Mat frame_ = {};
-	std::vector<cv::Mat> recorded_frames_ = {};
+	std::list<cv::Mat> recorded_frames_ = {};
+	std::mutex mutex_ = {};
+	std::thread thread_ = {};
+	std::condition_variable cv_ = {};
+	void worker();
 #ifdef USE_THREAD_TO_CAP_MAT
 	std::mutex mutex_ = {};
-	std::condition_variable cv_ = {};
+	
 	std::thread thread_ = {};
 	
 	//bool previewing_ = true;
