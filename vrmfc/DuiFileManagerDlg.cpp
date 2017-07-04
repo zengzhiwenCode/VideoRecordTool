@@ -417,10 +417,17 @@ void CDuiFileManagerDlg::sel_all(bool all)
 
 void CDuiFileManagerDlg::del_pic(fviters piters, bool b_update_content)
 {
+	auto cfg = config::get_instance();
 	for (auto i : piters) {
 		auto p = pics_[i];
 		std::error_code ec;
 		fs::remove(p, ec);
+		if (ec) {
+			JLOG_ERRO(ec.message());
+		}
+
+		auto sel = cfg->get_selected_pic(p.string());
+		fs::remove(sel, ec);
 		if (ec) {
 			JLOG_ERRO(ec.message());
 		}
@@ -456,6 +463,12 @@ void CDuiFileManagerDlg::del_video(fviters viters, bool b_update_content)
 			if (ec) {
 				JLOG_ERRO(ec.message());
 			}
+		}
+
+		auto sel = cfg->get_selected_pic(thumb);
+		fs::remove(sel, ec);
+		if (ec) {
+			JLOG_ERRO(ec.message());
 		}
 	}
 

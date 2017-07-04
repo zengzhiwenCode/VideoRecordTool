@@ -122,9 +122,15 @@ void CDuiSettingsDlg::InitWindow()
 		}
 
 		for (auto i : mi[cfg->get_vtype()].sizes) {
+			auto line = new CHorizontalLayoutUI();
+			line->SetFixedHeight(30);
 			auto opt = new COptionUI();
+			auto gap = new CVerticalLayoutUI();
+			gap->SetFixedWidth(5);
+			line->Add(opt);
+			line->Add(gap);
 			resolution_btns_.push_back(opt);
-			resolution->Add(opt);
+			resolution->Add(line);
 			auto horz = new CHorizontalLayoutUI();
 			horz->SetFixedHeight(5);
 			resolution->Add(horz);

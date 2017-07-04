@@ -29,19 +29,19 @@
             <HorizontalLayout name="container" >
                 <TabLayout name="options">
                     <VerticalLayout> <!--分辨率-->
-                        <HorizontalLayout height="25" />
-                        <HorizontalLayout height="50"  ><!--标题栏-->
-                        <VerticalLayout width="50" />
-                        <Label name="tab_resolution" text="分辨率" font="0" align="center" valign="center" textcolor="FFFFFFFF#" />
-                        <VerticalLayout width="10" />
-                        <Label name="tab_format" text="格式" font="0" align="center" valign="center" textcolor="FFFFFFFF#" />
-                        <VerticalLayout width="50" />
+                        <HorizontalLayout height="5" />
+                        <HorizontalLayout height="30"  ><!--标题栏-->
+                            <VerticalLayout width="50" />
+                            <Label name="tab_resolution" text="分辨率" font="0" align="center" valign="center" textcolor="FFFFFFFF#" />
+                            <VerticalLayout width="10" />
+                            <Label name="tab_format" text="格式" font="0" align="center" valign="center" textcolor="FFFFFFFF#" />
+                            <VerticalLayout width="50" />
                         </HorizontalLayout>
                         
                         <HorizontalLayout height="5" />
                         <HorizontalLayout>
                             <VerticalLayout width="50" />
-                            <VerticalLayout name="resolutions" vscrollbar="true" >
+                            <VerticalLayout name="resolutions" vscrollbar="true"  >
                             </VerticalLayout>
                             <VerticalLayout width="25" />
                             <VerticalLayout name="cap_mode">
@@ -52,7 +52,7 @@
                     </VerticalLayout>
                     <VerticalLayout> <!--录像选项-->
                         <HorizontalLayout height="60" />
-                        <Label name="lable_rec_time" text="时长（值）" font="0" align="center" valign="center" textcolor="#FFFFD966"  />
+                        <Label name="lable_rec_time" text="时长（值）" font="0" align="center" valign="center" textcolor="#FFFFFFFF"  />
                         <HorizontalLayout height="20" />
                         <HorizontalLayout>
                             <VerticalLayout width="20" />
@@ -156,11 +156,11 @@
                         </HorizontalLayout>
                         <HorizontalLayout height="20">
                             <VerticalLayout width="60" />
-                            <Label name="video_min" text="0" font="0" align="left" valign="center" textcolor="#FFFFD966"  />
+                            <Label name="video_min" text="0" font="0" align="left" valign="center" textcolor="#FFFFFFFF"  />
                             <VerticalLayout width="50" />
-                            <Label name="video_val" text="10" font="0" align="center" valign="center" textcolor="#FFFFD966"  />
+                            <Label name="video_val" text="10" font="0" align="center" valign="center" textcolor="#FFFFFFFF"  />
                             <VerticalLayout width="50" />
-                            <Label name="video_max" text="256" font="0" align="right" valign="center" textcolor="#FFFFD966"  />
+                            <Label name="video_max" text="256" font="0" align="right" valign="center" textcolor="#FFFFFFFF"  />
                             <VerticalLayout width="130" />
                         </HorizontalLayout>
                         <HorizontalLayout height="5" />
@@ -233,11 +233,11 @@
                         </HorizontalLayout>
                         <HorizontalLayout height="20">
                             <VerticalLayout width="60" />
-                            <Label name="camera_min" text="0" font="0" align="left" valign="center" textcolor="#FFFFD966"  />
+                            <Label name="camera_min" text="0" font="0" align="left" valign="center" textcolor="#FFFFFFFF"  />
                             <VerticalLayout width="50" />
-                            <Label name="camera_val" text="10" font="0" align="center" valign="center" textcolor="#FFFFD966"  />
+                            <Label name="camera_val" text="10" font="0" align="center" valign="center" textcolor="#FFFFFFFF"  />
                             <VerticalLayout width="50" />
-                            <Label name="camera_max" text="256" font="0" align="right" valign="center" textcolor="#FFFFD966"  />
+                            <Label name="camera_max" text="256" font="0" align="right" valign="center" textcolor="#FFFFFFFF"  />
                             <VerticalLayout width="130" />
                         </HorizontalLayout>
                         <HorizontalLayout height="5" />
@@ -301,7 +301,7 @@
                     </VerticalLayout>
                     <VerticalLayout> <!--恢复设置-->                        
                         <HorizontalLayout height="100" />
-                        <Label name="reset_confirm" text="恢复出厂设置？" font="2" align="center" valign="center" textcolor="#FFFFD966"  />
+                        <Label name="reset_confirm" text="恢复出厂设置？" font="0" align="center" valign="center" textcolor="#FFFFFFFF"  />
                         <HorizontalLayout height="20" />
                         <HorizontalLayout>
                             <VerticalLayout width="80" />
@@ -310,7 +310,7 @@
                             <Button name="reset_cancel" text="取消" font="0" bkimage="file='image\option_bk_normal.png'" />
                             <VerticalLayout width="80" />
                         </HorizontalLayout>
-                        <HorizontalLayout height="130" />
+                        <HorizontalLayout height="150" />
                     </VerticalLayout>
                 </TabLayout>
             </HorizontalLayout>

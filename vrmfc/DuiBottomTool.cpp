@@ -503,8 +503,8 @@ void CDuiBottomTool::set_mode(mode m)
 	{
 		tv vv = {
 			{ btn_names::prev_pic, trw(IDS_STRING_PREV_PIC) },
-			{ btn_names::back, trw(IDS_STRING_BACK) },
-			{ btn_names::del, trw(IDS_STRING_DELETE) },
+			{ btn_names::next_pic, trw(IDS_STRING_NEXT_PIC) },
+			{ btn_names::detail, trw(IDS_STRING_DETAIL) },
 		};
 
 		GAP_WIDHT = 25;
@@ -514,8 +514,8 @@ void CDuiBottomTool::set_mode(mode m)
 		add_btn(p.first.c_str(), p.second.c_str(), 1);
 
 		vv = { 
-			{ btn_names::detail, trw(IDS_STRING_DETAIL) },
-			{ btn_names::next_pic, trw(IDS_STRING_NEXT_PIC) },
+			{ btn_names::del, trw(IDS_STRING_DELETE) },
+			{ btn_names::back, trw(IDS_STRING_BACK) },
 		};
 		do_create(vv);
 
@@ -529,16 +529,12 @@ void CDuiBottomTool::set_mode(mode m)
 
 	case CDuiBottomTool::video_view:
 	{
-		{
-
-		}
-
 		tv vv = {
 			{ btn_names::prev_video, trw(IDS_STRING_PREV_VIDEO) },
-			{ btn_names::stop, trw(IDS_STRING_STOP) },
+			{ btn_names::next_video, trw(IDS_STRING_NEXT_VIDEO) },
 			{ btn_names::pause, trw(IDS_STRING_PAUSE) },
-			{ btn_names::back, trw(IDS_STRING_BACK) },
-			{ btn_names::del, trw(IDS_STRING_DELETE) },
+			{ btn_names::stop, trw(IDS_STRING_STOP) },
+			{ btn_names::detail, trw(IDS_STRING_DETAIL) },
 		};
 
 		GAP_WIDHT = 5;
@@ -548,8 +544,8 @@ void CDuiBottomTool::set_mode(mode m)
 		add_btn(p.first.c_str(), p.second.c_str(), 1);
 
 		vv = {
-			{ btn_names::detail, trw(IDS_STRING_DETAIL) },
-			{ btn_names::next_video, trw(IDS_STRING_NEXT_VIDEO) },
+			{ btn_names::del, trw(IDS_STRING_DELETE) },
+			{ btn_names::back, trw(IDS_STRING_BACK) },
 		};
 		do_create(vv);
 

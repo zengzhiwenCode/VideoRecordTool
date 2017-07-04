@@ -2,7 +2,7 @@
 <Window size="300,100" mininfo="300,200" maxinfo="300,200" caption="0,0,0,1" sizebox="0,0,0,0">
     <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
 	<Font shared="true" id="1" name="幼圆" size="30" />
-	<HorizontalLayout bkcolor="FF595959#" bordersize="1" bordercolor="#FF707070" borderround="25,25"> <!--整个窗口-->
+	<HorizontalLayout bkcolor="FF595959#" bordersize="1" bordercolor="#FF707070" > <!--整个窗口-->
         <VerticalLayout width="20" />
         <VerticalLayout>
             <HorizontalLayout height="10" />
