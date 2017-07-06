@@ -286,6 +286,9 @@ bool CCameraDS::get_info(int nCamID, mi& mi_, procamp& vamp, camera_set& cam)
 		get_camera_property(CameraControl_Roll, roll);
 		get_camera_property(CameraControl_Tilt, tilt);
 		get_camera_property(CameraControl_Zoom, zoom);
+
+		// 2017-7-6 12:05:34 trick to disable exposure
+		cam.exposure.valid_ = 0;
 	} else {
 		JLOG_ERRO("m_pDeviceFilter->QueryInterface IID_IAMCameraControl failed {}", get_hr_msg(hr));
 	}

@@ -38,8 +38,8 @@
 
 
 
-#include "C:/dev/Global/global.h"
-#include "C:/dev/Global/win32.h"
+#include "D:/dev_libs/Global/global.h"
+#include "D:/dev_libs/Global/win32.h"
 using namespace jlib;
 
 #pragma warning(push)

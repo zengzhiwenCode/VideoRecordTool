@@ -228,7 +228,7 @@ void CDuiSettingsDlg::InitWindow()
 		adjust_camera_btn(roll);
 		adjust_camera_btn(iris);
 
-		if (exposure) {
+		/*if (exposure) {
 			exposure->Selected(true);
 			get_ctrl(CLabelUI, camera_min);
 			get_ctrl(CLabelUI, camera_val);
@@ -252,7 +252,7 @@ void CDuiSettingsDlg::InitWindow()
 				camera_inc->SetEnabled(camera.exposure.valid_ > 0);
 
 			}
-		}
+		}*/
 
 #undef adjust_camera_btn
 
