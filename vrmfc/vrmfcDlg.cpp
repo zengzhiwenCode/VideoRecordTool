@@ -739,7 +739,7 @@ void CvrmfcDlg::adjust_player_size(int w, int h)
 	
 	//cvNamedWindow(PLAYER_NAME, 0);
 	//cvDestroyWindow(PLAYER_NAME);
-	cvResizeWindow(PLAYER_NAME, rcplayer.Width()/* - (rcplayer.Width() % 4)*/, rcplayer.Height()/* - (rcplayer.Width() % 4)*/);
+	cvResizeWindow(PLAYER_NAME, rcplayer.Width() - 1/* - (rcplayer.Width() % 4)*/, rcplayer.Height() - 1/* - (rcplayer.Width() % 4)*/);
 	HWND hWnd = (HWND)cvGetWindowHandle(PLAYER_NAME);
 	::ShowWindow(hWnd, SW_HIDE);
 	
