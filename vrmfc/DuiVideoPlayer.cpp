@@ -86,7 +86,6 @@ LRESULT CDuiVideoPlayer::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	} else if (uMsg == WM_LBUTTONUP ) {
 		
 	} else if (uMsg == WM_PARENTNOTIFY) {
-		
 		if (wParam == WM_LBUTTONDOWN) {
 			JLOG_INFO("CDuiVideoPlayer::HandleMessage WM_PARENTNOTIFY WM_LBUTTONDOWN disable_click_ {}", disable_click_);
 			auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);

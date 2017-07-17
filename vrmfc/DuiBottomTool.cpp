@@ -147,7 +147,9 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			normal_btn();
 		} else if (name == btn_names::sys) {
 			hot_btn();
+			EnableWindow(m_hWnd, 0);
 			maindlg->do_system_info();
+			EnableWindow(m_hWnd, 1);
 			normal_btn();
 		} else if (name == btn_names::bright) {
 			hot_btn();
@@ -239,18 +241,18 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			if (piters_.size() == 1) {
 				if (piters_[0] > 0) {
 					piters_[0]--;
-					view_pic();
+					view_pic(false);
 				}
 			}
 		} else if (name == btn_names::next_pic) {
 			if (piters_.size() == 1) {
 				if (piters_[0] + 1 < pics_.size()) {
 					piters_[0]++;
-					view_pic();
+					view_pic(false);
 				}
 			}
 		} else if (name == btn_names::del) {
-			pic_view_dec();
+			pic_view_del();
 		} else if (name == btn_names::cp_to_usb) {
 			hot_btn();
 			::EnableWindow(pic_viewer_->GetHWND(), 0);
@@ -700,9 +702,6 @@ bool CDuiBottomTool::show_video_tips(bool show)
 						   rc.Height(),
 						   SWP_SHOWWINDOW);
 		}
-
-		m_PaintManager.NeedUpdate();
-
 		return true;
 	}
 	return false;
@@ -783,7 +782,7 @@ void CDuiBottomTool::set_brightness_level(int level)
 	}
 }
 
-void CDuiBottomTool::view_pic()
+void CDuiBottomTool::view_pic(bool hide_bottom_tool)
 {
 	if (piters_.size() != 1) { return; }
 	auto path = pics_[piters_[0]];
@@ -852,7 +851,9 @@ void CDuiBottomTool::view_pic()
 
 		set_mode(pic_view);
 
-		show_pic_tip(false);
+		if (hide_bottom_tool) {
+			show_pic_tip(false);
+		}
 	}
 }
 
@@ -985,7 +986,7 @@ void CDuiBottomTool::del_video()
 	file_dlg_->del_video(viters_);
 }
 
-void CDuiBottomTool::pic_view_dec()
+void CDuiBottomTool::pic_view_del()
 {
 	if (piters_.size() != 1) { return; }
 	auto p = pics_[piters_[0]];
@@ -1004,13 +1005,26 @@ void CDuiBottomTool::pic_view_dec()
 		pic_view_tip_->Hide();
 	}
 
-	set_mode(filemgr);
+	if (!pics_.empty()) {
+		if (piters_[0] + 1 < pics_.size()) {
+			piters_[0]++;
+			view_pic(false);
+		} else if (piters_[0] - 1 >= 0) {
+			piters_[0]--;
+			view_pic(false);
+		}
+	} else {
+		set_mode(filemgr);
+	}
+
+	//
 }
 
 void CDuiBottomTool::pic_view_detail()
 {
 	if (piters_.size() != 1) { return; }
 	auto path = pics_[piters_[0]];
+	if (!fs::exists(path)) { return; }
 	CDuiPicDetailDlg picdetail(L"picdetail.xml");
 	picdetail.picinfo_.name = utf8::mbcs_to_u16(path.filename().string());
 	picdetail.picinfo_.filesize = utf8::a2w(config::format_space(fs::file_size(path)));

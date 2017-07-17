@@ -63,9 +63,6 @@ void CDuiFileManagerDlg::InitWindow()
 
 	std::copy(pics_.begin(), pics_.end(), std::back_inserter(all_));
 	std::copy(videos_.begin(), videos_.end(), std::back_inserter(all_));
-	//all_.sort([](const fs::path& p1, const fs::path& p2) {
-	//	return p1.filename() < p2.filename();
-	//});
 	std::sort(all_.begin(), all_.end(), [](const fs::path& p1, const fs::path& p2) {
 		return p2.filename() < p1.filename();
 	});
@@ -165,6 +162,7 @@ void CDuiFileManagerDlg::OnClick(TNotifyUI & msg)
 
 void CDuiFileManagerDlg::update_content(filter f)
 {
+	AUTO_LOG_FUNCTION;
 	auto container = static_cast<CVerticalLayoutUI*>(m_PaintManager.FindControl(L"container")); assert(container);
 	if (!container)return;
 	container->RemoveAll();

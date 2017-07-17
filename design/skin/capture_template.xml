@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<Window size="cx,cy" mininfo="cx,cy" maxinfo="cx,cy" caption="0,0,0,-1" sizebox="0,0,0,0">
+<Window size="cx,cy" mininfo="cx,cy" maxinfo="cx,cy" caption="0,0,0,1" sizebox="0,0,0,0">
 	<VerticalLayout name="pic" bkcolor="FFD77E44#" bordersize="1" bordercolor="#FF707070" borderround="5,5"> <!--整个窗口-->
 	</VerticalLayout>
 </Window>

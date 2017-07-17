@@ -19,8 +19,8 @@ bool CDuiPreviewCaptureDlg::make_xml(int cx, int cy)
 
 	string line;
 	while (getline(in, line)) {
-		if (line == R"(<Window size="cx,cy" mininfo="cx,cy" maxinfo="cx,cy" caption="0,0,0,-1" sizebox="0,0,0,0">)") {
-			line = R"(<Window size=")" + sx + "," + sy + R"(" mininfo=")" + sx + "," + sy + R"(" maxinfo=")" + sx + "," + sy + R"(" caption="0,0,0,-1" sizebox="0,0,0,0">)";
+		if (line == R"(<Window size="cx,cy" mininfo="cx,cy" maxinfo="cx,cy" caption="0,0,0,1" sizebox="0,0,0,0">)") {
+			line = R"(<Window size=")" + sx + "," + sy + R"(" mininfo=")" + sx + "," + sy + R"(" maxinfo=")" + sx + "," + sy + R"(" caption="0,0,0,1" sizebox="0,0,0,0">)";
 		}
 
 		out << line << endl;
@@ -61,10 +61,10 @@ void CDuiPreviewCaptureDlg::Notify(DuiLib::TNotifyUI & msg)
 
 LRESULT CDuiPreviewCaptureDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	//JLOG_INFO("CDuiPreviewCaptureDlg::HandleMessage uMsg 0x{:X} {:d} {:d}", uMsg, wParam, lParam);
+	JLOG_INFO("CDuiPreviewCaptureDlg::HandleMessage uMsg 0x{:X} {:d} {:d}", uMsg, wParam, lParam);
 	if (uMsg == WM_TIMER && wParam == 1) {
 		PostMessage(WM_CLOSE);
-	} else if (uMsg == WM_NCLBUTTONDOWN) {
+	} else if (uMsg == WM_LBUTTONDOWN) {
 		//if (wParam == WM_LBUTTONDOWN) {
 			auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
 			if (maindlg) {
@@ -80,16 +80,6 @@ LRESULT CDuiPreviewCaptureDlg::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 
 void CDuiPreviewCaptureDlg::OnClick(TNotifyUI & msg)
 {
-	if (msg.pSender->GetName() == L"pic") {
-		
-		auto maindlg = static_cast<CvrmfcDlg*>(AfxGetApp()->GetMainWnd()); assert(maindlg);
-		if (maindlg) {
-			if (maindlg->do_picview_mode_show_or_hide_tools(show_tip_)) {
-				show_tip_ = !show_tip_;
-			}
-		}
-	}
-
 	__super::OnClick(msg);
 }
 

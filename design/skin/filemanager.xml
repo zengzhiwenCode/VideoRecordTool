@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<Window size="1024,708" mininfo="1024,568" maxinfo="1024,568" caption="0,0,0,1" sizebox="0,0,0,0">
+<Window size="1024,703" mininfo="1024,568" maxinfo="1024,568" caption="0,0,0,1" sizebox="0,0,0,0">
     <Include source="scrollbar.xml" />
     <Font shared="true" id="0" name="微软雅黑" size="26" bold="false" />
 	<Font shared="true" id="1" name="幼圆" size="30" />
 
 
-        <VerticalLayout name="container" bkcolor="FF595959#" vscrollbar="true" bordersize="1" bordercolor="#FF707070" borderround="5,5"> <!--整个窗口-->
+        <VerticalLayout name="container" bkcolor="FF595959#" width="1024" height="700" vscrollbar="true" bordersize="1" bordercolor="#FF707070" borderround="5,5"> <!--整个窗口-->
             
         </VerticalLayout>
 

@@ -848,7 +848,10 @@ void CvrmfcDlg::process_com(const std::string & data)
 	if (std::string::npos != data.find("lt")) {
 		for (int i = 0; i < 6; i++) {
 			com_if("lt" + std::to_string(i)) {
-				brightness_level_ = i;
+				if (brightness_level_ != i) {
+					brightness_level_ = i;
+					dui_bt_->set_brightness_level(i);
+				}
 				return;
 			}
 		}
@@ -954,6 +957,7 @@ void CvrmfcDlg::do_stop_record()
 	record_.writer->set(cv::CAP_PROP_FPS, fps_.get());
 	record_.writer.reset();
 	recorded_frames_.clear();
+	config::get_instance()->get_thumb_of_video(record_.file);
 	record_.file.clear();
 	fps_.frames = 0;
 	fps_.begin = std::chrono::steady_clock::now();
@@ -964,7 +968,8 @@ void CvrmfcDlg::do_stop_record()
 void CvrmfcDlg::do_capture()
 {
 	AUTO_LOG_FUNCTION; AUTO_LOCK_DLG;
-	auto cfile = config::get_instance()->create_new_capture_path();
+	auto cfg = config::get_instance();
+	auto cfile = cfg->create_new_capture_path();
 	
 	if (dscap_.isOpened()) {
 		Mat img = dscap_.QueryFrame();
@@ -978,6 +983,8 @@ void CvrmfcDlg::do_capture()
 				dlg.Create(m_hWnd, L"", UI_WNDSTYLE_DIALOG, WS_EX_WINDOWEDGE | WS_EX_APPWINDOW);
 				dlg.ShowModal();
 			}
+
+			cfg->get_selected_pic(cfile);
 		}
 	}
 }
@@ -1144,15 +1151,11 @@ void CvrmfcDlg::do_adjust_brightness()
 {
 	AUTO_LOG_FUNCTION;
 	static const char* cmd[] = { "lt0", "lt1", "lt2", "lt3", "lt4","lt5", "lt6" };
-	static auto idx = 0;
-	serial_send(cmd[idx++]);
-	if (idx == 7) {
-		idx = 0;
+	if (++brightness_level_ == 7) {
+		brightness_level_ = 0;
 	}
-
-	brightness_level_ = idx;
-
-	dui_bt_->set_brightness_level(idx);
+	serial_send(cmd[brightness_level_]);
+	dui_bt_->set_brightness_level(brightness_level_);
 }
 
 std::string CvrmfcDlg::_record::get_time()

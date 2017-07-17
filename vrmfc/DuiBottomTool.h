@@ -69,11 +69,11 @@ public:
 	void on_record_stopped();
 	void set_brightness_level(int level);
 protected:
-	void view_pic();
+	void view_pic(bool hide_bottom_tool = true);
 	void view_video();
 	void del_pic();
 	void del_video();
-	void pic_view_dec();
+	void pic_view_del();
 	void pic_view_detail();
 	void video_view_del();
 	void video_view_detail();
