@@ -847,7 +847,7 @@ void CDuiBottomTool::view_pic(bool hide_bottom_tool)
 
 		if (pic_view_tip_) {
 			pic_view_tip_->SetText(path.filename().wstring().c_str());
-			pic_view_tip_->Show();
+			pic_view_tip_->Invalidate();
 		}
 
 		sz_prevpic_.cx = mat.cols;
@@ -855,9 +855,7 @@ void CDuiBottomTool::view_pic(bool hide_bottom_tool)
 
 		set_mode(pic_view);
 
-		if (hide_bottom_tool) {
-			show_pic_tip(false);
-		}
+		show_pic_tip(!hide_bottom_tool);
 	}
 }
 
