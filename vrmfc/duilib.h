@@ -31,9 +31,9 @@ using DuiLib::CProgressUI;
 
 
 //#ifdef _DEBUG
-#   pragma comment(lib, "../Debug/DuiLib_Debug.lib")
+//#   pragma comment(lib, "../Debug/DuiLib_Debug.lib")
 //#else
-//#   pragma comment(lib, "../Release/DuiLib_Release.lib")
+#   pragma comment(lib, "../Release/DuiLib_Release.lib")
 //#endif
 
 namespace DuiLib {

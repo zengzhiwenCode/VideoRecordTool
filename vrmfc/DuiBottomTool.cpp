@@ -126,7 +126,9 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 		//auto_change_btn_bk();
 		if (name == btn_names::exit) {
 			hot_btn();
+			EnableWindow(m_hWnd, 0);
 			maindlg->do_exit_windows();
+			EnableWindow(m_hWnd, 1);
 			normal_btn();
 		} else if (name == btn_names::rec) {
 			if (maindlg->do_record()) {
@@ -143,7 +145,9 @@ void CDuiBottomTool::OnClick(TNotifyUI & msg)
 			}
 		} else if (name == btn_names::set) {
 			hot_btn();
+			EnableWindow(m_hWnd, 0);
 			maindlg->do_settings();
+			EnableWindow(m_hWnd, 1);
 			normal_btn();
 		} else if (name == btn_names::sys) {
 			hot_btn();
